@@ -1,0 +1,72 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+HTTP CONNECT
+HTTP proxy
+proxytunnel
+</keywords>
+</info>
+
+# Server-side
+<reply>
+
+# this is returned first since we get no proxy-auth
+<data nocheck="yes">
+<<<<<<< HEAD
+HTTP/1.1 405 Method Not Allowed swsclose
+
+=======
+HTTP/1.1 405 Method Not Allowed swsclose
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+And you should ignore this data.
+</data>
+
+</reply>
+
+# Client-side
+<client>
+<server>
+http
+</server>
+ <name>
+HTTP proxy CONNECT with custom User-Agent header
+ </name>
+ <command>
+http://test.remote.haxx.se:287/path/287 -H "User-Agent: looser/2007" --proxy http://%HOSTIP:%HTTPPORT --proxytunnel
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<protocol>
+<<<<<<< HEAD
+CONNECT test.remote.haxx.se:287 HTTP/1.1
+Host: test.remote.haxx.se:287
+Proxy-Connection: Keep-Alive
+User-Agent: looser/2007
+
+=======
+CONNECT test.remote.haxx.se:287 HTTP/1.1
+Host: test.remote.haxx.se:287
+Proxy-Connection: Keep-Alive
+User-Agent: looser/2007
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+# CURLE_RECV_ERROR
+<errorcode>
+56
+</errorcode>
+<stdout>
+<<<<<<< HEAD
+HTTP/1.1 405 Method Not Allowed swsclose
+
+=======
+HTTP/1.1 405 Method Not Allowed swsclose
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</stdout>
+</verify>
+</testcase>

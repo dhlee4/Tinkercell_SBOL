@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NodeGraphicsItem>
+<listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
+    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+		<listOfStyles>
+			<style idList="protein-stability-element" width="50" height="100">
+				<g>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="25" y="50" />
+								<end x="25" y="41" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<ellipse cx="25" cy="34" rx="7" ry="7" angleStart="0" angleEnd="360" fill="" stroke="#000000" stroke-width="3"/>
+				</g>
+			</style>
+		</listOfStyles
+	</renderInformation>
+</listOfRenderInformation>

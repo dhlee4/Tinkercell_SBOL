@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NodeGraphicsItem>
+<listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
+    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+        <listOfColorDefinitions>
+            <colorDefinition id="shape1color" value="#59fff4" alpha="255"/>
+            <colorDefinition id="shape2color" value="#6464ff" alpha="255"/>
+            <colorDefinition id="shape3color" value="#6464ff" alpha="255"/>
+            <colorDefinition id="shape4color" value="#6464ff" alpha="255"/>
+            <colorDefinition id="shape5color" value="#6464ff" alpha="255"/>
+            <colorDefinition id="shape6color" value="#626262" alpha="83"/>
+        </listOfColorDefinitions>
+        <listOfGradientDefinitions>
+            <linearGradient id="shape0color" x1="83.6634%" y1="81.8182%" x2="85.6436%" y2="41.6268%">
+                <stop offset="0%" stop-color="#e1e1e1" stop-alpha="1"/>
+                <stop offset="100%" stop-color="#ffffff" stop-alpha="1"/>
+            </linearGradient>
+        </listOfGradientDefinitions>
+        <listOfStyles>
+            <style idList="abc" width="50" height="50">
+                <g>
+                    <polygon fill="shape0color" stroke="#4265ff" stroke-width="8" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="23.2673%" y="0%"/>
+                                <end x="92.0792%" y="0.478469%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="92.0792%" y="0.478469%"/>
+                                <end x="92.0792%" y="93.3014%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="92.0792%" y="93.3014%"/>
+                                <end x="0%" y="93.3014%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="0%" y="93.3014%"/>
+                                <end x="0%" y="23.9234%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="0%" y="23.9234%"/>
+                                <end x="23.2673%" y="0%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                    <polygon fill="shape1color" stroke="#646464" stroke-width="0" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="0%" y="23.9234%"/>
+                                <end x="23.2673%" y="24.4019%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="23.2673%" y="24.4019%"/>
+                                <end x="23.2673%" y="0%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="23.2673%" y="0%"/>
+                                <end x="0%" y="23.9234%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                    <polygon fill="shape2color" stroke="#6464ff" stroke-width="0" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="CubicBezier" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="77.0059%" y="35.4694%"/>
+                                <basePoint1 x="52.004%" y="27.0148%"/>
+                                <basePoint2 x="50.6485%" y="74.7005%"/>
+                                <end x="78.7713%" y="62.1837%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="78.7713%" y="62.1837%"/>
+                                <end x="78.9723%" y="59.9431%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="CubicBezier" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="78.9723%" y="59.9431%"/>
+                                <basePoint1 x="52.1163%" y="73.489%"/>
+                                <basePoint2 x="56.9644%" y="25.7794%"/>
+                                <end x="77.9074%" y="38.9727%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="77.9074%" y="38.9727%"/>
+                                <end x="77.0059%" y="35.4694%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                    <polygon fill="shape3color" stroke="#6464ff" stroke-width="0" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="35.3634%" y="62.5904%"/>
+                                <end x="35.5064%" y="35.8852%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="CubicBezier" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="35.5064%" y="35.8852%"/>
+                                <basePoint1 x="53.4837%" y="36.2072%"/>
+                                <basePoint2 x="53.2802%" y="47.3124%"/>
+                                <end x="39.8391%" y="47.8603%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="CubicBezier" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="39.8391%" y="47.8603%"/>
+                                <basePoint1 x="53.0069%" y="49.5124%"/>
+                                <basePoint2 x="52.9426%" y="63.0325%"/>
+                                <end x="35.3634%" y="62.5904%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                    <polygon fill="shape4color" stroke="#6464ff" stroke-width="0" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="10.4515%" y="51.0177%"/>
+                                <end x="11.2901%" y="47.8603%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="11.2901%" y="47.8603%"/>
+                                <end x="20.9045%" y="47.4445%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="20.9045%" y="47.4445%"/>
+                                <end x="22.2975%" y="50.5526%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="22.2975%" y="50.5526%"/>
+                                <end x="10.4515%" y="51.0177%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                    <polygon fill="shape5color" stroke="#6464ff" stroke-width="0" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="5.2099%" y="62.5904%"/>
+                                <end x="15.649%" y="30.8684%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="15.649%" y="30.8684%"/>
+                                <end x="27.6916%" y="61.8971%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="27.6916%" y="61.8971%"/>
+                                <end x="24.295%" y="62.201%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="24.295%" y="62.201%"/>
+                                <end x="15.649%" y="36.9665%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="15.649%" y="36.9665%"/>
+                                <end x="7.7599%" y="63.0325%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="7.7599%" y="63.0325%"/>
+                                <end x="5.2099%" y="62.5904%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                    <polygon fill="shape6color" stroke="#626262" stroke-width="8" stroke-alpha="1">
+                        <listOfCurveSegments>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="10.4515%" y="100%"/>
+                                <end x="10.4515%" y="93.3014%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="10.4515%" y="93.3014%"/>
+                                <end x="92.0792%" y="93.3014%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="92.0792%" y="93.3014%"/>
+                                <end x="92.0792%" y="9.09091%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="92.0792%" y="9.09091%"/>
+                                <end x="100%" y="9.09091%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="100%" y="9.09091%"/>
+                                <end x="100%" y="100%"/>
+                            </curveSegment>
+                            <curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <start x="100%" y="100%"/>
+                                <end x="10.4515%" y="100%"/>
+                            </curveSegment>
+                        </listOfCurveSegments>
+                    </polygon>
+                </g>
+            </style>
+        </listOfStyles>
+    </renderInformation>
+</listOfRenderInformation>

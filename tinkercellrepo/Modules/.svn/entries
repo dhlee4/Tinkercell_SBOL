@@ -1,0 +1,162 @@
+10
+
+dir
+2931
+svn://svn.code.sf.net/p/tinkercell/code/trunk/tinkercellrepo/Modules
+svn://svn.code.sf.net/p/tinkercell/code
+
+
+
+2012-01-04T03:55:30.199919Z
+2897
+dchandran1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95d75fa2-39cf-44e0-8ea2-df6a562dc58c
+
+coherent_feedforward
+dir
+
+transcription_activation
+dir
+
+direct_gene_repression
+dir
+
+allosteric_activation
+dir
+
+enzyme_catalysis
+dir
+
+bistable
+dir
+
+gene_repression_with_repressor
+dir
+
+protein_production
+dir
+
+modules.nt
+file
+
+
+
+
+2014-09-30T18:46:37.475214Z
+22e17f83544e191b8328d045a8bdb609
+2012-01-04T03:55:30.199919Z
+2897
+dchandran1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5872
+
+direct_gene_activation
+dir
+
+repression
+dir
+
+Empty_Model.tic
+file
+
+
+
+
+2014-09-30T18:46:37.476214Z
+37ae7c8240bdc75c8108ed3899adb136
+2011-11-12T01:56:51.177696Z
+2797
+dchandran1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5214
+
+gene_repression_with_activator
+dir
+
+gene_activation_with_repressor
+dir
+
+genetic_toggle_switch
+dir
+
+activation
+dir
+
+incoherent_feedforward
+dir
+
+gene_activation_with_activator
+dir
+
+transcription_repression
+dir
+
+induced_transcription_activation
+dir
+
+oscillator
+dir
+
+linear_chain
+dir
+
+phosphorylation_dephosphorylation_cycle
+dir
+
+allosteric_inhibition
+dir
+

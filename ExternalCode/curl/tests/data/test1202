@@ -1,0 +1,51 @@
+<testcase>
+<info>
+<keywords>
+GOPHER
+QUERY
+</keywords>
+</info>
+
+#
+# Server-side
+<reply>
+<data>
+<<<<<<< HEAD
+iSearch results		error.host	1
+0Query query succeeded	/foo	foo.bar.invalid	70
+0Selector /the/search/engine	/bar	bar.foo.invalid	70
+.
+=======
+iSearch results		error.host	1
+0Query query succeeded	/foo	foo.bar.invalid	70
+0Selector /the/search/engine	/bar	bar.foo.invalid	70
+.
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</data>
+</reply>
+
+# Client-side
+<client>
+<server>
+gopher
+</server>
+ <name>
+Gopher query
+ </name>
+ <command>
+"gopher://%HOSTIP:%GOPHERPORT/7/the/search/engine?query%20succeeded/1202"
+</command>
+</client>
+
+#
+# Verify data after the test has been "shot"
+<verify>
+<protocol>
+<<<<<<< HEAD
+/the/search/engine	query succeeded/1202
+=======
+/the/search/engine	query succeeded/1202
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

@@ -1,0 +1,55 @@
+<testcase>
+<info>
+<keywords>
+FTP
+EPSV
+Resume
+FAILURE
+</keywords>
+</info>
+# Server-side
+<reply>
+<size>
+85
+</size>
+</reply>
+
+# Client-side
+<client>
+<server>
+ftp
+</server>
+ <name>
+FTP download resume beyond file size
+ </name>
+ <command>
+ftp://%HOSTIP:%FTPPORT/111 -C 2000
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<errorcode>
+36
+</errorcode>
+<protocol>
+<<<<<<< HEAD
+USER anonymous
+PASS ftp@example.com
+PWD
+EPSV
+TYPE I
+SIZE 111
+QUIT
+=======
+USER anonymous
+PASS ftp@example.com
+PWD
+EPSV
+TYPE I
+SIZE 111
+QUIT
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

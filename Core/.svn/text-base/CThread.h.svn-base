@@ -1,0 +1,343 @@
+/****************************************************************************
+
+Copyright (c) 2008 Deepak Chandran
+Contact: Deepak Chandran (dchandran1@gmail.com)
+See COPYRIGHT.TXT
+
+This file defines the class that is used to create new threads in the 
+Tinkercell main window. The threads can be associated with a dialog that provides
+users with the option to terminate the thread.
+
+
+****************************************************************************/
+
+#ifndef TINKERCELL_CTHREAD_H
+#define TINKERCELL_CTHREAD_H
+
+#include <QMainWindow>
+#include <QTextEdit>
+#include <QSyntaxHighlighter>
+#include <QHash>
+#include <QTextCharFormat>
+#include <QDialog>
+#include <QCompleter>
+#include <QListWidget>
+#include <QThread>
+#include <QToolBar>
+#include <QTabWidget>
+#include <QTableWidget>
+#include <QComboBox>
+#include <QPushButton>
+#include <QActionGroup>
+#include <QLibrary>
+#include <QProcess>
+#include <QProgressBar>
+#include <QItemDelegate>
+#include "Tool.h"
+#include "TC_structs.h"
+#include "DataTable.h"
+
+namespace Tinkercell
+{
+	/*! \brief This class is used to run specific functions inside a C dynamic library
+	as a separate thread. The class can be used to load a library or just
+	run a specific function inside an already loaded library. If the library is
+	loaded by this class, the library will be unloaded upon completion on the
+	function. To prevent the automatic unloading, use the setAutoUnload option.
+	Only four types of functions are supported.
+	\ingroup CAPI
+	*/
+	class TINKERCELLCOREEXPORT CThread : public QThread
+	{
+		Q_OBJECT
+
+	signals:
+		/*! \brief display progress of this thread (0-100). This signal is usually connected
+		to a slot in ProgressBarSignalItem*/
+		void setProgress(int);
+		
+		/*! \brieg set title of the dialog for this thread that shows the progress bar and kill button*/
+		void setTitle(const QString&);
+		
+		/*! \brief hide the progress bar*/
+		void hideProgressBar();
+		
+		/*! \brief show the progress bar*/
+		void showProgressBar();
+		
+	public slots:
+	
+		/*! \brief unload the C library*/
+		virtual void unload();
+		/*!
+		* \brief call the callback function, if one exists
+		*/
+		virtual void update();
+
+	public:
+
+		/*! \brief show progress in a progress dialog
+		\param QString title of the progress bar
+		\param int progress in range 0-100*/
+		virtual void showProgress(const QString &, int);
+		
+		/*! \brief search the default tinkercell folders for the library and load it
+		* \param QString name of library (with or without full path)
+		* \param QObject parent
+		* \return QLibrary* the loaded library. 0 if cannot be loaded.*/
+		static QLibrary * loadLibrary(const QString& name, QObject * parent = 0);
+
+		/*! \brief list stores pointers to different threads*/
+		static QList<CThread*> cthreads;
+
+		/*!
+		* \brief constructor
+		* \param MainWindow the Tinkercell main window
+		* \param QLibrary the dynamic library to load (optional)
+		* \param bool whether or not to automatically unload the library
+		*/
+		CThread(MainWindow * main, QLibrary * lib = 0, bool autoUnload=false);
+
+		/*!
+		* \brief constructor
+		* \param MainWindow the Tinkercell main window
+		* \param QString the name of the dynamic library to load (optional)
+		* \param bool whether or not to automatically unload the library
+		*/
+		CThread(MainWindow * main, const QString & lib, bool autoUnload=false);
+
+		/*! \brief destructor. unload and deletes the library*/
+		virtual ~CThread();
+
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void function pointer
+		*/
+		virtual void setFunction( void (*f)(void), QSemaphore * sem=0);
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void function pointer
+		*/
+		virtual void setFunction( void (*f)(double), QSemaphore * sem=0 );
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void function pointer
+		*/
+		virtual void setFunction( void (*f)(const char*), QSemaphore * sem=0 );
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void function pointer
+		*/
+		virtual void setFunction( void (*f)(tc_matrix), QSemaphore * sem=0 );
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void name of the function inside the library that has been loaded in this thread.
+		*/
+		virtual void setVoidFunction(const char*, QSemaphore * sem=0);
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void name of the function inside the library that has been loaded in this thread.
+		*/
+		virtual void setDoubleFunction(const char*, QSemaphore * sem=0);
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void name of the function inside the library that has been loaded in this thread.
+		*/
+		virtual void setCharFunction(const char*, QSemaphore * sem=0);
+		/*!
+		* \brief set the function to run inside this threads
+		* \param void name of the function inside the library that has been loaded in this thread.
+		*/
+		virtual void setMatrixFunction(const char*, QSemaphore * sem=0);
+		/*!
+		* \brief set the dynamic library for this threads. 
+		The library will be loaded if it has not already been loaded
+		* \param QLibrary* library
+		*/
+		virtual void setLibrary(QLibrary*);
+		/*!
+		* \brief set the dynamic library for this threads.
+		* \param QLibrary* library
+		*/
+		virtual void setLibrary(const QString&);
+		/*!
+		* \brief the library used inside this thread
+		* \return QLibrary*
+		*/
+		virtual QLibrary * library();
+
+		/*!
+		* \brief set whether or not to automatically unload the library when the thread is done running
+		* \param bool
+		*/
+		virtual void setAutoUnload(bool);
+		/*!
+		* \brief whether or not to automatically unload the library when the thread is done running
+		* \return bool
+		*/
+		virtual bool autoUnload();
+		/*!
+		* \brief set the argument for the target function
+		* \param double
+		*/
+		virtual void setArg(double, QSemaphore * sem=0);
+		/*!
+		* \brief set the argument for the target function
+		* \param QString
+		*/
+		virtual void setArg(const QString&, QSemaphore * sem=0);
+		/*!
+		* \brief set the argument for the target function
+		* \param DataTable
+		*/
+		virtual void setArg(const DataTable<qreal>&, QSemaphore * sem=0);
+		/*!
+		* \brief main window
+		*/
+		MainWindow * mainWindow;
+
+	protected:
+		
+		bool hasDialog;
+		
+		/*!
+		* \brief setup the C pointers in TC_Main.h
+		*/
+		virtual void setupCFunctionPointers(QLibrary * lib = 0);
+		/*!
+		* \brief whether or not to automatically unload the library when the thread is done running
+		*/
+		bool autoUnloadLibrary;
+		/*!
+		* \brief one of the functions that can be run inside this thread
+		*/
+		void (*f1)(void);
+		/*!
+		* \brief one of the functions that can be run inside this thread
+		*/
+		void (*f2)(double);
+		/*!
+		* \brief one of the functions that can be run inside this thread
+		*/
+		void (*f3)(const char*);
+		/*!
+		* \brief one of the functions that can be run inside this thread
+		*/
+		void (*f4)(tc_matrix);
+		/*!
+		* \brief callback function
+		*/
+		void (*callbackPtr)(void);
+		/*!
+		* \brief call when exit function
+		*/
+		void (*callWhenExitPtr)(void);
+		/*!
+		* \brief the library where the functions are located that can be run inside this thread
+		*/
+		QLibrary * lib;
+		/*!
+		* \brief the argument for one of the the run function
+		*/
+		double argDouble;
+		/*!
+		* \brief the argument for one of the the run function
+		*/
+		QString argString;
+		/*!
+		* \brief the argument for one of the the run function
+		*/
+		DataTable<qreal> argMatrix;
+		/*!
+		* \brief call tc_main
+		*/
+		virtual void call_tc_main();
+		/*!
+		* \brief the main function that runs one of the specified functions
+		*/
+		virtual void run();
+		
+	protected slots:
+		/*!
+		* \brief cleanup (such as unload libraries) upon termination
+		*/
+		virtual void cleanupAfterTerminated();
+		
+	private:
+		QString _prevProgressBarTitle;
+		int _prevProgress;
+		void createProgressBarDialog();
+		/*! 
+		\brief show progress in a dialog
+		\param long pointer to thread
+		\param char * title of dialog
+		\param int progress in range 0-100
+		*/
+		static void _setProgress(long ptr, const char * title, int progress);
+		/*! 
+		\brief set callback function on a thread. the first arg is the id returned from createProgressMeter
+		*/
+		static void _setCallback(long ptr,  void (*f)(void) );
+		/*! 
+		\brief set destructor function on a thread. the first arg is the id returned from createProgressMeter
+		*/
+		static void _setCallWhenExiting(long ptr,  void (*f)(void) );
+	};
+
+	/*! \brief This class is used to run a process (command + args) as a separate thread as a separate thread
+	\ingroup core
+	*/
+	class TINKERCELLCOREEXPORT ProcessThread : public QThread
+	{
+		Q_OBJECT
+
+	public:
+		/*! \brief constructor -- used to initialize the main window, the command name and the args for the command
+		* \param QString command
+		* \param QString arguments
+		* \param MainWindow main window
+		*/
+		ProcessThread(const QString&, const QString& ,MainWindow* main);
+		/*! \brief get the results (output stream) from the process
+		* \return QString output*/
+		
+		virtual QString output() const;
+		/*! \brief get the errors (error stream) from the process
+		* \return QString output*/
+		
+		virtual QString errors() const;
+		/*! \brief destructor -- free the library that this thread loaded*/
+		
+		virtual ~ProcessThread();
+		/*! \brief  creates a dialog that shows the name of the running thread and a button for terminating the thread
+		* \param MainWindow main window
+		* \param ProcessThread
+		* \param QString text to display
+		* \param QIcon icon to display
+		*/
+		static QWidget * dialog(MainWindow *, ProcessThread*, const QString& text = QString("Process"), QIcon icon = QIcon());
+
+	protected slots:
+		/*! \brief unload the library (if loaded) and delete it*/
+		virtual void stopProcess();
+
+	protected:
+		/*! \brief the name of the executable*/
+		QString exe;
+		/*! \brief the arguments*/
+		QString args;
+		/*! \brief the output from the process*/
+		QString outputStream;
+		/*! \brief the error from the process*/
+		QString errStream;
+		/*! \brief Tinkercell's main window*/
+		MainWindow * mainWindow;
+		/*! \brief Tinkercell's main window*/
+		QProcess process;
+		/*! \brief initializes the function pointers through the main window and then runs the target function*/
+		virtual void run();
+	};
+
+}
+
+#endif

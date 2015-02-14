@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NodeGraphicsItem>
+<listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
+    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+		<listOfStyles>
+			<style idList="promoter" width="50" height="100">
+				<g>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="31.5" y="15.5" />
+								<end x="40" y="23" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="40" y="23" />
+								<end x="31.5" y="30.3333" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="10" y="50" />
+								<end x="10" y="23" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="10" y="23" />
+								<end x="39" y="23" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+				</g>
+			</style>
+		</listOfStyles
+	</renderInformation>
+</listOfRenderInformation>

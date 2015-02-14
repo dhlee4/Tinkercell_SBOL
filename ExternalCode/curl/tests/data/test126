@@ -1,0 +1,61 @@
+<testcase>
+<info>
+<keywords>
+FTP
+EPSV
+RETR
+RETRWEIRDO
+</keywords>
+</info>
+# Server-side
+<reply>
+<data>
+this is file contents
+</data>
+<servercmd>
+RETRWEIRDO
+</servercmd>
+</reply>
+
+# Client-side
+<client>
+<server>
+ftp
+</server>
+ <name>
+FTP download with multiple replies at once in RETR
+ </name>
+ <command>
+ftp://%HOSTIP:%FTPPORT/blalbla/lululul/126
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<protocol>
+<<<<<<< HEAD
+USER anonymous
+PASS ftp@example.com
+PWD
+CWD blalbla
+CWD lululul
+EPSV
+TYPE I
+SIZE 126
+RETR 126
+QUIT
+=======
+USER anonymous
+PASS ftp@example.com
+PWD
+CWD blalbla
+CWD lululul
+EPSV
+TYPE I
+SIZE 126
+RETR 126
+QUIT
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

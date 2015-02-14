@@ -1,0 +1,951 @@
+/****************************************************************************
+
+Copyright (c) 2008 Deepak Chandran
+Contact: Deepak Chandran (dchandran1@gmail.com)
+See COPYRIGHT.TXT
+
+This file contains a collection of commands that perform simple operations that can be redone and undone.
+
+****************************************************************************/
+
+#ifndef TINKERCELL_BASICUNDOCOMMANDS_H
+#define TINKERCELL_BASICUNDOCOMMANDS_H
+
+#include <stdlib.h>
+#include <QtGui>
+#include <QMdiArea>
+#include <QMdiSubWindow>
+#include <QString>
+#include <QFileDialog>
+#include <QtDebug>
+#include <QGraphicsItem>
+#include <QGraphicsItemGroup>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QAction>
+#include <QMenu>
+#include <QFile>
+#include <QHBoxLayout>
+#include <QMainWindow>
+#include <QHash>
+#include <QUndoCommand>
+#include <QGraphicsItemAnimation>
+#include <QPrinter>
+
+#include "ItemFamily.h"
+#include "ItemHandle.h"
+#include "DataTable.h"
+#include "NodeGraphicsItem.h"
+#include "ConnectionGraphicsItem.h"
+
+namespace Tinkercell
+{
+	class NetworkHandle;
+	class GraphicsScene;
+	class TextEditor;
+	class RenameCommand;
+
+	/*! \brief this command inserts new handles to a NetworkHandle
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT InsertHandlesCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param NetworkHandle* window where items are inserted
+		* \param QList<ItemHandle*> new items
+		* \param bool check for uniqueness of names before inserting
+		*/
+		InsertHandlesCommand(TextEditor *, const QList<ItemHandle*> &, bool checkNames=true);
+		/*! \brief constructor
+		* \param NetworkHandle* window where items are inserted
+		* \param ItemHandle* new item
+		* \param bool check for uniqueness of names before inserting
+		*/
+		InsertHandlesCommand(TextEditor *, ItemHandle*, bool checkNames=true);
+		/*! \brief destructor. deletes all text items and their handles (if not containing any graphics items)*/
+		~InsertHandlesCommand();
+		/*! \brief redo the change*/
+		void redo();
+		/*! \brief undo the change*/
+		void undo();
+
+	private:
+		/*! \brief inserted handles*/
+		QList<ItemHandle*> items;
+		/*! \brief parent handles of the items that were inserted*/
+		QList<ItemHandle*> parentHandles;
+		/*! \brief TextEditor where the change happened*/
+		TextEditor * textEditor;
+		/*! \brief network where change happened*/
+		NetworkHandle * network;
+		/*! \brief Rename any duplicate names*/
+		RenameCommand * renameCommand;
+		/*! \brief check names before inserting*/
+		bool checkNames;
+	};
+
+	/*! \brief this command inserts new handles to a NetworkHandle
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT RemoveHandlesCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param TextEditor* window where items are deleted
+		* \param QList<ItemHandle*> deleted items
+		* \param bool update data of other items where removed items might occur (default=true)
+		*/
+		RemoveHandlesCommand(TextEditor *, const QList<ItemHandle*> & , bool updateDataFields=true);
+		/*! \brief constructor
+		* \param TextEditor* window where items are deleted
+		* \param ItemHandle* deleted item
+		* \param bool update data of other items where removed items might occur (default=true)
+		*/
+		RemoveHandlesCommand(TextEditor *, ItemHandle*, bool updateDataFields=true);
+		/*! \brief redo the change*/
+		void redo();
+		/*! \brief undo the change*/
+		void undo();
+
+	private:
+		/*! \brief used to update information*/
+		Change2DataCommand<qreal,QString> * changeDataCommand;
+		/*! \brief removed handles*/
+		QList<ItemHandle*> items;
+		/*! \brief parent handles of the items that were removed*/
+		QList<ItemHandle*> parentHandles;
+		/*! \brief TextEditor where the change happened*/
+		TextEditor * textEditor;
+		/*! \brief network where change happened*/
+		NetworkHandle * network;
+		/*! \breif update data */
+		bool updateData;
+	};
+
+	/*! \brief this command performs a move and allows redo/undo of that move
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT MoveCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem * items that are affected
+		* \param QPointF& amount to move
+		*/
+		MoveCommand(GraphicsScene * scene, QGraphicsItem * item, const QPointF& distance);
+		/*! \brief constructor
+		* \param scene where change happened
+		* \param items that are affected
+		* \param QPointF& amount to move
+		*/
+		MoveCommand(GraphicsScene * scene, const QList<QGraphicsItem*>& items, const QPointF& distance);
+		/*! \brief constructor
+		* \param GraphicsScene* scene where change happened
+		* \param  QList<QGraphicsItem*>& items that are affected
+		* \param QPointF& amount to move
+		*/
+		MoveCommand(GraphicsScene * scene, const QList<QGraphicsItem*>& items, const QList<QPointF>& distance);
+		/*! \brief redo the change*/
+		void redo();
+		/*! \brief undo the change*/
+		void undo();
+		/*! \brief refresh all connectors that are attached to any of the items in the list
+		* \param items list to check
+		*/
+		void static refreshAllConnectionIn(const QList<QGraphicsItem*>&);
+	private:
+		/*! \brief scene where the move happened*/
+		GraphicsScene * graphicsScene;
+		/*! \brief items that were moved*/
+		QList<QGraphicsItem*> graphicsItems;
+		/*! \brief amount by which each item was moved*/
+		QList<QPointF> change;
+	};
+	/*! \brief this command performs an insert and allows redo/undo of that insert
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT InsertGraphicsCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* where change happened
+		* \param QGraphicsItem* item that is inserted
+		* \param bool check for uniqueness of names before inserting (default = true)
+		*/
+		InsertGraphicsCommand(const QString& name, GraphicsScene * scene, QGraphicsItem * item, bool checkNames=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* where change happened
+		* \param QList<QGraphicsItem*>& items that are inserted
+		* \param bool check for uniqueness of names before inserting (default = true)
+		*/
+		InsertGraphicsCommand(const QString& name, GraphicsScene * scene, const QList<QGraphicsItem*>& items, bool checkNames=true);
+		/*! \brief redo the change*/
+		void redo();
+		/*! \brief undo the change*/
+		void undo();
+		/*! \brief destructor*/
+		virtual ~InsertGraphicsCommand();
+	private:
+		/*! \brief scene where change happened*/
+		GraphicsScene * graphicsScene;
+		/*! \brief network where change happened*/
+		NetworkHandle * network;
+		/*! \brief items that were inserted*/
+		QList<QGraphicsItem*> graphicsItems;
+		/*! \brief parent items of the items that were inserted*/
+		QList<QGraphicsItem*> parentGraphicsItems;
+		/*! \brief item handles of the items that were inserted*/
+		QList<ItemHandle*> handles;
+		/*! \brief parent handles of the items that were inserted*/
+		QList<ItemHandle*> parentHandles;
+		/*! \brief Rename any duplicate names*/
+		RenameCommand * renameCommand;
+		/*! \brief check names before inserting*/
+		bool checkNames;
+	};
+	/*! \brief this command performs an removal and allows redo/undo of that removal
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT RemoveGraphicsCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* where change happened
+		* \param QGraphicsItem* item that is removed
+		* \param bool update data of other items where removed items might occur (default=true)
+		*/
+		RemoveGraphicsCommand(const QString& name, QGraphicsItem * item, bool updataDataFields=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* where change happened
+		* \param QList<QGraphicsItem*>& items that are removed
+		* \param bool update data of other items where removed items might occur (default=true)
+		*/
+		RemoveGraphicsCommand(const QString& name, const QList<QGraphicsItem*>& items, bool updateDataFields=true);
+
+		/*! \brief destructor*/
+		virtual ~RemoveGraphicsCommand();
+
+		/*! \brief redo the change*/
+		void redo();
+		/*! \brief undo the change*/
+		void undo();
+	private:
+		/*! \brief used to update information*/
+		Change2DataCommand<qreal,QString> * changeDataCommand;
+		/*! \brief scene where change happened*/
+		QList<GraphicsScene*> graphicsScenes;
+		/*! \brief items that were removed*/
+		QList<QGraphicsItem*> graphicsItems;
+		/*! \brief arrowheads need to call RemoveArrowHead*/
+		QUndoCommand * removeArrowheads;
+		/*! \brief removed items' parents*/
+		QList<QGraphicsItem*> itemParents;
+		/*! \brief removed items' handles*/
+		QList<ItemHandle*> itemHandles;
+		/*! \brief parent handles of the items that were inserted*/
+		QList<ItemHandle*> parentHandles;
+		/*! \brief the set of data that are changed as a result of the removal*/
+		QList< ItemHandle* > affectedHandles;
+		/* \param bool update data of other items where removed items might occur (default=true)*/
+		bool updateData;
+	};
+
+
+	/*! \brief this command changes the brush of an item
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ChangeBrushCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem* item that is affected
+		* \param QBrush new brush
+		*/
+		ChangeBrushCommand(const QString& name, QGraphicsItem * item, const QBrush& to);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QList<QGraphicsItem*>& items that are affected
+		* \param QList<QBrush>& new brushes (one for each item)
+		*/
+		ChangeBrushCommand(const QString& name, const QList<QGraphicsItem*>& items, const QList<QBrush>& to);
+		void redo();
+		void undo();
+	private:
+		QList<QGraphicsItem*> graphicsItems;
+		QList<QBrush> oldBrush, newBrush;
+	};
+
+	/*! \brief this command changes the pen of an item
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ChangePenCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem* item that is affected
+		* \param QBrush new pen
+		*/
+		ChangePenCommand(const QString& name, QGraphicsItem * item, const QPen& to);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QList<QGraphicsItem*>& items that are affected
+		* \param QList<QPen>& new pens (one for each item)
+		*/
+		ChangePenCommand(const QString& name, const QList<QGraphicsItem*>& items, const QList<QPen>& to);
+		void redo();
+		void undo();
+	private:
+		QList<QGraphicsItem*> graphicsItems;
+		QList<QPen> oldPen, newPen;
+	};
+
+	/*! \brief this command changes the pen and/or brush of an item
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ChangeBrushAndPenCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem* item that is affected
+		* \param QBrush new brushes (one for each item)
+		* \param QPen new pens (one for each item)
+		*/
+		ChangeBrushAndPenCommand(const QString& name, QGraphicsItem * item, const QBrush& brush, const QPen& pen);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QList<QGraphicsItem*>& items that are affected
+		* \param QList<QBrush>& new brushes (one for each item)
+		* \param QList<QPen>& new pens (one for each item)
+		*/
+		ChangeBrushAndPenCommand(const QString& name, const QList<QGraphicsItem*>& items, const QList<QBrush>& brushes, const QList<QPen>& pens);
+		~ChangeBrushAndPenCommand();
+		void redo();
+		void undo();
+	private:
+		ChangeBrushCommand * changeBrushCommand;
+		ChangePenCommand * changePenCommand;
+	};
+
+	/*! \brief this command changes the pen of an item
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ChangeZCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem* item that is affected
+		* \param double new Z value
+		*/
+		ChangeZCommand(const QString& name, QGraphicsScene * scene, QGraphicsItem * item, qreal to);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QList<QGraphicsItem*>& item that is affected
+		* \param QList<qreal>& new Z (one for each item)
+		*/
+		ChangeZCommand(const QString& name, QGraphicsScene * scene, const QList<QGraphicsItem*>& items, const QList<qreal>& to);
+		void redo();
+		void undo();
+	private:
+		QGraphicsScene * graphicsScene;
+		QList<QGraphicsItem*> graphicsItems;
+		QList<qreal> oldZ, newZ;
+	};
+
+	/*! \brief this command changes the size, angle, and orientation of an item
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT TransformCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem* item that is affected
+		* \param QPointF change in size (w,h)
+		* \param double angle change
+		* \param boolean flip vertically
+		* \param boolean flip horizontally
+		*/
+		TransformCommand(const QString& name, QGraphicsScene * scene, QGraphicsItem * item,
+			const QPointF& sizechange,
+			qreal anglechange,
+			bool VFlip, bool HFlip);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QList<QGraphicsItem *>& items that are affected
+		* \param QList<QPointF>&  change in size (w,h)
+		* \param QList<qreal>& angle change
+		* \param boolean flip vertically (all items)
+		* \param boolean flip horizontally (all items)
+		*/
+		TransformCommand(const QString& name, QGraphicsScene * scene, const QList<QGraphicsItem *>& items,
+			const QList<QPointF>& sizechange,
+			const QList<qreal>& anglechange,
+			const QList<bool>& VFlip, const QList<bool>& HFlip);
+		void redo();
+		void undo();
+	private:
+		QGraphicsScene * graphicsScene;
+		QList<QGraphicsItem*> graphicsItems;
+		QList<QPointF> sizeFactor;
+		QList<qreal> angleChange;
+		QList<bool> vFlip, hFlip;
+	};
+
+	/*! \brief this command changes the parent of a graphics item (not handles)
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ChangeParentCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QGraphicsItem* item that is affected
+		* \param QGraphicsItem* new parent item
+		*/
+		ChangeParentCommand(const QString& name, QGraphicsScene * scene, QGraphicsItem * item, QGraphicsItem * newParent);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param GraphicsScene* scene where change happened
+		* \param QList<QGraphicsItem *>& items that are affected
+		* \param QList<QGraphicsItem *>& new parent items
+		*/
+		ChangeParentCommand(const QString& name, QGraphicsScene * scene, const QList<QGraphicsItem*>& items, const QList<QGraphicsItem*>& newParents);
+		void redo();
+		void undo();
+	private:
+		QList<QGraphicsItem*> graphicsItems;
+		QList<QGraphicsItem*> oldParents;
+		QList<QGraphicsItem*> newParents;
+		QGraphicsScene * scene;
+	};
+
+	/*! \brief this command changes the name of the handle of an item. important: use full name of the items!
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT RenameCommand : public QUndoCommand
+	{
+	public:
+		virtual ~RenameCommand();
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QList affected items
+		* \param QString old name
+		* \param QString new name
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle *, const QList<ItemHandle*>& allItems, const QString& oldname, const QString& newname, bool forceUnique=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QString old name
+		* \param QString new name
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle *, const QString& oldname, const QString& newname, bool forceUnique=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QList affected items
+		* \param QString old name
+		* \param QString new name
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle *,  const QList<ItemHandle*>& allItems, const QList<QString>& oldname, const QList<QString>& newname, bool forceUnique=true);
+				/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QString old name
+		* \param QString new name
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle *,  const QList<QString>& oldname, const QList<QString>& newname, bool forceUnique=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param ItemHandle* target item handle
+		* \param QString new name
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle * , ItemHandle * itemHandle, const QString& newname, bool forceUnique=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QList<ItemHandle*>& all the items to modify if they contain the new name
+		* \param ItemHandle* target item
+		* \param QString new name
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle *,  const QList<ItemHandle*>& allItems, ItemHandle * item, const QString& newname, bool forceUnique=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QList<ItemHandle*>& target items
+		* \param QList<QString> new names (one for each item)
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle * , const QList<ItemHandle*>& itemhandles, const QList<QString>& newnames, bool forceUnique=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NetworkHandle * network
+		* \param QList<ItemHandle*>& all the items to modify if they contain the new name
+		* \param QList<ItemHandle*>& target items
+		* \param QList<QString> new names (one for each item)
+		* \param bool make sure that the new names are unique (default = true). Use false if you already made this check or want to rename to something that already exists
+		*/
+		RenameCommand(const QString& name, NetworkHandle *, const QList<ItemHandle*>& allItems, const QList<ItemHandle*>& itemhandles, const QList<QString>& newnames, bool forceUnique=true);
+		void redo();
+		void undo();
+		static void findReplaceAllHandleData(QList<ItemHandle*>& allItems,const QString& oldName,const QString& newName);
+		static bool substituteString(QString& targetValue, const QString& oldName,const QString& newName);
+	private:
+		QList<ItemHandle*> allhandles;
+		QList<ItemHandle*> handles;
+		QList<QString> oldNames;
+		QList<QString> newNames;
+		QList< QPair<ItemHandle *, QString> > newItemNames;
+		QList< QPair<ItemHandle *, QString> > oldItemNames;
+		QList< QPair<TextGraphicsItem *, QString> > newTextItemsNames;
+		QList< QPair<TextGraphicsItem *, QString> > oldTextItemsNames;
+		Change2DataCommand<qreal,QString> * changeDataCommand;
+		NetworkHandle * network;
+		bool makeUnique;
+
+		static void addColumns(DataTable<double>& dat, int k, const QString&);
+	};
+
+	/*! \brief this command can be used to combine multiple commands into one command
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT CompositeCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief Constructor. Composite command takes ownership of these commands unless specified otherwise.
+		* \param QString name of command
+		* \param QList<QUndoCommand*>& the commands that make up this composite command
+		* \param QList<QUndoCommand*>& the commands that should not be deleted by composite command's destructor (default = none)
+		*/
+		CompositeCommand(const QString&, const QList<QUndoCommand*>&, const QList<QUndoCommand*>& noClear = QList<QUndoCommand*>());
+		/*! \brief constructor for grouping two commands. Composite command takes ownership of these commands unless specified otherwise.
+		* \param QString name of command
+		* \param QUndoCommand* a command to be gouped
+		* \param QUndoCommand* another command to be gouped
+		* \param bool delete both commands automatically (default = true)
+		*/
+		CompositeCommand(const QString&, QUndoCommand*, QUndoCommand*, bool deleteCommands = true);
+		/*! \brief destructor automatically deletes any command not in the doNotDelete list*/
+		~CompositeCommand();
+		/*! \brief undo*/
+		void redo();
+		/*! \brief undo*/
+		void undo();
+		/*! \brief commands grouped inside this composite command*/
+		QList<QUndoCommand*> commands;
+		/*! \brief commands that should not be deleted along with the composite command*/
+		QList<QUndoCommand*> doNotDelete;
+	};
+
+	/*! \brief this command can be used to invert another undo command (i.e. flip the redo/undo)
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ReverseUndoCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param QList<QUndoCommand*>& the command to invert
+		* \param bool whether or not to delete the inverted command (true = DO delete)
+		*/
+		ReverseUndoCommand(const QString&, QUndoCommand*, bool deleteCommand = true);
+		~ReverseUndoCommand();
+		void redo();
+		void undo();
+		QUndoCommand* command;
+		bool deleteCommand;
+	};
+
+	/*! \brief this command can be used to replace the graphical representation of a node from an xml file
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ReplaceNodeGraphicsCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param NodeGraphicsItem* the target node
+		* \param QString xml file name
+		* \param bool whether or not to transform the new graphics item to the original item's angle and size
+		*/
+		ReplaceNodeGraphicsCommand(const QString&,NodeGraphicsItem*,const QString&,bool transform=true);
+		/*! \brief constructor
+		* \param QString name of command
+		* \param QList<NodeGraphicsItem*> the target nodes
+		* \param QStringList xml file names
+		* \param bool whether or not to transform the new graphics item to the original item's angle and size
+		*/
+		ReplaceNodeGraphicsCommand(const QString&,const QList<NodeGraphicsItem*>&,const QList<QString>&,bool transform=true);
+		void undo();
+		void redo();
+		~ReplaceNodeGraphicsCommand();
+	private:
+		QList<NodeGraphicsItem*> targetNodes;
+		QList<NodeGraphicsItem> oldNodes, newNodes;
+		QList< QGraphicsItem* > itemsToDelete;
+		void loadFromFile(NodeGraphicsItem*,const QString&);
+		bool transform;
+	};
+
+	/*! \brief this command assigns handles to items
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT AssignHandleCommand : public QUndoCommand
+	{
+	public:
+		AssignHandleCommand(const QString& text, QGraphicsItem* item, ItemHandle* handle);
+		AssignHandleCommand(const QString& text, const QList<QGraphicsItem*>& items, ItemHandle* handle);
+		AssignHandleCommand(const QString& text, const QList<QGraphicsItem*>& items, QList<ItemHandle*>& handles);
+		void redo();
+		void undo();
+		~AssignHandleCommand();
+		QList<QGraphicsItem*> graphicsItems;
+		QList<ItemHandle*> oldHandles;
+		QList<ItemHandle*> newHandles;
+	private:
+		QList< QPair< QGraphicsItem*, ItemHandle*> > oldItemHandles;
+		QList< QPair< QGraphicsItem*, ItemHandle*> > newItemHandles;
+	};
+
+	class TINKERCELLCOREEXPORT SetHandleFamilyCommand;
+	/*! \brief this command places all the graphics items inside one handle into the other
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT MergeHandlesCommand : public QUndoCommand
+	{
+	public:
+		MergeHandlesCommand(const QString& text, NetworkHandle * , const QList<ItemHandle*>& handles);
+		MergeHandlesCommand(const QString& text, const QList<ItemHandle*>& allHandles, const QList<ItemHandle*>& handles);
+		void redo();
+		void undo();
+		~MergeHandlesCommand();
+		QList<ItemHandle*> oldHandles;
+		ItemHandle* newHandle;
+	private:
+		void init(NetworkHandle * , const QList<ItemHandle*>& , const QList<ItemHandle*>& );
+		QHash< ItemHandle*, QList<QGraphicsItem*> > oldGraphicsItems;
+		QHash< ItemHandle*, QList<ItemHandle*> > oldChildren;
+		QHash< ItemHandle*, ItemHandle* > oldParents;
+		QList< ItemHandle* > allChildren;
+		QList<QGraphicsItem*> allGraphicsItems;
+		RenameCommand * renameCommand;
+		SetHandleFamilyCommand * setFamilyCommand;
+		Change2DataCommand<qreal,QString> * changeDataCommand;
+	};
+
+	/*! \brief this command assigns parent(s) to one or more handles
+	* \ingroup undo
+	*/
+	class TINKERCELLCOREEXPORT SetParentHandleCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor*/
+		SetParentHandleCommand(const QString& name, NetworkHandle * , ItemHandle * child, ItemHandle * parent);
+		/*! \brief constructor*/
+		SetParentHandleCommand(const QString& name, NetworkHandle * , const QList<ItemHandle*>& children, ItemHandle * parent);
+		/*! \brief constructor*/
+		SetParentHandleCommand(const QString& name, NetworkHandle * , const QList<ItemHandle*>& children, const QList<ItemHandle*>& parents);
+		/*! \brief destructor*/
+		~SetParentHandleCommand();
+		/*! \brief redo parent change*/
+		void redo();
+		/*! \brief undo parent change*/
+		void undo();
+	private:
+		/*! \brief changed children handles*/
+		QList<ItemHandle*> children;
+		/*! \brief assigned parent handles*/
+		QList<ItemHandle*> newParents;
+		/*! \brief changed parent handles*/
+		QList<ItemHandle*> oldParents;
+		NetworkHandle * net;
+		RenameCommand * renameCommand;
+		
+		friend class NetworkHandle;
+	};
+	
+	/*! \brief this command is used to hide graphics items. 
+		Hidden graphics items will be part (unless their handles are also hidden) of the network but not visible on the screen.
+	* \ingroup undo
+	*/
+	class TINKERCELLCOREEXPORT SetGraphicsSceneVisibilityCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor*/
+		SetGraphicsSceneVisibilityCommand(const QString& name, const QList<QGraphicsItem*>&, const QList<bool>&);
+		/*! \brief constructor*/
+		SetGraphicsSceneVisibilityCommand(const QString& name, QGraphicsItem*, bool);
+		/*! \brief constructor*/
+		SetGraphicsSceneVisibilityCommand(const QString& name, const QList<QGraphicsItem*>&, bool);
+		/*! \brief redo parent change*/
+		void redo();
+		/*! \brief undo parent change*/
+		void undo();
+	private:
+		QList<QGraphicsItem*> items;
+		QList<bool> before;
+	};
+	
+	/*! \brief this command is used to hide graphics items. 
+		Hidden graphics items will be part (unless their handles are also hidden) of the network but not visible on the screen.
+	* \ingroup undo
+	*/
+	class TINKERCELLCOREEXPORT SetHandleFamilyCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor*/
+		SetHandleFamilyCommand(const QString& name, const QList<ItemHandle*>&, const QList<ItemFamily*>&);
+		/*! \brief constructor*/
+		SetHandleFamilyCommand(const QString& name, ItemHandle*, ItemFamily*);
+		/*! \brief redo parent change*/
+		void redo();
+		/*! \brief undo parent change*/
+		void undo();
+	private:
+		QList<ItemHandle*> handles;
+		QList<ItemFamily*> oldFamily, newFamily;
+		
+		friend class NetworkHandle;
+	};
+	
+		/*! \brief An command that adds a new control point to a connection item; it has undo and redo functionality 
+	\ingroup undo*/
+	class TINKERCELLCOREEXPORT AddControlPointCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		AddControlPointCommand(const QString& name, GraphicsScene * scene, ConnectionGraphicsItem::ControlPoint * item );
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		AddControlPointCommand(const QString& name, GraphicsScene * scene, QList<ConnectionGraphicsItem::ControlPoint *> items);
+		/*! \brief destructor. deletes all control points that do not belong a scene*/
+		virtual ~AddControlPointCommand();
+		/*! \brief Adds a new control point. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void redo();
+		/*! \brief Remove new control points. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void undo();	
+		/*! \brief graphics scene to which control points were added*/
+		GraphicsScene * graphicsScene;
+		/*! \brief control points that were added*/
+		QList<ConnectionGraphicsItem::ControlPoint*> graphicsItems;
+		/*! \brief the poisition(s) at which the control points were added*/
+		QList<int> listK1, listK2;
+	private:
+		/*! \brief used in the destructor to determine whether the last operation was an undo*/
+		bool undone;
+	};
+
+	/*! \brief A command that removed control points. Allows undo and redo
+	\ingroup undo*/
+	class TINKERCELLCOREEXPORT RemoveControlPointCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		RemoveControlPointCommand(const QString& name, GraphicsScene * scene, 
+			ConnectionGraphicsItem::ControlPoint * item);
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		RemoveControlPointCommand(const QString& name, GraphicsScene * scene, 
+			QList<ConnectionGraphicsItem::ControlPoint *> items);
+		/*! \brief Remove new control points. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void redo();
+		/*! \brief Add new control points. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void undo();	
+		/*! \brief control points that were added*/
+		QList<ConnectionGraphicsItem::ControlPoint*> graphicsItems;
+		/*! \brief graphics scene to which control points were added*/
+		GraphicsScene * graphicsScene;	
+		/*! \brief the poisition(s) at which the control points were added*/
+		QList<int> listK1, listK2;
+	};
+
+	/*! \brief An command that adds a new control point to a connection item; it has undo and redo functionality 
+	\ingroup undo*/
+	class TINKERCELLCOREEXPORT AddCurveSegmentCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		AddCurveSegmentCommand(const QString& name, GraphicsScene * scene, ConnectionGraphicsItem* connection,
+			ConnectionGraphicsItem::CurveSegment& item );
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		AddCurveSegmentCommand(const QString& name, GraphicsScene * scene, ConnectionGraphicsItem* connection,
+			QList<ConnectionGraphicsItem::CurveSegment> items);
+		/*! \brief destructor. deletes all control points that do not belong a scene*/
+		virtual ~AddCurveSegmentCommand();
+		/*! \brief Adds a new control point. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void redo();
+		/*! \brief Remove new control points. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void undo();	
+		/*! \brief graphics scene to which control points were added*/
+		GraphicsScene * graphicsScene;
+		/*! \brief graphics item to which control points were added*/
+		ConnectionGraphicsItem* connectionItem;
+		/*! \brief vector of control points that were added*/
+		QList<ConnectionGraphicsItem::CurveSegment> curveSegments;
+		/*! \brief the poisition(s) at which the control point vectors were added*/
+		QList<int> listK1;
+	private:
+		/*! \brief used in the destructor to determine whether the last operation was an undo*/
+		bool undone;
+	};
+
+	/*! \brief A command that removed control points. Allows undo and redo
+	\ingroup undo*/
+	class TINKERCELLCOREEXPORT RemoveCurveSegmentCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		RemoveCurveSegmentCommand(const QString& name, GraphicsScene * scene,
+			ConnectionGraphicsItem::ControlPoint * item);
+		/*! \brief constructor that makes the command. If added to history stack, also does redo
+		* \param name
+		* \param graphics scene
+		* \param control point(s) that have been added
+		* \return void*/
+		RemoveCurveSegmentCommand(const QString& name, GraphicsScene * scene, ConnectionGraphicsItem* connection,
+			QList<ConnectionGraphicsItem::ControlPoint *> items);
+
+		/*! \brief Remove new control points. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void redo();
+		/*! \brief Add new control points. Control points were set in the constructor
+		* \param void
+		* \return void*/
+		void undo();	
+		/*! \brief vector of control points that were added*/
+		QList<ConnectionGraphicsItem::CurveSegment> curveSegments;
+		/*! \brief graphics scene from which control points were removed*/
+		GraphicsScene * graphicsScene;	
+		/*! \brief graphics item from which control points were removed*/
+		ConnectionGraphicsItem* connectionItem;
+		/*! \brief the nodes belonging with the control point vectors*/
+		QList<QGraphicsItem*> parentsAtStart, parentsAtEnd;
+	};
+	
+	/*! \brief this command replaces one node item in a connection item with another
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ReplaceConnectedNodeCommand : public QUndoCommand
+	{
+	public:
+		/*! \brief constructor
+		* \param QString name of command
+		* \param ConnectionGraphicsItem* connection where the nodes will be swapped
+		* \param NodeGraphicsItem* node to replace (old node)
+		* \param NodeGraphicsItem* new node
+		*/
+		ReplaceConnectedNodeCommand(const QString& name, ConnectionGraphicsItem *, NodeGraphicsItem * oldNode, NodeGraphicsItem * newNode);
+		void redo();
+		void undo();
+	private:
+		ConnectionGraphicsItem* connection;
+		NodeGraphicsItem* oldNode;
+		NodeGraphicsItem* newNode;
+	};
+	
+	/*! \brief command for changing line type of connections
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT LineTypeChanged : public QUndoCommand
+	{
+	public:
+		QList<ConnectionGraphicsItem*> list;
+		bool straight;
+		void undo();
+		void redo();
+	};
+	
+	/*! \brief command for changing distance between arrowhead and objects
+	* \ingroup undo*/
+	class TINKERCELLCOREEXPORT ChangeArrowHeadDistance : public QUndoCommand
+	{
+	public:
+		QList<ConnectionGraphicsItem*> list;
+		QList<qreal> dists;
+		void undo();
+		void redo();
+	};
+
+	class TINKERCELLCOREEXPORT AddArrowHeadCommand : public QUndoCommand
+	{
+
+	public:
+		virtual ~AddArrowHeadCommand();
+		AddArrowHeadCommand(ConnectionGraphicsItem * , QPointF );
+		AddArrowHeadCommand(const QList<ConnectionGraphicsItem*>& , const QList<QPointF>& );
+		void undo();
+		void redo();
+
+	private:
+		QList<ArrowHeadItem*> arrowheads;
+		QList<int> curveSegments;
+		QList<bool> startArrow;
+		void init(const QList<ConnectionGraphicsItem*>& connections, const QList<ControlPoint*>& nodes);
+	};
+
+	class TINKERCELLCOREEXPORT RemoveArrowHeadCommand : public QUndoCommand
+	{
+
+	public:
+		virtual ~RemoveArrowHeadCommand();
+		RemoveArrowHeadCommand(ArrowHeadItem *);
+		RemoveArrowHeadCommand(const QList<ArrowHeadItem*>&);
+		void undo();
+		void redo();
+	private:
+		QList<ArrowHeadItem*> arrowheads;
+		QList<int> curveSegments;
+		QList<bool> startArrow;
+	};
+}
+
+#endif

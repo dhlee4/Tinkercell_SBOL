@@ -1,0 +1,53 @@
+<testcase>
+<info>
+<keywords>
+FTP
+--max-filesize
+</keywords>
+</info>
+# Server-side
+<reply>
+<size>
+85
+</size>
+</reply>
+
+# Client-side
+<client>
+<server>
+ftp
+</server>
+ <name>
+FTP download maximum filesize exceeded
+ </name>
+ <command>
+ftp://%HOSTIP:%FTPPORT/290 --max-filesize 30
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<errorcode>
+63
+</errorcode>
+<protocol>
+<<<<<<< HEAD
+USER anonymous
+PASS ftp@example.com
+PWD
+EPSV
+TYPE I
+SIZE 290
+QUIT
+=======
+USER anonymous
+PASS ftp@example.com
+PWD
+EPSV
+TYPE I
+SIZE 290
+QUIT
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

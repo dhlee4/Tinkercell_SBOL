@@ -1,0 +1,290 @@
+/****************************************************************************
+
+ Copyright (c) 2008 Deepak Chandran
+ Contact: Deepak Chandran (dchandran1@gmail.com)
+ See COPYRIGHT.TXT
+ 
+ This class adds the "attributes" data to each item in Tinkercell.
+ Two types of attributes are added -- "Numerical Attributes" and "Text Attributes".
+ Attributes are essentially a <name,value> pair that are used to characterize an item.
+ 
+ The ViewTablesTool also comes with two GraphicalTools, one for text attributes and one
+ for numerical attributes. The buttons are drawn as NodeGraphicsItems using the datasheet.xml and
+ textsheet.xml files that define the NodeGraphicsItems.
+ 
+****************************************************************************/
+
+
+#include "GraphicsScene.h"
+#include "NetworkHandle.h"
+#include "MainWindow.h"
+#include "ConsoleWindow.h"
+#include "NodeGraphicsItem.h"
+#include "NodeGraphicsReader.h"
+#include "ViewTablesTool.h"
+#include <QGroupBox>
+#include <QSplitter>
+
+namespace Tinkercell
+{
+	void ViewTablesTool::select(int)
+	{
+		GraphicsScene * scene = currentScene();
+		if (!scene) return;
+
+		QList<ItemHandle*> list = getHandle(scene->selected());
+		if (list.size() == 1 && list[0])
+		{
+			itemHandle = list[0];
+			openedByUser = true;
+
+			updateList();
+			if (isVisible())
+				openedByUser = false;
+			else
+				show();
+			raise();
+		}
+	}
+
+	void ViewTablesTool::deselect(int)
+	{
+		if (openedByUser)
+		{
+			openedByUser = false;
+			hide();
+		}
+	}
+
+	ViewTablesTool::GraphicsItem2::GraphicsItem2(Tool * tool) : ToolGraphicsItem(tool)
+	{
+	}
+
+	void ViewTablesTool::GraphicsItem2::visible(bool b)
+	{
+		if (!tool)
+		{
+			ToolGraphicsItem::visible(false);
+			return;
+		}
+
+		GraphicsScene * scene = tool->currentScene();
+		if (!scene || scene->selected().size() != 1)
+		{
+			ToolGraphicsItem::visible(false);
+			return;
+		}
+
+		ToolGraphicsItem::visible(b);
+	}
+
+
+	void ViewTablesTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& list, QPointF , Qt::KeyboardModifiers )
+	{
+		if (!scene) return;
+		
+		if (list.size() > 0 && !getHandle(list[0]) && isVisible())
+		{
+			itemHandle = getHandle(list[0]);
+			updateList();
+		}
+	}
+	
+	bool ViewTablesTool::setMainWindow(MainWindow * main)
+	{
+		Tool::setMainWindow(main);
+
+		if (mainWindow)
+		{
+			
+			connect(mainWindow,SIGNAL(itemsSelected(GraphicsScene*, const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers)),
+				         this,SLOT(itemsSelected(GraphicsScene*, const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers)));
+			
+			connect(mainWindow,SIGNAL(itemsInserted(NetworkHandle*, const QList<ItemHandle*>&)),
+						  this, SLOT(itemsInserted(NetworkHandle*, const QList<ItemHandle*>&)));
+			
+			setWindowTitle(name);
+			setWindowIcon(QIcon(tr(":/images/grid.PNG")));
+			mainWindow->addToViewMenu(this);
+			
+			move(mainWindow->geometry().bottomRight() - QPoint(sizeHint().width()*2,sizeHint().height()*2));
+			hide();
+		}
+		return (mainWindow != 0);
+	}
+
+	void ViewTablesTool::itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles)
+	{
+		for (int i=0; i < handles.size(); ++i)
+		{
+			if (handles[i] && handles[i]->family() && !handles[i]->tools.contains(this))
+				handles[i]->tools += this;
+		}
+	}
+
+	ViewTablesTool::ViewTablesTool() : Tool(tr("View Tables"))
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		openedByUser = false;
+		NodeGraphicsReader reader;
+		reader.readXml(&item,tr(":/images/grid.xml"));
+
+		item.normalize();
+		item.scale(35.0/item.sceneBoundingRect().width(),35.0/item.sceneBoundingRect().height());
+		ToolGraphicsItem * toolGraphicsItem = new GraphicsItem2(this);
+		addGraphicsItem(toolGraphicsItem);
+		toolGraphicsItem->setToolTip(tr("View all tables"));
+		toolGraphicsItem->addToGroup(&item);
+
+		itemHandle = 0;
+		QFont font = this->font();
+		font.setPointSize(12);
+		tables.setFont(font);
+		
+		textEdit = new CodeEditor(this);
+		textEdit->setTabStopWidth(160);
+		textEdit->setFont(font);
+		
+		QGroupBox * groupBox = new QGroupBox(tr(" Tables "),this);
+	
+		QHBoxLayout * layout1 = new QHBoxLayout;
+		layout1->addWidget(&tables,1);
+		groupBox->setLayout(layout1);
+
+		QSplitter * splitter = new QSplitter(Qt::Horizontal,this);
+		
+		splitter->addWidget( groupBox );
+		splitter->addWidget( textEdit );
+		splitter->setStretchFactor(0,1);
+		splitter->setStretchFactor(1,2);
+		textEdit->setReadOnly(true);
+		
+		QHBoxLayout * layout = new QHBoxLayout;
+		layout->addWidget(splitter);
+		setLayout(layout);
+		
+		headerFormat.setForeground(QColor("#003AA3"));
+		
+		regularFormat.setFontWeight(QFont::Bold);
+		regularFormat.setForeground(QColor("#252F41"));
+		
+		connect(&tables,SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
+				this,SLOT(currentItemChanged(QListWidgetItem *, QListWidgetItem *)));		
+	}
+	
+	void ViewTablesTool::currentItemChanged(QListWidgetItem * item, QListWidgetItem *)
+	{
+		if (!item || !itemHandle) return;
+
+		if (itemHandle->hasNumericalData(item->text()))
+		{
+			NumericalDataTable& table = itemHandle->numericalDataTable(item->text());
+			textEdit->clear();
+			QTextCursor cursor = textEdit->textCursor();
+			QString outputs;
+			QStringList colnames = table.columnNames(), rownames = table.rowNames();
+		
+			for (int i=0; i < colnames.size(); ++i)
+			{
+				outputs += tr("\t") + colnames.at(i);
+			}
+		
+			cursor.setCharFormat(headerFormat);
+			cursor.insertText(outputs + tr("\n"));
+		
+			for (int i=0; i < table.rows(); ++i)
+			{
+				cursor.setCharFormat(headerFormat);
+				cursor.insertText(rownames.at(i));
+				outputs = tr("");
+			
+				for (int j=0; j < table.columns(); ++j)
+				{
+					outputs += tr("\t") + QString::number(table.at(i,j));
+				}
+			
+				cursor.setCharFormat(regularFormat);
+				cursor.insertText(outputs + tr("\n"));
+			}
+		}
+		else
+		if (itemHandle->hasTextData(item->text()))
+		{
+			DataTable<QString>& table = itemHandle->textDataTable(item->text());		
+			textEdit->clear();		
+			QTextCursor cursor = textEdit->textCursor();		
+			QString outputs;		
+			QStringList colnames = table.columnNames(), rownames = table.rowNames();
+		
+			for (int i=0; i < colnames.size(); ++i)
+			{
+				outputs += tr("\t") + colnames.at(i);
+			}
+		
+			cursor.setCharFormat(headerFormat);
+			cursor.insertText(outputs + tr("\n"));
+		
+			for (int i=0; i < table.rows(); ++i)
+			{
+				cursor.setCharFormat(headerFormat);
+				cursor.insertText(rownames.at(i));
+				outputs = tr("");
+			
+				for (int j=0; j < table.columns(); ++j)
+				{
+					outputs += tr("\t") + (table.at(i,j));
+				}
+			
+				cursor.setCharFormat(regularFormat);
+				cursor.insertText(outputs + tr("\n"));
+			}
+		}
+	}
+	
+	QSize ViewTablesTool::sizeHint() const
+	{
+		return QSize(600, 300);
+	}
+
+	void ViewTablesTool::updateList()
+	{
+		tables.clear();
+		
+		if (!textEdit || !itemHandle) return;
+		
+		textEdit->clear();
+		
+		QStringList list = itemHandle->numericalDataNames();
+		
+		QListWidgetItem * newItem;
+		for (int i=0; i < list.size(); ++i)
+		{
+			newItem = new QListWidgetItem;
+			newItem->setText(list[i]);
+			newItem->setToolTip(itemHandle->numericalDataTable( list[i] ).description());
+			tables.addItem(newItem);
+		}
+		
+		list = itemHandle->textDataNames();
+		for (int i=0; i < list.size(); ++i)
+		{
+			newItem = new QListWidgetItem;
+			newItem->setText(list[i]);
+			newItem->setToolTip(itemHandle->textDataTable( list[i] ).description());
+			tables.addItem(newItem);
+		}
+	}
+	
+}
+
+/*
+extern "C" TINKERCELLEXPORT void loadTCTool(Tinkercell::MainWindow * main)
+{
+	if (!main) return;
+
+	Tinkercell::ViewTablesTool * ViewTablesTool = new Tinkercell::ViewTablesTool;
+	main->addTool(ViewTablesTool);
+
+}
+*/
+

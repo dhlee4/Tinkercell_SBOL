@@ -1,0 +1,42 @@
+<testcase>
+# Server-side
+<reply>
+<servercmd>
+REPLY PASS 430 temporarily not available
+</servercmd>
+</reply>
+
+# Client-side
+<client>
+<server>
+ftp
+</server>
+ <name>
+FTP transient error, retry request once
+ </name>
+ <command>
+ftp://%HOSTIP:%FTPPORT/196 --retry 1
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+# 67 is CURLE_LOGIN_DENIED
+<errorcode>
+67
+</errorcode>
+<protocol>
+<<<<<<< HEAD
+USER anonymous
+PASS ftp@example.com
+USER anonymous
+PASS ftp@example.com
+=======
+USER anonymous
+PASS ftp@example.com
+USER anonymous
+PASS ftp@example.com
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

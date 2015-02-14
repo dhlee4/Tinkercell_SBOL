@@ -1,0 +1,49 @@
+<testcase>
+<info>
+<keywords>
+GOPHER
+INDEX
+</keywords>
+</info>
+
+#
+# Server-side
+<reply>
+<data>
+<<<<<<< HEAD
+iMenu results		error.host	1
+0Selector 	/bar	bar.foo.invalid	70
+.
+=======
+iMenu results		error.host	1
+0Selector 	/bar	bar.foo.invalid	70
+.
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</data>
+</reply>
+
+# Client-side
+<client>
+<server>
+gopher
+</server>
+ <name>
+Gopher index
+ </name>
+ <command>
+gopher://%HOSTIP:%GOPHERPORT/1/1200
+</command>
+</client>
+
+#
+# Verify data after the test has been "shot"
+<verify>
+<protocol>
+<<<<<<< HEAD
+/1200
+=======
+/1200
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

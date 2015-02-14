@@ -1,0 +1,123 @@
+SET(LIBRARY_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/octave)
+ADD_DEFINITIONS(-DTC_EXPORTS)
+
+FIND_PATH( OCTAVE_INCLUDE_DIR octave.h ${TINKERCELL_SOURCE_DIR}/octave )
+FIND_LIBRARY( OCTAVE_CRUFT_LIBRARY NAMES cruft PATH  ${TINKERCELL_SOURCE_DIR}/octave)
+FIND_LIBRARY( OCTAVE_OCTAVE_LIBRARY NAMES octave PATH  ${TINKERCELL_SOURCE_DIR}/octave)
+FIND_LIBRARY( OCTAVE_OCTAVEINTERP_LIBRARY NAMES octinterp PATH  ${TINKERCELL_SOURCE_DIR}/octave)
+
+FIND_PATH( OCTAVE_LIB_DIR liboctave.dylib ${TINKERCELL_SOURCE_DIR}/octave )
+LINK_DIRECTORIES( BEFORE ${OCTAVE_LIB_DIR})
+
+#DBL_ definitions are missing in new MinGW -- why did they do that?
+IF (WIN32 AND MINGW)
+	ADD_DEFINITIONS(-DDBL_EPSILON=2.22045e-16)
+	ADD_DEFINITIONS(-DDBL_MIN=1e-999)
+	ADD_DEFINITIONS(-DDBL_MIN_EXP=-999)
+	ADD_DEFINITIONS(-DDBL_MIN_10_EXP=-307)
+	ADD_DEFINITIONS(-DDBL_MAX_10_EXP=+307)
+	ADD_DEFINITIONS(-DDBL_MAX=1.79769e+308)
+ENDIF (WIN32 AND MINGW)
+
+IF(OCTAVE_CRUFT_LIBRARY AND OCTAVE_OCTAVE_LIBRARY AND OCTAVE_OCTAVEINTERP_LIBRARY AND OCTAVE_INCLUDE_DIR)
+
+   MESSAGE(STATUS "Using Octave libraries: ${OCTAVE_CRUFT_LIBRARY} ${OCTAVE_OCTAVE_LIBRARY} ${OCTAVE_OCTAVEINTERP_LIBRARY}")
+   INCLUDE_DIRECTORIES( BEFORE ${OCTAVE_INCLUDE_DIR} )
+#  ADD_DEFINITIONS(-D__cplusplus)
+
+  IF ( WIN32 )
+       MESSAGE(STATUS "To embed Octave in Win32, be sure that you have commented out HAVE_HDF5 and HAVE_REGEX in ${OCTAVE_INCLUDE_DIR}/octave/config.h")
+      ADD_DEFINITIONS(-D_WIN32)
+      ADD_DEFINITIONS(-DTCAPIEXPORT=)
+      IF (MINGW)
+         ADD_DEFINITIONS(-D__MINGW32__)
+		 IF (USE_STDCALL)
+			ADD_DEFINITIONS(-DUSE_STDCALL)
+		 ENDIF(USE_STDCALL)
+      ENDIF(MINGW)
+      CONFIGURE_FILE( init_win32.m.in
+           ${TINKERCELL_BINARY_DIR}/octave/init.m
+           @ONLY
+      )
+  ELSE(WIN32)
+      IF(APPLE)
+             CONFIGURE_FILE( init_mac.m.in
+                   ${TINKERCELL_BINARY_DIR}/octave/init.m
+                   @ONLY
+             )
+      ELSE(APPLE)
+             CONFIGURE_FILE( init_linux.m.in
+                   ${TINKERCELL_BINARY_DIR}/octave/init.m
+                   @ONLY
+             )
+      ENDIF(APPLE)
+  ENDIF( WIN32 )
+
+   FILE(GLOB TCAPI_SRC ${TINKERCELL_SOURCE_DIR}/API/*.c)
+   
+#embed
+   ADD_LIBRARY( tcoct
+  	  SHARED
+  	  runoctave.cpp
+  	 #tinkercell_wrap.cpp
+ 	  #${TCAPI_SRC}
+  )
+
+   TARGET_LINK_LIBRARIES( tcoct
+    tcoct
+    ${OCTAVE_CRUFT_LIBRARY}
+    ${OCTAVE_OCTAVE_LIBRARY}
+    ${OCTAVE_OCTAVEINTERP_LIBRARY}
+  )
+  
+#extend
+  ADD_LIBRARY( swigtcoct
+  	SHARED
+        tinkercell_wrap.cpp
+        ${TCAPI_SRC}
+  )
+
+   TARGET_LINK_LIBRARIES( swigtcoct
+    swigtcoct
+    ${OCTAVE_CRUFT_LIBRARY}
+    ${OCTAVE_OCTAVE_LIBRARY}
+    ${OCTAVE_OCTAVEINTERP_LIBRARY}
+  )
+ 
+  INSTALL(TARGETS tcoct DESTINATION octave)
+  
+  IF ( WIN32 )
+     IF (MINGW)
+        ADD_CUSTOM_COMMAND (
+             TARGET swigtcoct POST_BUILD
+             COMMAND move /Y ..\\bin\\octave\\libswigtcoct.dll ..\\bin\\octave\\tinkercell.oct
+         )
+     ELSE (MINGW)
+	 ADD_CUSTOM_COMMAND (
+             TARGET swigtcoct POST_BUILD
+             COMMAND move /Y ..\\bin\\octave\\swigtcoct.dll ..\\bin\\octave\\tinkercell.oct
+         )
+     ENDIF (MINGW)
+  ELSE ( WIN32 )
+  IF( APPLE )
+    ADD_CUSTOM_COMMAND (
+         TARGET swigtcoct POST_BUILD
+         COMMAND cp ${TINKERCELL_BINARY_DIR}/bin/octave/libswigtcoct.dylib ${TINKERCELL_BINARY_DIR}/bin/octave/tinkercell.oct
+    )
+  ELSE ( APPLE )
+    ADD_CUSTOM_COMMAND (
+         TARGET swigtcoct POST_BUILD
+         COMMAND cp ${TINKERCELL_BINARY_DIR}/bin/octave/libswigtcoct.so ${TINKERCELL_BINARY_DIR}/bin/octave/tinkercell.oct
+    )
+  ENDIF( APPLE )
+  ENDIF( WIN32 )
+
+  FILE(GLOB OCTAVE_LOADER ${TINKERCELL_BINARY_DIR}/bin/octave/tinkercell.oct)
+  FILE(GLOB OCTAVE_SCRIPTS *.m ${TINKERCELL_BINARY_DIR}/octave/*.m)
+
+#  INSTALL(FILES ${OCTAVE_CRUFT_LIBRARY} ${OCTAVE_OCTAVE_LIBRARY} ${OCTAVE_OCTAVEINTERP_LIBRARY} DESTINATION octave )
+
+  INSTALL(FILES ${OCTAVE_SCRIPTS} DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/octave )
+  INSTALL(FILES ${OCTAVE_LOADER}  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/octave )
+ENDIF(OCTAVE_CRUFT_LIBRARY AND OCTAVE_OCTAVE_LIBRARY AND OCTAVE_OCTAVEINTERP_LIBRARY AND OCTAVE_INCLUDE_DIR)
+

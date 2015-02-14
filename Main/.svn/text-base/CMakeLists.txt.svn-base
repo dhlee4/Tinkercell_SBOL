@@ -1,0 +1,149 @@
+IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 5)
+ADD_DEFINITIONS(-DTINKERCELLEXPORT=)
+
+#------------------------
+#  configure code
+#------------------------
+
+CONFIGURE_FILE( 
+	${TINKERCELL_SOURCE_DIR}/BasicTools/TinkerCellAboutBox.cpp.in
+	${TINKERCELL_BINARY_DIR}/BasicTools/TinkerCellAboutBox.cpp
+	@ONLY
+)
+
+#------------------
+# include dirs
+#------------------
+
+INCLUDE_DIRECTORIES( BEFORE
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/muparser
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/qwt
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/qwtplot3d/include
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/optim
+    ${TINKERCELL_SOURCE_DIR}/BasicTools
+    ${TINKERCELL_SOURCE_DIR}/Core/plugins
+	${TINKERCELL_SOURCE_DIR}/Core/fileIO
+	${TINKERCELL_SOURCE_DIR}/Core/interpreters
+	${TINKERCELL_SOURCE_DIR}/Core/coding
+	${TINKERCELL_SOURCE_DIR}/Core/plots
+	${TINKERCELL_SOURCE_DIR}/Main
+    ${TINKERCELL_SOURCE_DIR}/ModelingTools
+    ${TINKERCELL_SOURCE_DIR}/ModuleTools
+    ${TINKERCELL_SOURCE_DIR}/GeneticNetworks
+    ${TINKERCELL_SOURCE_DIR}/OtherTools
+    ${TINKERCELL_SOURCE_DIR}/ImportExportTools
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/copasi
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/sbml/src
+    ${TINKERCELL_SOURCE_DIR}/ExternalCode/antimony/src
+ )
+
+ADD_DEFINITIONS(-DTINKERCELL_CPP_PLUGINS_FOLDER="${TINKERCELL_CPP_PLUGINS_FOLDER}")
+ADD_DEFINITIONS(-DTINKERCELL_C_PLUGINS_FOLDER="${TINKERCELL_C_PLUGINS_FOLDER}")
+ADD_DEFINITIONS(-DUSE_CLAPACK)
+
+OPTION( TINKERCELL_BINARY_UPLOAD "Upload TinkerCell binaries using sftp" ON )
+
+#--------------------------------------------------
+#  specify IStool and WinSCP for Windows 
+#--------------------------------------------------
+ 
+IF (WIN32)
+	OPTION( TINKERCELL_INSTALLER "Create installer using Inno setup -- must have Inno setup installed" ON )
+	
+	IF ((NOT DEFINED INNO) AND TINKERCELL_INSTALLER)
+		MESSAGE( "Please create a New Entry of type FILEPATH called INNO and point to the Inno Setup exe file")
+		SET (INNO "UNKNOWN" CACHE FILEPATH "INNO setup")
+	ENDIF ((NOT DEFINED INNO) AND TINKERCELL_INSTALLER)
+	
+	IF ((NOT DEFINED WINSCP) AND TINKERCELL_BINARY_UPLOAD)
+		MESSAGE( "Please create a New Entry of type FILEPATH called WINSCP and point to the WinSCP.exe file")
+		SET (WINSCP "UNKNOWN" CACHE FILEPATH "WinScp")
+	ENDIF ((NOT DEFINED WINSCP) AND TINKERCELL_BINARY_UPLOAD)
+	
+ENDIF(WIN32)
+
+#-----------------------
+# TinkerCell variants
+#------------------------
+
+OPTION( TINKERCELL_FOR_WIKIDUST "WikiDust drawing program" OFF )
+OPTION( TINKERCELL_FOR_ANTIMONY "Script only version" OFF )
+
+IF( HAVE_64_BIT )
+    ADD_DEFINITIONS(-DHAVE_64_BIT)
+ENDIF( HAVE_64_BIT )
+
+IF (NOT TINKERCELL_FOR_WIKIDUST AND NOT TINKERCELL_FOR_ANTIMONY)
+	MESSAGE(STATUS "Using TinkerCell normal version")
+	INCLUDE (TinkerCell.cmake)
+ENDIF (NOT TINKERCELL_FOR_WIKIDUST AND NOT TINKERCELL_FOR_ANTIMONY)
+
+IF (TINKERCELL_FOR_WIKIDUST)
+	MESSAGE(STATUS "Using TinkerCell WikiDust version")
+	INCLUDE (TinkerCellLite.cmake)
+ELSEIF (TINKERCELL_FOR_ANTIMONY)
+	MESSAGE(STATUS "Using TinkerCell Antimony version")
+	INCLUDE (TinkerCellScript.cmake)
+ENDIF (TINKERCELL_FOR_WIKIDUST)
+
+#--------------------------------------------------------------------------
+#  Plugins
+#--------------------------------------------------------------------------
+
+#INCLUDE (TinkerCellPlugins.cmake) #commented out if plugins are statically loaded
+
+#-----------------------------------
+#  Parts catalog
+#-----------------------------------
+
+FILE(GLOB ONTOLOGY_RDF_FILES 
+#	${TINKERCELL_SOURCE_DIR}/NodesTree/*.xml
+	${TINKERCELL_SOURCE_DIR}/BasicTools/*.txt
+	${TINKERCELL_SOURCE_DIR}/BasicTools/*.nt
+)
+
+INSTALL( FILES ${ONTOLOGY_RDF_FILES} DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/ )
+
+#--------------------------------------------------------------------------
+#  Copy example files and stylesheet
+#--------------------------------------------------------------------------
+
+FILE(GLOB TINKERCELL_EXAMPLES examples/*.tic examples/*.TIC examples/*.xml)
+INSTALL(FILES ${TINKERCELL_EXAMPLES} DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/examples )
+INSTALL(FILES tinkercell.qss DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/ )
+
+#-------------------------------------------------------------------------
+#  Setup for automatic upload to Sourceforce
+#-------------------------------------------------------------------------
+IF (TINKERCELL_BINARY_UPLOAD)
+	IF (NOT DEFINED TINKERCELL_SOURCEFORGE_PASSWORD OR NOT DEFINED TINKERCELL_SOURCEFORGE_USERNAME)	
+		SET(TINKERCELL_SOURCEFORGE_USERNAME "UNKNOWN" CACHE STRING "your sourceforge username")
+		SET(TINKERCELL_SOURCEFORGE_PASSWORD "UNKNOWN" CACHE STRING "your sourceforge password")
+	ENDIF (NOT DEFINED TINKERCELL_SOURCEFORGE_PASSWORD OR NOT DEFINED TINKERCELL_SOURCEFORGE_USERNAME)
+	
+	IF (${TINKERCELL_SOURCEFORGE_USERNAME} MATCHES "UNKNOWN" OR ${TINKERCELL_SOURCEFORGE_PASSWORD} MATCHES "UNKNOWN")
+		MESSAGE("If you want to upload to Sourceforge, you must set the values for TINKERCELL_SOURCEFORGE_USERNAME and TINKERCELL_SOURCEFORGE_PASSWORD")
+	ENDIF (${TINKERCELL_SOURCEFORGE_USERNAME} MATCHES "UNKNOWN" OR ${TINKERCELL_SOURCEFORGE_PASSWORD} MATCHES "UNKNOWN")
+
+	IF (WIN32)
+		SET(CREATE_TINKERCELL "call win32\\CreateInstaller.bat")
+		CONFIGURE_FILE(  ${TINKERCELL_SOURCE_DIR}/Main/BuildAndUploadAll.in
+			                             ${TINKERCELL_BINARY_DIR}/BuildAndUploadAll.bat
+			                             @ONLY )
+		MESSAGE(STATUS "BUILD\\BuildAndUploadAll.bat to upload full and lite versions")
+	ELSE(WIN32)
+		IF (APPLE )
+			SET(CREATE_TINKERCELL "source mac/CreateApp.sh")
+			#SET(CREATE_NODEGRAPHICS "source mac/CreateNodeGraphicsApp.sh")
+		ELSE(APPLE)
+			SET(CREATE_TINKERCELL "source linux/CreatePackage.sh")
+		ENDIF(APPLE)
+		CONFIGURE_FILE(  ${TINKERCELL_SOURCE_DIR}/Main/BuildAndUploadAll.in
+			                             ${TINKERCELL_BINARY_DIR}/BuildAndUploadAll.sh
+			                              @ONLY )
+		MESSAGE(STATUS "Source BUILD/BuildAndUploadAll.sh to upload full and lite versions")
+	ENDIF(WIN32)
+ENDIF(TINKERCELL_BINARY_UPLOAD)
+ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 5)
+

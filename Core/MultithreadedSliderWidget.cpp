@@ -1,0 +1,586 @@
+
+/****************************************************************************
+
+Copyright (c) 2008 Deepak Chandran
+Contact: Deepak Chandran (dchandran1@gmail.com)
+See COPYRIGHT.TXT
+
+A slider widget that calls a C function whenver values in the slider are changed.
+Uses CThread.
+
+****************************************************************************/
+
+#include <QRegExp>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include "ConsoleWindow.h"
+#include "MainWindow.h"
+#include "NetworkHandle.h"
+#include "SymbolsTable.h"
+#include "MultithreadedSliderWidget.h"
+
+namespace Tinkercell
+{
+	void MultithreadedSliderWidget::setVisibleSliders(const QString& substring)
+	{
+		QStringList keys, allkeys;
+		QRegExp regex(substring);
+		for (int j=0; j < labels.size() && j < minline.size() && j < maxline.size() && j < valueline.size(); ++j)
+		{
+			if (labels[j] && (labels[j]->text().toLower().contains(substring.toLower()) || labels[j]->text().contains(regex)))
+				keys += labels[j]->text();
+			allkeys += labels[j]->text();
+		}
+		if (substring.isEmpty() || keys.isEmpty())
+			setVisibleSliders(allkeys);
+		else
+			setVisibleSliders(keys);
+	}
+	
+	void MultithreadedSliderWidget::setVisibleSliders(const QStringList& options)
+	{
+		QVector<bool> showList(labels.size(),false);
+		for (int i=0; i < options.size(); ++i)
+		{
+			for (int j=0; j < labels.size() && j < minline.size() && j < maxline.size() && j < valueline.size(); ++j)
+			{
+				if (labels[j] && options.contains(labels[j]->text()))
+					showList[j] = true;
+			}
+		}
+		
+		for (int j=0; j < labels.size() && j < minline.size() && j < maxline.size() && j < valueline.size(); ++j)
+			if (!showList[j])
+			{
+				labels[j]->hide();
+				minline[j]->hide();
+				maxline[j]->hide();
+				valueline[j]->hide();
+				if (sliderWidgets.contains(labels[j]->text()))
+					sliderWidgets[labels[j]->text()]->hide();
+			}
+			else
+			{
+				labels[j]->show();
+				minline[j]->show();
+				maxline[j]->show();
+				valueline[j]->show();
+				if (sliderWidgets.contains(labels[j]->text()))
+					sliderWidgets[labels[j]->text()]->show();
+			}
+	}
+
+	MultithreadedSliderWidget::MultithreadedSliderWidget(MainWindow * parent, CThread * thread, Qt::Orientation orientation)
+		: QWidget(parent), orientation(orientation), mainWindow(parent)
+	{
+		setAttribute(Qt::WA_DeleteOnClose,true);
+		cthread = thread;
+		setWindowFlags(Qt::Dialog);
+		slidersLayout = 0;
+		hide();
+
+		if (mainWindow->console())
+			connect(this,SIGNAL(evalScript(const QString&)), mainWindow->console(), SLOT(eval(const QString&)));
+	}
+
+	MultithreadedSliderWidget::MultithreadedSliderWidget(MainWindow * parent, const QString & lib, const QString & functionName, Qt::Orientation orientation)
+		: QWidget(parent), orientation(orientation), mainWindow(parent)
+	{
+		setAttribute(Qt::WA_DeleteOnClose,true);
+		cthread = new CThread(parent, lib);
+		cthread->setMatrixFunction(functionName.toAscii().data());
+		setWindowFlags(Qt::Dialog);
+		slidersLayout = 0;
+		hide();
+
+		if (mainWindow->console())
+			connect(this,SIGNAL(evalScript(const QString&)), mainWindow->console(), SLOT(eval(const QString&)));
+	}
+
+	CThread * MultithreadedSliderWidget::thread() const
+	{
+		return cthread;
+	}
+
+	void MultithreadedSliderWidget::setThread(CThread * t)
+	{
+		cthread = t;
+	}
+
+	QString MultithreadedSliderWidget::command() const
+	{
+		return scriptCommand;
+	}
+
+	void MultithreadedSliderWidget::setCommand(const QString& s)
+	{
+		scriptCommand = s;
+	}
+	
+	void MultithreadedSliderWidget::minmaxChanged()
+	{
+		if (sliders.isEmpty()) return;
+		
+		double range,x;
+		bool ok;
+		
+		for (int i=0; i < sliders.size(); ++i)
+			if (sliders[i])
+				disconnect(sliders[i],SIGNAL(valueChanged(int,int)),this,SLOT(sliderChanged(int,int)));
+
+		for (int i=0; i < sliders.size() && i < max.size() && i < min.size(); ++i)
+			if (sliders[i])
+			{
+				x = minline[i]->text().toDouble(&ok);
+				if (ok)				
+					min[i] = x;
+				else
+					minline[i]->setText(QString::number(min[i]));
+					
+				x = maxline[i]->text().toDouble(&ok);
+				if (ok)				
+					max[i] = x;
+				else
+					maxline[i]->setText(QString::number(max[i]));
+					
+				range = (max[i]-min[i]);
+				sliders[i]->setValue((int)((values.value(i,0) - min[i]) * 100.0/range));
+			}
+		for (int i=0; i < sliders.size(); ++i)
+			if (sliders[i])
+				connect(sliders[i],SIGNAL(valueChanged(int,int)),this,SLOT(sliderChanged(int,int)));
+	}
+	
+	void MultithreadedSliderWidget::valueChanged()
+	{
+		if (sliders.isEmpty()) return;
+
+		double range,x;
+		bool ok;
+		
+		for (int i=0; i < sliders.size(); ++i)
+			if (sliders[i])
+				disconnect(sliders[i],SIGNAL(valueChanged(int,int)),this,SLOT(sliderChanged(int,int)));
+		
+		for (int i=0; i < valueline.size() && i < sliders.size() && i < max.size() && i < min.size(); ++i)
+			if (sliders[i])
+			{
+				x = valueline[i]->text().toDouble(&ok);
+				if (ok)
+				{
+					if (x > max[i])
+					{
+						max[i] = x;
+						maxline[i]->setText(QString::number(max[i]));
+					}
+					if (x < min[i])
+					{
+						min[i] = x;
+						minline[i]->setText(QString::number(min[i]));
+					}
+					range = (max[i]-min[i]);
+					values.value(i,0) = x;
+					sliders[i]->setValue((int)((x - min[i]) * 100.0/range));
+				}
+				else
+				{
+					valueline[i]->setText(QString::number(values.value(i,0)));
+				}
+			}
+		
+		for (int i=0; i < sliders.size(); ++i)
+			if (sliders[i])
+				connect(sliders[i],SIGNAL(valueChanged(int,int)),this,SLOT(sliderChanged(int,int)));
+		
+		emit valuesChanged(values);
+
+		if (cthread)
+		{
+			cthread->setArg(values);
+		
+			if (cthread->isRunning())
+			{
+				if (mainWindow && mainWindow->console())
+					mainWindow->console()->message(tr("Previous run has not finished yet"));
+				return;
+				//cthread->terminate();
+			}
+			cthread->start();
+		}
+		
+		if (mainWindow && mainWindow->console() && !scriptCommand.isNull() && !scriptCommand.isEmpty())
+		{
+			QStringList args;
+			for (int i=0; i < values.rows(); ++i)
+				for (int j=0; j < values.columns(); ++j)
+					args << QString::number(values(i,j));
+			emit evalScript(scriptCommand + tr("(") + args.join(tr(",")) + tr(")"));
+		}
+	}
+
+	void MultithreadedSliderWidget::sliderChanged(int, int i)
+	{
+		if (sliders.isEmpty() || sliders.size() <= i) return;
+		
+		double range;
+		
+		//for (int i=0; i < valueline.size() && i < sliders.size() && i < max.size() && i < min.size(); ++i)
+			if (sliders[i])
+			{
+				range = (max[i]-min[i]);
+				values.value(i,0) = min[i] + (range * sliders[i]->value())/100.0;
+				valueline[i]->setText(QString::number(values.value(i,0)).left(6));
+			}
+		valueChanged();
+	}
+	
+	void MultithreadedSliderWidget::setSliders(const QStringList& options, const QList<double>& minValues, const QList<double>& maxValues)
+	{
+		SliderWithIndex * slider;
+		QLabel * label;
+		QLineEdit * line;
+
+		sliders.clear();
+		labels.clear();
+		min.clear();
+		max.clear();
+		minline.clear();
+		maxline.clear();
+		valueline.clear();
+		values.resize(options.size(),1);
+		//values.setRowNames(options);
+		values.setColumnNames(QStringList() << "value");
+		
+		if (this->layout())
+			delete (layout());
+
+		//create tab widget if names contain "::"
+		bool createTabs = false;
+		for (int i=0; i < options.size(); ++i)
+			if (options[i].contains("::"))
+			{
+				createTabs = true;
+				break;
+			}
+
+		QHBoxLayout* layout = 0;
+		QVBoxLayout * slidersLayout = 0;
+
+		QHash< QString, QVBoxLayout * > slidersLayoutsHash; //only if using multiple tabs
+
+		if (createTabs)
+		{
+			for (int i=0; i < options.size(); ++i)
+			{
+				QString tabname;
+				if (options[i].contains("::"))
+				{
+					QStringList words = options[i].split("::");
+					tabname = words[0];
+				}
+				if (tabname.isNull() || tabname.isEmpty())
+					tabname = tr("misc.");
+				if (!slidersLayoutsHash.contains(tabname))
+				{
+					layout = new QHBoxLayout;
+					layout->addWidget(new QLabel(tr("name")));
+					layout->addWidget(new QLabel(tr("")));
+					layout->addWidget(new QLabel(tr("value")));
+					layout->addWidget(new QLabel(tr("min")));
+					layout->addWidget(new QLabel(tr("max")));
+
+					slidersLayout = new QVBoxLayout;
+					QWidget * widget = new QWidget;
+					widget->setLayout(layout);
+					slidersLayout->addWidget(widget);
+					slidersLayoutsHash[ tabname ] = slidersLayout; 
+				}
+			}
+		}
+		else
+		{
+			layout = new QHBoxLayout;
+			layout->addWidget(new QLabel(tr("name")));
+			layout->addWidget(new QLabel(tr("")));
+			layout->addWidget(new QLabel(tr("value")));
+			layout->addWidget(new QLabel(tr("min")));
+			layout->addWidget(new QLabel(tr("max")));
+
+			slidersLayout = new QVBoxLayout;
+			QWidget * widget = new QWidget;
+			widget->setLayout(layout);
+			slidersLayout->addWidget(widget);
+		}
+
+		for (int i=0; i < options.size() && i < minValues.size() && i < maxValues.size(); ++i)
+		{
+			QString tabname, labelname;
+			if (createTabs)
+			{
+				if (options[i].contains("::"))
+				{
+					QStringList words = options[i].split("::");
+					tabname = words[0];
+					labelname = words[1];
+				}
+				if (tabname.isNull() || tabname.isEmpty())
+					tabname = tr("misc.");
+				slidersLayout = slidersLayoutsHash[ tabname ];
+			}
+			else
+			{
+				labelname = options[i];
+			}
+
+			values.setRowName(i, labelname);
+			layout = new QHBoxLayout;
+			label = new QLabel(labelname);
+			//label->setMaximumWidth(options[i].size() * 3);
+			layout->addWidget(label);
+			labels << label;
+
+			slider = new SliderWithIndex(i);
+			slider->setOrientation(orientation);
+			slider->setRange(0,100);
+			slider->setValue(50);
+			slider->setMinimumWidth(100);
+			layout->addWidget(slider,5);
+			sliders << slider;
+			slider->setTracking(false);
+			connect(slider,SIGNAL(valueChanged(int,int)),this,SLOT(sliderChanged(int,int)));
+
+			values.value(i,0) = (maxValues[i] + minValues[i])/2.0;
+			
+			line = new QLineEdit;
+			line->setText(QString::number(values.value(i,0) ));
+			line->setMaximumWidth(80);
+			layout->addWidget(line);
+			valueline << line;
+			connect(line,SIGNAL(editingFinished()),this,SLOT(valueChanged()));
+
+			line = new QLineEdit;
+			line->setText(QString::number(minValues[i]));
+			line->setMaximumWidth(80);
+			layout->addWidget(line);
+			minline << line;
+			min << minValues[i];
+			connect(line,SIGNAL(editingFinished()),this,SLOT(minmaxChanged()));
+
+			line = new QLineEdit;
+			line->setMaximumWidth(80);
+			layout->addWidget(line);
+			maxline << line;
+			if (maxValues[i] == minValues[i])
+			{
+				if (minValues[i] == 0)
+				{
+					line->setText(QString::number(maxValues[i]+1.0));
+					max << maxValues[i] + 1.0;
+				}
+				else
+				{
+					line->setText(QString::number(maxValues[i]*2));
+					max << maxValues[i]*2;
+				}
+			}
+			else
+			{
+				line->setText(QString::number(maxValues[i]));
+				max << maxValues[i];
+			}
+			connect(line,SIGNAL(editingFinished()),this,SLOT(minmaxChanged()));
+			
+			QWidget * widget = new QWidget;
+			widget->setLayout(layout);
+			slidersLayout->addWidget(widget);
+			sliderWidgets[ labelname ] = widget;
+		}
+
+		QWidget * centralWidget = 0;
+		
+		if (createTabs)
+		{
+			QTabWidget * tabWidget = new QTabWidget;
+			QStringList keys = slidersLayoutsHash.keys();
+			for (int i=0; i < keys.size(); ++i)
+			{
+				slidersLayout = slidersLayoutsHash[ keys[i] ];
+				QWidget * slidersWidget = new QWidget;
+				slidersWidget->setLayout(slidersLayout);
+				QScrollArea * scrollArea = new QScrollArea;
+				scrollArea->setWidget(slidersWidget);
+				scrollArea->setWidgetResizable(true);
+				tabWidget->addTab(scrollArea, keys[i]);
+			}
+			centralWidget = tabWidget;
+		}
+		else
+		{
+			QWidget * slidersWidget = new QWidget;
+			slidersWidget->setLayout(slidersLayout);
+			QScrollArea * scrollArea = new QScrollArea;
+			scrollArea->setWidget(slidersWidget);
+			scrollArea->setWidgetResizable(true);
+			centralWidget = scrollArea;
+		}
+
+		QVBoxLayout * mainlayout = new QVBoxLayout;
+		//search box
+		QHBoxLayout * searchLayout = new QHBoxLayout;
+		QLineEdit * searchLine = new QLineEdit;
+		searchLine->setText(tr(""));
+		searchLayout->addStretch(2);
+		searchLayout->addWidget(new QLabel(tr("Search")), 0);
+		searchLayout->addWidget(searchLine, 1);
+		connect(searchLine,SIGNAL(textEdited ( const QString &)),this,SLOT(setVisibleSliders(const QString&)));
+		
+		//cancel and save buttons
+		QHBoxLayout * buttonLayout = new QHBoxLayout;	
+		QPushButton * closeButton = new QPushButton(tr("&Close"));
+		QPushButton * saveValues = new QPushButton(tr("&Save values"));
+		buttonLayout->addStretch(1);
+		buttonLayout->addWidget(saveValues);
+		buttonLayout->addWidget(closeButton);
+		buttonLayout->addStretch(1);
+		
+		//main layout
+		mainlayout->addLayout(searchLayout,0);
+		mainlayout->addWidget(centralWidget,1);
+		mainlayout->addLayout(buttonLayout,0);
+		connect(closeButton,SIGNAL(pressed()),this,SLOT(close()));
+		connect(saveValues,SIGNAL(pressed()),this,SLOT(saveValues()));
+		setLayout(mainlayout);
+		
+		valueChanged();
+	}
+	
+	DataTable<qreal> MultithreadedSliderWidget::data() const
+	{
+		return values;
+	}
+
+	void MultithreadedSliderWidget::setDefaultDataTable(const QString& s)
+	{
+		defaultDataTable = s;
+	}
+
+	void MultithreadedSliderWidget::saveValues()
+	{
+		NetworkHandle * network = mainWindow->currentNetwork();
+		if (!network) 
+		{
+			mainWindow->statusBar()->showMessage(tr("No model to update"));
+			return;
+		}
+		
+		SymbolsTable & symbols = network->symbolsTable;
+		QString s;
+		qreal d;
+		bool ok;
+		QList<NumericalDataTable*> newTables, oldTables;
+		NumericalDataTable * newTable, * oldTable;
+		QPair<ItemHandle*,QString> pair;
+		int k;
+		for (int i=0; i < labels.size() && i < valueline.size(); ++i)
+			if (labels[i] && valueline[i])
+			{
+				s = labels[i]->text();
+				d = valueline[i]->text().toDouble(&ok);
+				
+				if (!ok) continue;
+				
+				if (symbols.uniqueDataWithDot.contains(s))
+				{
+					pair = symbols.uniqueDataWithDot.value(s);
+					if (pair.first && pair.first->hasNumericalData(pair.second))
+					{
+						oldTable = &(pair.first->numericalDataTable(pair.second));
+						s.remove(pair.first->fullName() + tr("."));
+						if (oldTable->hasRow(s) && oldTable->value(s,0) != d)
+						{
+							k = oldTables.indexOf(oldTable);
+							if (k > -1)							
+								newTable = newTables[k];
+							else
+							{
+								newTable = new NumericalDataTable(*oldTable);
+								oldTables << oldTable;
+								newTables << newTable;
+							}
+							newTable->value(s,0) = d;
+						}
+					}
+				}
+				else
+				{
+					s.replace(tr("."),tr("_"));
+					if (symbols.uniqueDataWithUnderscore.contains(s))
+					{
+						pair = symbols.uniqueDataWithUnderscore.value(s);
+						if (pair.first && pair.first->hasNumericalData(pair.second))
+						{
+							oldTable = &(pair.first->numericalDataTable(pair.second));
+							s.remove(pair.first->fullName(tr("_")) + tr("_"));
+							if (oldTable->hasRow(s) && oldTable->value(s,0) != d)
+							{
+								k = oldTables.indexOf(oldTable);
+								if (k > -1)							
+									newTable = newTables[k];
+								else
+								{
+									newTable = new NumericalDataTable(*oldTable);
+									oldTables << oldTable;
+									newTables << newTable;
+								}
+								newTable->value(s,0) = d;
+							}
+						}
+					}
+					else
+					if (!defaultDataTable.isNull() &&
+							!defaultDataTable.isEmpty() &&  
+							symbols.uniqueHandlesWithUnderscore.contains(s))
+					{
+						ItemHandle * h = symbols.uniqueHandlesWithUnderscore[s];
+						if (h->hasNumericalData(defaultDataTable))
+						{
+							oldTable = &(h->numericalDataTable(defaultDataTable));
+							if (oldTable->value(0,0) != d)
+							{
+								k = oldTables.indexOf(oldTable);
+								if (k > -1)							
+									newTable = newTables[k];
+								else
+								{
+									newTable = new NumericalDataTable(*oldTable);
+									oldTables << oldTable;
+									newTables << newTable;
+								}
+								newTable->value(0,0) = d;
+							}
+						}
+					}
+				}
+		}
+		
+		if (!newTables.isEmpty())
+		{
+			network->push(new ChangeNumericalDataCommand(tr("Updated from slider"), oldTables, newTables));
+			for (int i=0; i < newTables.size(); ++i)
+				delete newTables[i];
+		}
+	}
+
+	SliderWithIndex::SliderWithIndex(int i) : index(i) 
+	{
+		connect(this,SIGNAL(valueChanged(int)), this, SLOT(valueChangedSlot(int)));
+	}
+
+	void SliderWithIndex::valueChangedSlot(int n)
+	{
+		emit valueChanged(n, index);
+	}
+}
+
+

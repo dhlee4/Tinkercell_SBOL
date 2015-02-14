@@ -1,0 +1,69 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+HTTP GET
+--interface
+</keywords>
+</info>
+
+#
+# Server-side
+<reply>
+<data>
+<<<<<<< HEAD
+HTTP/1.1 200 OK
+Date: Mon, 28 Jul 2008 14:49:00 GMT
+Server: test-server/fake
+Content-Length: 6
+Connection: close
+Content-Type: text/plain
+
+=======
+HTTP/1.1 200 OK
+Date: Mon, 28 Jul 2008 14:49:00 GMT
+Server: test-server/fake
+Content-Length: 6
+Connection: close
+Content-Type: text/plain
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+-foo-
+</data>
+</reply>
+
+#
+# Client-side
+<client>
+<server>
+http
+</server>
+ <name>
+HTTP GET with numeric localhost --interface
+ </name>
+ <command>
+http://%HOSTIP:%HTTPPORT/1045 --interface %CLIENTIP
+</command>
+</client>
+
+#
+# Verify data after the test has been "shot"
+<verify>
+<strip>
+^User-Agent:.*
+</strip>
+<protocol>
+<<<<<<< HEAD
+GET /1045 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+=======
+GET /1045 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

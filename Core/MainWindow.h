@@ -1,0 +1,873 @@
+/****************************************************************************
+
+Copyright (c) 2008 Deepak Chandran
+Contact: Deepak Chandran (dchandran1@gmail.com)
+See COPYRIGHT.TXT
+
+MainWindow is the parent container for all the other widgets in TinkerCell
+The central widget in MainWindow is a tab widget. Each tab widget can hold
+a GraphicsView or a TextEditor.
+One of the main roles of MainWindow is to serve as a signal/slot hub for Tools. 
+
+****************************************************************************/
+
+#ifndef TINKERCELL_MAINWINDOW_H
+#define TINKERCELL_MAINWINDOW_H
+
+#include <QtGui>
+#include <QString>
+#include <QFileDialog>
+#include <QtDebug>
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QAction>
+#include <QMenu>
+#include <QTabWidget>
+#include <QThread>
+#include <QFile>
+#include <QHBoxLayout>
+#include <QMainWindow>
+#include <QHash>
+#include <QUndoCommand>
+#include <QToolBar>
+#include <QToolBox>
+#include <QUndoView>
+#include <QUndoStack>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QGridLayout>
+#include <QSemaphore>
+#include <QLibrary>
+#include <QSettings>
+
+#include "HistoryWindow.h"
+#include "DataTable.h"
+#include "ConvertValue.h"
+#include "GraphicsScene.h"
+
+namespace Tinkercell
+{
+	class GlobalSettings;
+	class ConsoleWindow;
+	class NodeGraphicsItem;
+	class ConnectionGraphicsItem;
+	class ItemHandle;
+	class ItemFamily;
+	class MainWindow_FtoS;
+	class NetworkWindow;
+	class NetworkHandle;
+	class TextEditor;
+	class Tool;
+	class HistoryStack;
+	class TextParser;
+	class TextItem;
+	class GraphicsView;
+	class SymbolsTable;
+	class CThread;
+	class C_API_Slots;
+	class MainWindow;
+
+	class DroppableTabWidget : public QTabWidget
+	{
+		friend class MainWindow;
+
+		protected:
+			void dropEvent(QDropEvent * event);
+
+		private:
+			DroppableTabWidget(MainWindow * main);
+			MainWindow * mainWindow;		
+	};
+
+	/*! \brief 
+	MainWindow is the parent container for all the other widgets in TinkerCell
+	The central widget in MainWindow is a tab widget. Each tab widget can hold
+	a GraphicsView or a TextEditor. One of the main roles of MainWindow is to serve as a signal/slot hub for Tools. 
+	\sa GlobalSettings
+	\ingroup core
+	*/
+	class TINKERCELLCOREEXPORT MainWindow : public QMainWindow
+	{
+		Q_OBJECT
+
+	public:
+	
+		friend class NetworkWindow;
+		friend class NetworkHandle;
+		friend class GraphicsScene;
+		friend class TextEditor;
+		friend class GraphicsView;
+		friend class DroppableTabWidget;
+
+		/*! \brief this enum is used to determine how to place a widget when used in addToolWindow.
+		             DockWidget = tool window is placed into a dockable widget
+					 TabWidget = tool window is placed in an existing tool widget, if one exists
+		*/
+		enum TOOL_WINDOW_OPTION { DockWidget , TabWidget };
+		
+		/*! \brief the default option to use for tools (optional)*/
+		static TOOL_WINDOW_OPTION defaultToolWindowOption;
+
+		/*! \brief the default option to use for history window*/
+		static TOOL_WINDOW_OPTION defaultHistoryWindowOption;
+
+		/*! \brief the default option to use for console window*/
+		static TOOL_WINDOW_OPTION defaultConsoleWindowOption;
+
+		/*!
+		* \brief 5-arg (optional) constructor allows disabling of text/graphics modes
+		* \param bool enable text-based network construction (default = true)
+		* \param bool enable graphics-based network construction (default = true)
+		* \param bool allow tabbed and windowed view modes (default = true)
+		*/
+		MainWindow(bool enableScene = true, bool enableText = true, bool views = true);
+		/*!
+		* \brief allow or disallow changing between different views
+		* \param bool
+		*/
+		virtual void allowMultipleViewModes(bool);
+		/*!
+		* \brief Destructor: delete all the graphics scenes.
+		*/
+		virtual ~MainWindow();
+		
+		/*!
+		* \brief Add a new docking window to the main window.
+		           The name and icon are obtained using the widget's windowTitle and windowIcon, so
+				   be sure to set those before calling this function.
+		* \param Tool* the new tool
+		* \param Qt::DockWidgetArea the initial docking area
+		* \param Qt::DockWidgetAreas the allowed docking areas
+		* \param bool whether or not to place the docking window in the view menu
+		* \param bool use a tab widget instead of a dock widget. The widget will not be dockable, but the entire tab widget will be dockable.
+		* \return QDockWidget* the new docking widget. TabWidget option is used, the docking widget may be an existing docking widget.
+		*/
+		QDockWidget * addToolWindow(QWidget * tool, TOOL_WINDOW_OPTION option = DockWidget, Qt::DockWidgetArea initArea = Qt::RightDockWidgetArea, Qt::DockWidgetAreas allowedAreas = Qt::AllDockWidgetAreas, bool inMenu = true);
+		/*!
+		* \brief place a show/hide action in the view menu for the given widget
+		* \param QWidget* the new widget
+		*/
+		void addToViewMenu(QWidget * tool);
+		/*!
+		* \brief set the cursor for all windows
+		* \param QCursor cursor
+		* \return void
+		*/
+		void setCursor(QCursor cursor);
+		/*!
+		* \brief add a new tool to the list of tools stored in the main window
+		* \param the name of the new tool
+		* \param the new tool
+		* \return void
+		*/
+		void addTool(Tool* tool);
+		/*!
+		* \brief Initialize the basic menu (save, open, close, exit, etc.).
+		* \return void
+		*/
+		void initializeMenus(bool enableScene = true, bool enableText = true);
+		/*!
+		* \brief This function is usually called from a new thread. This function allows all the
+		plugins to add their functionalities to the C function pointer of the new thread.
+		* \param QSemaphore* used to wait for all the plugins to initialize the thread
+		* \param QLibrary* the library to load
+		* \return void
+		*/
+		void setupNewThread(QSemaphore*,QLibrary*);
+		/*!
+		* \brief Load a new plugin (dll)
+		* \param the complete path of the dll file
+		* \return void
+		*/
+		void loadDynamicLibrary(const QString&);
+		/*!
+		* \brief get the items inside a file. 
+		Some tool must implement this function and connect to the getItemsFromFile signal.
+		The Core library does not implement a read file function. 
+		* \param QString& file that is selected by user
+		* \param ItemHandle* optional parent handle to all the items that will be loaded form file
+		* \return QList<ItemHandle*> list of items inside the file
+		* \return void
+		*/
+		QPair< QList<ItemHandle*>, QList<QGraphicsItem*> > getItemsFromFile(const QString& filename, ItemHandle * root = 0);
+		/*!
+		* \brief gets the current scene that is active
+		* \return GraphicsScene* current scene
+		*/
+		GraphicsScene * currentScene() const;
+		/*!
+		* \brief gets the text editor that is active
+		* \return TextEditor* current editor
+		*/
+		TextEditor * currentTextEditor() const;
+		/*!
+		* \brief gets the current window that is active (each window contains either a scene or editor)
+		* \return NetworkWindow* current network window
+		*/
+		NetworkWindow * currentWindow() const;
+		/*!
+		* \brief gets the current window that is active
+		* \return NetworkHandle* current network
+		*/
+		NetworkHandle * currentNetwork() const;
+		/*!
+		* \brief gets all the windows in the main window
+		* \return QList<NetworkHandle*> list of windows
+		*/
+		QList<NetworkHandle*> networks() const;
+		/*!
+		* \brief the history stack of the current network.
+		* \return QUndoStack* current scene's history stack or null if current network is null
+		*/
+		QUndoStack * historyStack() const;
+		/*!
+		* \brief the history stack widget of the current window.
+		* \return QUndoView* current scene's history stack or null if current network is null
+		*/
+		QUndoView * historyWidget();
+		/*!
+		* \brief get the settings for TinkerCell
+		* \return QSettings * pointer. calling function must delete the pointer
+		*/
+		static QSettings * getSettings(const QString& defaultFileName=QString());
+		/*!
+		* \brief get a tool
+		* \param QString name of the tool
+		* \return Tool*
+		*/
+		virtual Tool * tool(const QString&) const;
+		/*!
+		* \brief get all tools
+		* \param QString (optional) return only tools in this category, e.g. "plot"
+		* \return QList<Tool*>
+		*/
+		virtual QList<Tool*> tools(const QString& category=QString()) const;
+		/*!
+		* \brief the set of all windows inseted in the main window using addToolWindow
+		*/
+		QList<QWidget*> toolWindows;
+		/*!
+		* \brief the context menu that is shown during right-click event on selected graphical items.
+		Plugins can add new actions to this menu.
+		*/
+		QMenu contextItemsMenu;
+		/*!
+		* \brief the context menu that is shown during right-click event on the scene.
+		Plugins can add new actions to this menu.
+		*/
+		QMenu contextScreenMenu;
+		/*!
+		* \brief the context menu that is shown during right-click event on a text editor with text selected.
+		Plugins can add new actions to this menu.
+		*/
+		QMenu contextSelectionMenu;
+		/*!
+		* \brief the context menu that is shown during right-click event on a text editor with no text selected.
+		Plugins can add new actions to this menu.
+		*/
+		QMenu contextEditorMenu;
+		/*!
+		* \brief The file menu. Plugins can add new actions to this menu.
+		*/
+		QMenu* fileMenu;
+		/*!
+		* \brief The edit menu. Plugins can add new actions to this menu.
+		*/
+		QMenu* editMenu;
+		/*!
+		* \brief The view menu. New docking windows are automatically added here.
+		*/
+		QMenu* viewMenu;
+		/*!
+		* \brief The help menu.
+		*/
+		QMenu* helpMenu;
+		/*!
+		* \brief the menu for settings such as default plugins, Tinkercell home directory, etc.
+		*/
+		QMenu* settingsMenu;
+		/*!
+		* \brief the menu for choosing one of the available parsers (will be 0 if there are no parsers)
+		*/
+		QMenu* parsersMenu;
+		/*!
+		* \brief The tool bar that contains new, open, close, etc. actions
+		*/
+		QToolBar* toolBarBasic;
+		/*!
+		* \brief The tool bar that contains copy, paste, undo, etc.
+		*/
+		QToolBar* toolBarEdits;
+		/*!
+		* \brief One of the initial tool bars which designated for tools that do not want
+		to create a new toolbar
+		*/
+		QToolBar* toolBarForTools;
+		
+		/*! \}
+			\name slots
+			\{
+		*/
+
+	public slots:
+		
+		/*!
+		* \brief asks user for a new directory to be used as the user home directory (must be writtable)
+		*/
+		void setUserHome();
+		/*!
+		* \brief create new scene
+		*/
+		GraphicsScene * newScene();
+		/*!
+		* \brief create new text editor
+		*/
+		TextEditor * newTextEditor();
+		/*!
+		* \brief triggered when the close button is clicked. Closes the current window
+		*/
+		void closeWindow();
+		/*!
+		* \brief triggered when the save button is clicked. Opens a file dialog and emits the save signal.
+		The main window itself does not implement the save.
+		*/
+		void saveWindow();
+		/*!
+		* \brief triggered when the save-as button is clicked. Opens a file dialog and emits the save signal.
+		The main window itself does not implement the save.
+		*/
+		void saveWindowAs();
+		/*!
+		* \brief triggered when the open button is clicked. Opens a file dialog.
+		Note: the core library just emits a signal, and other tools are responsible for actually opening a file
+		*/
+		void open();
+		/*!
+		* \brief open a file.
+		Note: the core library just emits a signal, and other tools are responsible for actually opening a file
+		The main window does not implement an function for opening a new file
+		*/
+		void open(const QString&);
+		/*!
+		* \brief calls current scene or text editor's undo
+		*/
+		void undo();
+		/*!
+		* \brief calls current scene or text editor's redo
+		*/
+		void redo();
+		/*!
+		* \brief calls current scene or text editor's copy
+		*/
+		void copy();
+		/*!
+		* \brief calls current scene or text editor's cut
+		*/
+		void cut();
+		/*!
+		* \brief calls current scene or text editor's paste
+		*/
+		void paste();
+		/*!
+		* \brief calls current scene or text editor's selectAll
+		*/
+		void selectAll();
+		/*!
+		* \brief calls current scene or text editor's find
+		*/
+		void remove();
+		/*!
+		* \brief triggered when the print button is clicked. Calls current scene's print
+		*/
+		void print();
+		/*!
+		* \brief triggered when the print-to-file button is clicked. Calls current scene's print on a pdf file
+		*/
+		void printToFile(const QString& filename=QString(), int w=0, int h=0);
+		/*!
+		* \brief sends a signal to all plugins telling them to exit their current processes.
+		*/
+		void sendEscapeSignal(const QWidget * w = 0);
+		/*!
+		* \brief add a new text parser to the list of available parsers.
+			The current text parser can be obtained using TextParser::currentParser();
+		*/
+		void addParser(TextParser*);
+
+		/*! \brief change grid mode for current scene to on (>0)*/
+		void gridOn();
+
+		/*! \brief change grid mode for current scene to off (=0)*/
+		void gridOff();
+
+		/*! \brief set grid size for current scene*/
+		void setGridSize();
+		
+		/*! \brief pop-out the current window*/
+		void popOut();
+
+		/*! \brief get the console window*/
+		ConsoleWindow * console() const;
+		
+		/*! \brief read initial settings from settingsFileName
+		* \return void*/
+		void readSettings(const QString& settingsFileName=QString());
+
+		/*! \brief gets the global main window*/
+		static MainWindow * instance();
+
+	protected slots:
+		
+		/*! \brief pop-out the given window*/
+		void popOut(NetworkWindow *);
+		
+		/*! \brief pop-in the given window*/
+		void popIn(NetworkWindow *);
+		/*!
+		* \brief sets the active window
+		*/
+		void setCurrentWindow(NetworkWindow*);
+		/*!
+		* \brief loads files (library files or Network files)
+		* \param QList<QFileInfo>& the name(s) of the file(s)
+		* \return void
+		*/
+		void loadFiles(const QList<QFileInfo>& files);
+		/*!
+		* \brief change console background color
+		* \return void
+		*/
+		void changeConsoleBgColor();
+		/*!
+		* \brief change console text color
+		* \return void
+		*/
+		void changeConsoleTextColor();
+		/*!
+		* \brief change console message text color
+		* \return void
+		*/
+		void changeConsoleMsgColor();
+		/*!
+		* \brief change console error text color
+		* \return void
+		*/
+		void changeConsoleErrorMsgColor();
+		/*!
+		* \brief tab changed
+		*/
+		virtual void tabIndexChanged(int);
+		/*!
+		* \brief signals whenever items are deleted
+		* \param GraphicsScene * scene where the items were removed
+		* \param QList<QGraphicsItem*>& list of items removed
+		* \param QList<ItemHandle*>& list of handles removed (does NOT have to be the same number as items removed)
+		* \return void*/
+		void itemsRemovedSlot(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles);
+		/*!
+		* \brief signals whenever items are added
+		* \param GraphicsScene * scene where the items were added
+		* \param QList<QGraphicsItem*>& list of new items
+		* \param QList<ItemHandle*>& list of new handles (does NOT have to be the same number as items)
+		* \return void*/
+		void itemsInsertedSlot(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles,GraphicsScene::InsertType);
+		/*!
+		* \brief send signal to other tools so that they can connect functions to signals
+		* \param QSemaphore* semaphore
+		* \param QLibrary * the dynamic library instance
+		* \return void
+		*/
+		void setupFunctionPointersSlot(QSemaphore*,QLibrary *);
+
+		/*! \brief save initial settings to settingsFileName
+		* \return void*/
+		void exportSettings();
+		
+		/*! \brief read initial settings from settingsFileName
+		* \return void*/
+		void importSettings();
+
+		/*! \}
+			\name signals
+			\{
+		*/
+
+	signals:
+
+		/*!
+		* \brief a new tool is about to be added. This signal can be used to prevent the tool from being added
+		* \param Tool the tool itself
+		* \param bool& set this bool to false to prevent the tool from loading
+		* \return void
+		*/
+		void toolAboutToBeLoaded( Tool * tool, bool * shouldLoad );
+		/*!
+		* \brief one of more changed have occurred in the history window of the current scene
+		* \param int number of changes (negative = undos, positive = redos)
+		* \return void
+		*/
+		void historyChanged(int i=0);
+		/*!
+		* \brief used internally by MainWindow in order to move from a thread to the main thread
+		* \param QSemaphore* Sempahore that lets the thread run once C API is initialized
+		* \param QLibrary * the new FuntionToSignal instance
+		* \return void
+		*/
+		void funtionPointersToMainThread( QSemaphore* , QLibrary * );
+		/*! \brief signals when a new tool (plugin) is loaded
+		* \param Tool* the new tool
+		* \return void
+		*/
+		void toolLoaded(Tool * tool);
+		/*!
+		* \brief signals when a new FuntionToSignal is constructed
+		* \param QLibrary * the new FuntionToSignal instance
+		* \return void
+		*/
+		void setupFunctionPointers( QLibrary * );
+		/*!
+		* \brief signals when a network is going to close
+		* \param NetworkHandle *  the network that is closing
+		* \param Boolean setting to false will prevent this window from closing
+		* \return void
+		*/
+		void networkClosing(NetworkHandle *, bool*);
+		/*!
+		* \brief signals after a window is closed
+		* \param NetworkHandle *  the window that was closed
+		* \return void
+		*/
+		void networkClosed(NetworkHandle *);
+		/*!
+		* \brief signals when a tool is about to save a network
+		* \param NetworkHandle *  the window where Network was loaded (usually current scene)
+		* \return void*/
+		void prepareNetworkForSaving(NetworkHandle*,bool*);
+		/*!
+		* \brief signals when a tool  has saved the network in a file
+		* \param NetworkHandle *  the window where network was loaded (usually current scene)
+		* \return void
+		*/
+		void networkSaved(NetworkHandle*);
+		/*!
+		* \brief signals when  user selects a file to save the current network to
+		* \param QString& file that is selected by user
+		* \return void
+		*/
+		void saveNetwork(const QString& filename);
+		/*!
+		* \brief signals when  user selects a file to open in the current network
+		* \param QString& file that is selected by user
+		* \param bool* file already loaded by another plugin
+		* \return void
+		*/
+		void loadNetwork(const QString& filename, bool * alreadyLoaded = 0);
+		/*!
+		* \brief signal sent to a tool so that the tool can get the items inside a file
+		* \param QList<ItemHandle*>& list of items inside the file
+		* \param QList<QGraphicsItem*>& list of graphics items in the file
+		* \param QString& file that is selected by user
+		* \param ItemHandle * optional root parent handle for all the loaded items
+		* \return void
+		*/
+		void getItemsFromFile(QList<ItemHandle*>&, QList<QGraphicsItem*>&, const QString& filename, ItemHandle * root);
+		/*!
+		* \brief signals informs that the current network has just loaded a new Network
+		* \param NetworkHandle *  the window where network was loaded (usually current scene)
+		* \return void
+		*/
+		void networkLoaded(NetworkHandle*);
+		/*!
+		* \brief signals whenever the new network is opened
+		* \param NetworkHandle* the current new window
+		* \return void
+		*/
+		void networkOpened(NetworkHandle*);
+		/*!
+		* \brief signals whenever the current window changes
+		* \param NetworkWindow* the previous windpw
+		* \param NetworkWindow* the current new window
+		* \return void
+		*/
+		void windowChanged(NetworkWindow*,NetworkWindow*);
+		/*!
+		* \brief signals whenever a new item is selected (item can be sub-item, not top-level)
+		* \param GraphicsScene * scene where items are selected
+		* \param QList<QGraphicsItem*>& list of all selected item pointers
+		* \param QPointF point where mouse is clicked
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \return void*/
+		void itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers);
+		/*!
+		* \brief signals whenever an empty node of the screen is clicked
+		* \param GraphicsScene * scene where the event took place
+		* \param QPointF point where mouse is clicked
+		* \param Qt::MouseButton which button was pressed
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \return void*/
+		void mousePressed(GraphicsScene * scene, QPointF point, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
+		/*!
+		* \brief signals whenever an empty node of the screen is clicked
+		* \param GraphicsScene * scene where the event took place
+		* \param QPointF point where mouse is clicked
+		* \param Qt::MouseButton which button was pressed
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \return void*/
+		void mouseReleased(GraphicsScene * scene, QPointF point, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
+		/*!
+		* \brief emits event when mouse is double clicked
+		* \param GraphicsScene * scene where the event took place
+		* \param point where mouse is clicked
+		* \param modifier keys being used when mouse clicked
+		* \return void*/
+		void mouseDoubleClicked (GraphicsScene * scene, QPointF point, QGraphicsItem *, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
+		/*!
+		* \brief signals whenever mouse is dragged from one point to another
+		* \param GraphicsScene * scene where the event took place
+		* \param QPointF point where mouse is clicked first
+		* \param QPointF point where mouse is released
+		* \param Qt::MouseButton button being pressed
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \return void*/
+		void mouseDragged(GraphicsScene * scene, QPointF from, QPointF to, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
+		/*! 
+		* \brief signals whenever items are going to be moved (each item is the top-most item)
+		* \param GraphicsScene* scene where the items were moved
+		* \param QList<QGraphicsItem*>& list of pointers to all moving items
+		* \param QPointF distance by which items moved
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \param QList<QUndoCommand*>& list of commands that will be executed right before items are inserted
+		* \return void*/
+		void itemsAboutToBeMoved(GraphicsScene * scene, QList<QGraphicsItem*>& item, QList<QPointF>& distance, QList<QUndoCommand*>&);
+		/*!
+		* \brief signals whenever items are being moved (each item is the top-most item)
+		* \param GraphicsScene * scene where the items were moved
+		* \param QList<QGraphicsItem*>& list of pointes to all moving items
+		* \param QPointF distance by which items moved
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \return void*/
+		void itemsMoved(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<QPointF>& distance);
+		/*!
+		* \brief signals just before items are deleted
+		* \param GraphicsScene* scene where the items are going to be removed
+		* \param QList<QGraphicsItem*>& list of items going to be removed
+		* \param QList<ItemHandle*>& list of handles going to be removed (does NOT have to be the same number as items removed)
+		* \param QList<QUndoCommand*>& list of commands that will be executed right before items are inserted
+		* \return void*/
+		void itemsAboutToBeRemoved(GraphicsScene * scene, QList<QGraphicsItem*>& item, QList<ItemHandle*>& handles, QList<QUndoCommand*>&);
+		/*!
+		* \brief signals whenever items are deleted
+		* \param GraphicsScene * scene where the items were removed
+		* \param QList<QGraphicsItem*>& list of items removed
+		* \param QList<ItemHandle*>& list of handles removed (does NOT have to be the same number as items removed)
+		* \return void*/
+		void itemsRemoved(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles);
+		/*!
+		* \brief signals whenever items are going to be added
+		* \param GraphicsScene* scene where the items are added
+		* \param QList<QGraphicsItem*>& list of new graphics items
+		* \param QList<ItemHandle*>& list of new handles (does NOT have to be the same number as items)
+		* \param QList<QUndoCommand*>& list of commands that will be executed right before items are inserted
+		* \param InsertType (optional) indicated how the items were inserted, e.g. copy/pasted or loaded from a file  
+		* \return void*/
+		void itemsAboutToBeInserted(GraphicsScene * scene, QList<QGraphicsItem*>& , QList<ItemHandle*>&, QList<QUndoCommand*>&, GraphicsScene::InsertType type=GraphicsScene::NEW);
+		/*!
+		* \brief signals whenever items are added
+		* \param GraphicsScene * scene where the items were added
+		* \param QList<QGraphicsItem*>& list of new items
+		* \param QList<ItemHandle*>& list of new handles (does NOT have to be the same number as items)
+		* \param InsertType (optional) indicated how the items were inserted, e.g. copy/pasted or loaded from a file  
+		* \return void*/
+		void itemsInserted(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles, GraphicsScene::InsertType type=GraphicsScene::NEW);
+		/*!
+		* \brief A convenient signal that is emitted when items are inserted from a GraphicsScene
+		or TextEditor. Warning: listening to the other itemsInserted signals may cause redundancy
+		* \param NetworkHandle* where the editting happened
+		* \param QList<TextItem*> new items
+		*/
+		void itemsInserted(NetworkHandle * win, const QList<ItemHandle*>&);
+		/*!
+		* \brief A convenient signal that is emitted when items are removed from a GraphicsScene
+				or TextEditor. Warning: listening to the other itemsRemoved signals may cause redundancy
+		* \param NetworkHandle* where the editting happened
+		* \param ItemHandle* removed items
+		*/
+		void itemsRemoved(NetworkHandle * win, const QList<ItemHandle*>& );
+		/*! \brief signals just before items are copied
+		* \param GraphicsScene * scene where the items are going to be copied
+		* \param QList<QGraphicsItem*>& list of graphics items going to be copied
+		* \param QList<ItemHandle*>& list of handles going to be copied (does NOT have to be the same number as items removed)
+		* \return void*/
+		void copyItems(GraphicsScene * scene, QList<QGraphicsItem*>& , QList<ItemHandle*>& );
+		/*! \brief some text inside this editor has been changed
+		\param TextEditor* editor
+		\param QString old text (usually a line)
+		\param QString new text (usually a line)
+		*/
+		void textChanged(TextEditor * , const QString&, const QString&, const QString&);
+		/*! \brief the cursor has moved to a different line
+		\param TextEditor* editor
+		\param int index of the current line
+		\param QString current line text
+		*/
+		void lineChanged(TextEditor * , int, const QString&);
+		/*! \brief request to parse the text in the current text editor
+		\param TextEditor* editor
+		*/
+		void parse(TextEditor *);
+		/*! \brief signals whenever mouse moves, and indicates whether it is on top of an item
+		* \param GraphicsScene * scene where the event took place
+		* \param QGraphicsItem* pointer to item that mouse is on top of
+		* \param QPointF point where mouse is clicked
+		* \param Qt::MouseButton button being pressed
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \param QList<QGraphicsItem*>& list of items that are being moved with the mouse
+		* \return void*/
+		void mouseMoved(GraphicsScene * scene, QGraphicsItem* item, QPointF point, Qt::MouseButton, Qt::KeyboardModifiers modifiers, QList<QGraphicsItem*>&);
+		/*! \brief signals whenever mouse is on top of an item
+		* \param GraphicsScene * scene where the event took place
+		* \param QGraphicsItem* pointer to item that mouse is on top of
+		* \param QPointF point where mouse is clicked
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \param QList<QGraphicsItem*>& list of items that are being moved with the mouse
+		* \return void*/
+		void mouseOnTopOf(GraphicsScene * scene, QGraphicsItem* item, QPointF point, Qt::KeyboardModifiers modifiers, QList<QGraphicsItem*>&);
+		/*! \brief signals whenever right click is made on an item or sceen
+		* \param GraphicsScene * scene where the event took place
+		* \param QGraphicsItem* pointer to item that mouse is clicked on
+		* \param QPointF point where mouse is clicked
+		* \param Qt::KeyboardModifiers modifier keys being used when mouse clicked
+		* \return void*/
+		void sceneRightClick(GraphicsScene * scene, QGraphicsItem* item, QPointF point, Qt::KeyboardModifiers modifiers);
+		/*! \brief signals whenever a key is pressed
+		* \param GraphicsScene * scene where the event took place
+		* \param QKeyEvent * key that is pressed
+		* \return void*/
+		void keyPressed(GraphicsScene * scene, QKeyEvent *);
+		/*! \brief signals whenever a key is released
+		* \param GraphicsScene * scene where the event took place
+		* \param QKeyEvent * key that is released
+		* \return void*/
+		void keyReleased(GraphicsScene * scene, QKeyEvent *);
+		/*! \brief signals whenever color of items are changed
+		* \param GraphicsScene * scene where the event took place
+		* \param QList<QGraphicsItem*>& items that changed color
+		* \return void*/
+		void colorChanged(GraphicsScene * scene, const QList<QGraphicsItem*>& items);
+		/*! \brief signals whenever item parents are changed
+		* \param GraphicsScene * scene where the event took place
+		* \param QList<QGraphicsItem*>& items
+		* \param QList<QGraphicsItem*>& new parents
+		* \return void*/
+		void parentItemChanged(GraphicsScene * scene, const QList<QGraphicsItem*>& items, const QList<QGraphicsItem*>& parents);
+		/*! \brief signals whenever an item is renamed
+		* \param NetworkHandle * window where the event took place
+		* \param QList<ItemHandle*>& items
+		* \param QList<QString>& old names
+		* \param QList<QString>& new names
+		* \return void*/
+		void itemsRenamed(NetworkHandle * window, const QList<ItemHandle*>& items, const QList<QString>& oldnames, const QList<QString>& newnames);
+		/*! \brief signals whenever the handles for graphics items have changed
+		* \param GraphicsScene* scene where the event took place
+		* \param QList<GraphicsItem*>& items that are affected
+		* \param QList<ItemHandle*>& old handle for each items
+		* \return void*/
+		void handlesChanged(NetworkHandle * scene, const QList<QGraphicsItem*>& items, const QList<ItemHandle*>& old);
+		/*! \brief signals whenever item parent handle is changed
+		* \param NetworkHandle * window where the event took place
+		* \param QList<ItemHandle*>& child items
+		* \param QList<ItemHandle*>& old parents
+		* \return void*/
+		void parentHandleChanged(NetworkHandle * scene, const QList<ItemHandle*>&, const QList<ItemHandle*>&);
+		/*! \brief signals whenever item handles' families are changed
+		* \param NetworkHandle* network where the event took place
+		* \param QList<ItemHandle*>& child items
+		* \param QList<ItemFamily*>& old families
+		* \return void*/
+		void handleFamilyChanged(NetworkHandle * network, const QList<ItemHandle*>&, const QList<ItemFamily*>&);
+		/*! \brief signals whenever some data is changed
+		* \param QList<ItemHandle*>& items handles
+		* \return void*/
+		void dataChanged(const QList<ItemHandle*>& items);
+		/*! \brief signals whenever the current activities need to be stopped
+		* \param QWidget * the widget that send the signal
+		* \return void*/
+		void escapeSignal(const QWidget * sender);
+		/*! \brief signals whenever file(s) are loaded. Each file can be a model or a plugin
+		* \param QList<QFileInfo>& the name(s) of the file(s)
+		* \return void*/
+		void filesLoaded(const QList<QFileInfo>& files);
+		/*! \brief signal is emitted when some object OTHER than files are dropped on the canvas
+		* \param GraphicsScene* the scene where objects were dropped
+		* \param QString the string describing the object that was dropped
+		* \param QPointF the Scene position where it was dropped
+		* \return void*/
+		void itemsDropped(GraphicsScene*, const QString&, QPointF);
+
+	protected:
+		/*! \brief allowed views*/
+		bool allowViewModeToChange;
+		/*! \brief the loaded dynamic libraries indexed by file name*/
+		QHash<QString,QLibrary*> dynamicallyLoadedLibraries;
+		/*! \brief the general window for command, errors, and messages*/
+		ConsoleWindow * consoleWindow;
+		/*! \brief save initial settings to settingsFileName
+		* \return void*/
+		void saveSettings(const QString& settingsFileName=QString());
+		/*! \brief load default plugins
+		* \return void*/
+		void loadDefaultPlugins();
+		/*! \brief close window event -- asks whether to save file
+		* \param QCloseEvent * event
+		* \return void*/
+		void closeEvent(QCloseEvent *event);
+
+		/*! \brief the central multi-document interface widget*/
+		DroppableTabWidget * tabWidget;
+		/*! \brief the list of all network windows*/
+		QList<NetworkHandle*> allNetworks;
+		/*! \brief the optional tool box that will only appear if one of the plug-ins uses the tab widget argument in the addToolWindow call*/
+		QToolBox * toolsWidget;
+		/*! \brief history view, not the stack itself. The stack is stored within each NetworkHandle*/
+		HistoryWindow historyWindow;
+		/*! \brief keep pointer to last selected window. Used by windowChanged signal*/
+		NetworkWindow * currentNetworkWindow;
+		/*! \brief all the tools (plug-ins) are stored here, indexed by their names*/
+		QHash<QString,Tool*> toolsHash;
+		/*! \brief this is a multiple hash. All the tool are stored here indexed by their category names (if they have a category)*/
+		QHash<QString,Tool*> toolsHashByCategory;
+		/*! \brief drag and drop */
+		virtual void dropEvent(QDropEvent *);
+		/*! \brief drag and drop*/
+		virtual void dragEnterEvent(QDragEnterEvent *event);
+	private:
+		/*! \brief home directory path*/
+		static QString homeDirPath;
+		/*!
+		* \brief the global main window
+		*/
+		static MainWindow * globalInstance;
+		/*!
+		* \brief C API class
+		*/
+		C_API_Slots * c_api_slots;
+	public:
+		/*!
+		* \brief stores the last opened directory
+		*/
+		static QString previousFileName;
+		
+		/*!\brief stores list of all pointers that have been deleted (to prevent double-deletions)*/
+		static QHash<void*,bool> invalidPointers;
+		
+		/*!\brief checks if the given address belongs to a handle*/
+		bool isValidHandlePointer(void * p);
+
+		friend class GlobalSettings;
+
+	};
+
+}
+
+#endif

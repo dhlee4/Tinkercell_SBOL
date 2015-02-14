@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NodeGraphicsItem>
+<listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
+    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+		<listOfStyles>
+			<style idList="blunt-restriction-site" width="50" height="100">
+				<g>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="12" y="50" />
+								<end x="38" y="50" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<ellipse cx="25" cy="50" rx="25" ry="25" angleStart="0" angleEnd="180" fill="none" stroke="#000000" stroke-width="3"/>
+				</g>
+			</style>
+		</listOfStyles
+	</renderInformation>
+</listOfRenderInformation>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NodeGraphicsItem>
+<listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
+    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+		<listOfStyles>
+			<style idList="blunt-restriction-site" width="50" height="100">
+				<g>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="9" y="65" />
+								<end x="27" y="65" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="27" y="65" />
+								<end x="42" y="50" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="42" y="50" />
+								<end x="27" y="35" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="27" y="35" />
+								<end x="9" y="35" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+						<listOfCurveSegments>
+							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+								<start x="9" y="35" />
+								<end x="9" y="65" />
+							</curveSegment>
+						</listOfCurveSegments>
+					</polygon>
+				</g>
+			</style>
+		</listOfStyles
+	</renderInformation>
+</listOfRenderInformation>

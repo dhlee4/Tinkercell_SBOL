@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NodeGraphicsItem>
+<listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
+    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+        <listOfGradientDefinitions>
+            <radialGradient id="shape0color" x1="30.7054%" y1="28.5714%" x2="71.3693%" y2="55.6851%">
+                <stop offset="0%" stop-color="#e4ffdd" stop-alpha="0.117647"/>
+                <stop offset="100%" stop-color="#1bb413" stop-alpha="0.411765"/>
+            </radialGradient>
+        </listOfGradientDefinitions>
+        <listOfStyles>
+            <style idList="compartment" width="500" height="350">
+                <g>
+                    <ellipse cx="50%" cy="50%" rx="50%" ry="50%" angleStart="0" angleEnd="360" fill="shape0color" stroke="#88bc66" stroke-width="1" stroke-alpha="0.882353"/>
+                </g>
+            </style>
+        </listOfStyles>
+    </renderInformation>
+</listOfRenderInformation>

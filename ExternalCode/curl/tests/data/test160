@@ -1,0 +1,103 @@
+<testcase>
+# Server-side
+<reply>
+<data nocheck="yes">
+<<<<<<< HEAD
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Content-Length: 9
+
+surprise
+</data>
+<data1>
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Connection: close
+
+=======
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Content-Length: 9
+
+surprise
+</data>
+<data1>
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Connection: close
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+surprise2
+</data1>
+
+<postcmd>
+wait 1
+</postcmd>
+</reply>
+
+# Client-side
+<client>
+<server>
+http
+</server>
+ <name>
+HTTP with delayed close, conn reuse, connection reset and retry
+ </name>
+ <command>
+http://%HOSTIP:%HTTPPORT/want/160 http://%HOSTIP:%HTTPPORT/wantmore/1600001
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<stdout>
+<<<<<<< HEAD
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Content-Length: 9
+
+surprise
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Connection: close
+
+=======
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Content-Length: 9
+
+surprise
+HTTP/1.1 200 OK swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Connection: close
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+surprise2
+</stdout>
+
+<strip>
+^User-Agent:.*
+</strip>
+<protocol>
+<<<<<<< HEAD
+GET /want/160 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+GET /wantmore/1600001 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+=======
+GET /want/160 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+GET /wantmore/1600001 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

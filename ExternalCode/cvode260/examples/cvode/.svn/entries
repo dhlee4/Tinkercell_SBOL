@@ -1,0 +1,40 @@
+10
+
+dir
+2931
+svn://svn.code.sf.net/p/tinkercell/code/trunk/ExternalCode/cvode260/examples/cvode
+svn://svn.code.sf.net/p/tinkercell/code
+
+
+
+2010-04-16T15:01:06.536568Z
+1034
+dchandran1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95d75fa2-39cf-44e0-8ea2-df6a562dc58c
+
+serial
+dir
+
+fcmix_parallel
+dir
+
+fcmix_serial
+dir
+
+parallel
+dir
+

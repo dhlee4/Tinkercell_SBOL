@@ -1,0 +1,72 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+HTTP GET
+Content-Range
+</keywords>
+</info>
+
+# Server-side
+<reply>
+<data>
+<<<<<<< HEAD
+HTTP/1.1 206 Partial Content
+Date: Thu, 31 Jul 2008 13:41:09 GMT
+Accept-Ranges: bytes
+Content-Length: 101
+Content-Range: bytes 100-200/201
+Connection: close
+Content-Type: text/html
+
+=======
+HTTP/1.1 206 Partial Content
+Date: Thu, 31 Jul 2008 13:41:09 GMT
+Accept-Ranges: bytes
+Content-Length: 101
+Content-Range: bytes 100-200/201
+Connection: close
+Content-Type: text/html
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+..partial data returned from the
+server as a result of setting an explicit byte range
+in the request
+</data>
+</reply>
+
+# Client-side
+<client>
+<server>
+http
+</server>
+ <name>
+HTTP range relative to end of file
+ </name>
+ <command>
+http://%HOSTIP:%HTTPPORT/want/1058 -r -101
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<strip>
+^User-Agent:.*
+</strip>
+<protocol>
+<<<<<<< HEAD
+GET /want/1058 HTTP/1.1
+Range: bytes=-101
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+=======
+GET /want/1058 HTTP/1.1
+Range: bytes=-101
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

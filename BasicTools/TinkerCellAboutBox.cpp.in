@@ -1,0 +1,295 @@
+<<<<<<< HEAD
+#include "ConsoleWindow.h"
+#include "TinkerCellAboutBox.h"
+#include <QPixmap>
+#include <QBrush>
+#include <QTextEdit>
+#include <QRegExp>
+#include <QDesktopServices>
+#include "GlobalSettings.h"
+
+namespace Tinkercell
+{
+	TinkercellAboutBox::TinkercellAboutBox() : Tool(tr("TinkerCell About Box"),tr("Basic GUI"))
+	{
+		QHBoxLayout * layout1 = new QHBoxLayout;
+		QString text;
+
+		text = tr("TinkerCell\nVersion: ") + GlobalSettings::PROJECT_VERSION + tr("\n\n");
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString filename = appDir + tr("/ABOUT.TXT");
+		
+		QFile file;
+		file.setFileName( filename );
+		if (file.open( QFile::ReadOnly | QFile::Text ) )
+		{
+			QString allText(file.readAll());
+			text += allText + tr("\n\n");
+			file.close();
+		}
+		
+		QTextEdit * edit = new QTextEdit(this);
+		edit->setPlainText(text);
+		edit->setReadOnly(true);
+
+		QPalette palette;
+		palette.setBrush(edit->backgroundRole(), QBrush(QPixmap(":/images/Tinkercell.png").scaled(256,256)));
+		edit->setPalette(palette);
+		layout1->addWidget(edit);
+
+		dialog.setLayout(layout1);
+
+	}
+
+	bool TinkercellAboutBox::setMainWindow(MainWindow * main)
+	{
+		Tool::setMainWindow(main);
+		if (mainWindow)
+		{
+			if (mainWindow->helpMenu)
+			{
+				mainWindow->helpMenu->addAction(QIcon(":/images/question.png"),tr("What is TinkerCell"),this,SLOT(openWhatIsTinkerCell()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/user.png"),tr("User's Guide"),this,SLOT(openUserDocumentation()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/tool.png"),tr("Programmer's Guide"),this,SLOT(openC_API()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("Video Tutorials"),this,SLOT(openTutorialsPage()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("TinkerCell Homepage"),this,SLOT(openHomePage()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("TinkerCell Blog"),this,SLOT(openBlog()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("Bugs / Comments"),this,SLOT(openFeedbackPage()));
+				mainWindow->helpMenu->addAction(tr("Write to us"),this,SLOT(emailAuthor()));
+				mainWindow->helpMenu->addSeparator();
+				mainWindow->helpMenu->addAction(QIcon(":/images/about.png"),tr("About"),this,SLOT(showAboutBox()));
+			}
+			
+			QFile file;
+			file.setFileName( Tinkercell::GlobalSettings::homeDir() + QObject::tr("/updates.txt") );
+			if (file.open( QFile::ReadOnly | QFile::Text ))
+			{
+				QString updates(file.readAll());
+				QRegExp regex("current version:\\s*([\\.0-9]+)");
+				if (regex.indexIn(updates) > -1)
+				{
+					QString v = regex.cap(1);
+					if (v != QObject::tr("@TINKERCELL_WC_REVISION@"))
+						if (main)
+						{
+							QString s("A new version of TinkerCell is available for download  at <a href='http://www.tinkercell.com/downloads-2'>tinkercell.com</a>\n");
+							updates.replace(regex,"");
+							s += tr("\n") + updates;
+							QSettings * settings = MainWindow::getSettings();
+							settings->beginGroup("Subversion");
+							QString version = settings->value(tr("svn-version")).toString();						
+							settings->setValue(tr("svn-version"),v);
+							settings->endGroup();
+							delete settings;
+						
+							if (version != v)
+								QMessageBox::about(this, "New version", s);
+						}
+				}
+				file.close();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	void TinkercellAboutBox::showAboutBox()
+	{
+		dialog.show();
+	}
+
+	void TinkercellAboutBox::openUserDocumentation()
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString doc = tr("file:") + appDir + tr("/Documentation/UserDocumentation.pdf");
+		QDesktopServices::openUrl(QUrl(doc));
+	}
+	
+	void TinkercellAboutBox::openWhatIsTinkerCell()
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString doc = tr("file:") + appDir + tr("/Documentation/WhatisTinkerCell.pdf");
+		QDesktopServices::openUrl(QUrl(doc));
+	}
+
+	void TinkercellAboutBox::openC_API()
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString doc = tr("file:") + appDir + tr("/Documentation/C_API.pdf");
+		QDesktopServices::openUrl(QUrl(doc));
+	}
+
+	void TinkercellAboutBox::openBlog()
+	{
+		QDesktopServices::openUrl(QUrl("http://tinker-cell.blogspot.com/"));
+	}
+
+	void TinkercellAboutBox::openHomePage()
+	{
+		QDesktopServices::openUrl(QUrl("http://www.tinkercell.com/"));
+	}
+
+	void TinkercellAboutBox::openTutorialsPage()
+	{
+		QDesktopServices::openUrl(QUrl("http://www.tinkercell.com/tutorials-1/stepbystep"));
+	}
+
+	void TinkercellAboutBox::openFeedbackPage()
+	{
+		QDesktopServices::openUrl(QUrl("http://www.tinkercell.com/suggestions-bugs"));
+	}
+
+	void TinkercellAboutBox::emailAuthor()
+	{
+		QDesktopServices::openUrl(QUrl("mailto:admin@tinkercell.com?subject=TinkerCell Report"));
+	}
+}
+
+=======
+#include "ConsoleWindow.h"
+#include "TinkerCellAboutBox.h"
+#include <QPixmap>
+#include <QBrush>
+#include <QTextEdit>
+#include <QRegExp>
+#include <QDesktopServices>
+#include "GlobalSettings.h"
+
+namespace Tinkercell
+{
+	TinkercellAboutBox::TinkercellAboutBox() : Tool(tr("TinkerCell About Box"),tr("Basic GUI"))
+	{
+		QHBoxLayout * layout1 = new QHBoxLayout;
+		QString text;
+
+		text = tr("TinkerCell\nVersion: ") + GlobalSettings::PROJECT_VERSION + tr("\n\n");
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString filename = appDir + tr("/ABOUT.TXT");
+		
+		QFile file;
+		file.setFileName( filename );
+		if (file.open( QFile::ReadOnly | QFile::Text ) )
+		{
+			QString allText(file.readAll());
+			text += allText + tr("\n\n");
+			file.close();
+		}
+		
+		QTextEdit * edit = new QTextEdit(this);
+		edit->setPlainText(text);
+		edit->setReadOnly(true);
+
+		QPalette palette;
+		palette.setBrush(edit->backgroundRole(), QBrush(QPixmap(":/images/Tinkercell.png").scaled(256,256)));
+		edit->setPalette(palette);
+		layout1->addWidget(edit);
+
+		dialog.setLayout(layout1);
+
+	}
+
+	bool TinkercellAboutBox::setMainWindow(MainWindow * main)
+	{
+		Tool::setMainWindow(main);
+		if (mainWindow)
+		{
+			if (mainWindow->helpMenu)
+			{
+				mainWindow->helpMenu->addAction(QIcon(":/images/question.png"),tr("What is TinkerCell"),this,SLOT(openWhatIsTinkerCell()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/user.png"),tr("User's Guide"),this,SLOT(openUserDocumentation()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/tool.png"),tr("Programmer's Guide"),this,SLOT(openC_API()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("Video Tutorials"),this,SLOT(openTutorialsPage()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("TinkerCell Homepage"),this,SLOT(openHomePage()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("TinkerCell Blog"),this,SLOT(openBlog()));
+				mainWindow->helpMenu->addAction(QIcon(":/images/globe.png"),tr("Bugs / Comments"),this,SLOT(openFeedbackPage()));
+				mainWindow->helpMenu->addAction(tr("Write to us"),this,SLOT(emailAuthor()));
+				mainWindow->helpMenu->addSeparator();
+				mainWindow->helpMenu->addAction(QIcon(":/images/about.png"),tr("About"),this,SLOT(showAboutBox()));
+			}
+			
+			QFile file;
+			file.setFileName( Tinkercell::GlobalSettings::homeDir() + QObject::tr("/updates.txt") );
+			if (file.open( QFile::ReadOnly | QFile::Text ))
+			{
+				QString updates(file.readAll());
+				QRegExp regex("current version:\\s*([\\.0-9]+)");
+				if (regex.indexIn(updates) > -1)
+				{
+					QString v = regex.cap(1);
+					if (v != QObject::tr("@TINKERCELL_WC_REVISION@"))
+						if (main)
+						{
+							QString s("A new version of TinkerCell is available for download  at <a href='http://www.tinkercell.com/downloads-2'>tinkercell.com</a>\n");
+							updates.replace(regex,"");
+							s += tr("\n") + updates;
+							QSettings * settings = MainWindow::getSettings();
+							settings->beginGroup("Subversion");
+							QString version = settings->value(tr("svn-version")).toString();						
+							settings->setValue(tr("svn-version"),v);
+							settings->endGroup();
+							delete settings;
+						
+							if (version != v)
+								QMessageBox::about(this, "New version", s);
+						}
+				}
+				file.close();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	void TinkercellAboutBox::showAboutBox()
+	{
+		dialog.show();
+	}
+
+	void TinkercellAboutBox::openUserDocumentation()
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString doc = tr("file:") + appDir + tr("/Documentation/UserDocumentation.pdf");
+		QDesktopServices::openUrl(QUrl(doc));
+	}
+	
+	void TinkercellAboutBox::openWhatIsTinkerCell()
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString doc = tr("file:") + appDir + tr("/Documentation/WhatisTinkerCell.pdf");
+		QDesktopServices::openUrl(QUrl(doc));
+	}
+
+	void TinkercellAboutBox::openC_API()
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString doc = tr("file:") + appDir + tr("/Documentation/C_API.pdf");
+		QDesktopServices::openUrl(QUrl(doc));
+	}
+
+	void TinkercellAboutBox::openBlog()
+	{
+		QDesktopServices::openUrl(QUrl("http://tinker-cell.blogspot.com/"));
+	}
+
+	void TinkercellAboutBox::openHomePage()
+	{
+		QDesktopServices::openUrl(QUrl("http://www.tinkercell.com/"));
+	}
+
+	void TinkercellAboutBox::openTutorialsPage()
+	{
+		QDesktopServices::openUrl(QUrl("http://www.tinkercell.com/tutorials-1/stepbystep"));
+	}
+
+	void TinkercellAboutBox::openFeedbackPage()
+	{
+		QDesktopServices::openUrl(QUrl("http://www.tinkercell.com/suggestions-bugs"));
+	}
+
+	void TinkercellAboutBox::emailAuthor()
+	{
+		QDesktopServices::openUrl(QUrl("mailto:admin@tinkercell.com?subject=TinkerCell Report"));
+	}
+}
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea

@@ -1,0 +1,59 @@
+<<<<<<< HEAD
+FILE(GLOB ARROW_FILES Arrows/*.png Arrows/*.PNG Arrows/*.xml Arrows/*.XML)
+
+INSTALL( FILES ${ARROW_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/Arrows
+  
+)
+
+FILE(GLOB NODES_FILES Nodes/*.png Nodes/*.PNG Nodes/*.xml Nodes/*.XML)
+
+INSTALL( FILES ${NODES_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/Nodes
+  
+)
+
+FILE(GLOB DECORATORS_FILES Decorators/*.png Decorators/*.PNG Decorators/*.xml Decorators/*.XML)
+
+INSTALL( FILES ${DECORATORS_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/Decorators
+  
+)
+
+FILE(GLOB COVER_FILES *.png *.PNG)
+
+INSTALL( FILES ${COVER_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/
+  
+)
+
+=======
+FILE(GLOB ARROW_FILES Arrows/*.png Arrows/*.PNG Arrows/*.xml Arrows/*.XML)
+
+INSTALL( FILES ${ARROW_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/Arrows
+  
+)
+
+FILE(GLOB NODES_FILES Nodes/*.png Nodes/*.PNG Nodes/*.xml Nodes/*.XML)
+
+INSTALL( FILES ${NODES_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/Nodes
+  
+)
+
+FILE(GLOB DECORATORS_FILES Decorators/*.png Decorators/*.PNG Decorators/*.xml Decorators/*.XML)
+
+INSTALL( FILES ${DECORATORS_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/Decorators
+  
+)
+
+FILE(GLOB COVER_FILES *.png *.PNG)
+
+INSTALL( FILES ${COVER_FILES} 
+  DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/Graphics/Blocks1/
+  
+)
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea

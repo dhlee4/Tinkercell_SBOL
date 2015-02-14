@@ -1,0 +1,53 @@
+<testcase>
+<info>
+<keywords>
+GOPHER-ipv6
+IPv6
+INDEX
+</keywords>
+</info>
+
+#
+# Server-side
+<reply>
+<data>
+<<<<<<< HEAD
+iMenu results		error.host	1
+0Selector 	/bar	bar.foo.invalid	70
+.
+=======
+iMenu results		error.host	1
+0Selector 	/bar	bar.foo.invalid	70
+.
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</data>
+</reply>
+
+# Client-side
+<client>
+<features>
+ipv6
+</features>
+<server>
+gopher-ipv6
+</server>
+ <name>
+Gopher IPv6 index
+ </name>
+ <command>
+-g gopher://%HOSTIP:%GOPHER6PORT/1/moo/1203
+</command>
+</client>
+
+#
+# Verify data after the test has been "shot"
+<verify>
+<protocol>
+<<<<<<< HEAD
+/moo/1203
+=======
+/moo/1203
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>

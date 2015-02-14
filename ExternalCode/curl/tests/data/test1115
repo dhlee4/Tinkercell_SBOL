@@ -1,0 +1,75 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+HTTP 1xx response code
+</keywords>
+</info>
+
+# Server-side
+<reply>
+<data>
+<<<<<<< HEAD
+HTTP/1.1 104 Experiment
+Server: Microsoft-IIS/5.0
+Date: Sun, 03 Apr 2005 14:57:45 GMT
+X-Powered-By: ASP.NET
+
+HTTP/1.1 200 OK swsbounce
+Server: Microsoft-IIS/6.0
+Content-Type: text/html; charset=iso-8859-1
+Content-Length: 0
+
+=======
+HTTP/1.1 104 Experiment
+Server: Microsoft-IIS/5.0
+Date: Sun, 03 Apr 2005 14:57:45 GMT
+X-Powered-By: ASP.NET
+
+HTTP/1.1 200 OK swsbounce
+Server: Microsoft-IIS/6.0
+Content-Type: text/html; charset=iso-8859-1
+Content-Length: 0
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</data>
+
+</reply>
+
+# Client-side
+<client>
+# 
+<server>
+http
+</server>
+<features>
+crypto
+</features>
+ <name>
+HTTP GET with unexpected 1xx response
+ </name>
+ <command>
+http://%HOSTIP:%HTTPPORT/1115
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<strip>
+^User-Agent:.*
+</strip>
+<protocol>
+<<<<<<< HEAD
+GET /1115 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+=======
+GET /1115 HTTP/1.1
+Host: %HOSTIP:%HTTPPORT
+Accept: */*
+
+>>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
+</protocol>
+</verify>
+</testcase>
