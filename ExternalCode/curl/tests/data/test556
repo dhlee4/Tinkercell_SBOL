@@ -42,15 +42,9 @@ http://%HOSTIP:%HTTPPORT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /556 HTTP/1.2
 Host: ninja
 
-=======
-GET /556 HTTP/1.2
-Host: ninja
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -40,7 +40,6 @@ Moooooooooooo
 ^EPRT \|1\|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\|\d{1,5}\|
 </strip>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PBSZ 0
@@ -53,20 +52,6 @@ PORT 127,0,0,1,5,109
 TYPE I
 STOR 408
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PBSZ 0
-PROT C
-PWD
-CWD CWD
-CWD STOR
-CWD RETR
-PORT 127,0,0,1,5,109
-TYPE I
-STOR 408
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <upload>
 Moooooooooooo

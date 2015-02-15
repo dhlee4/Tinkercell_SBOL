@@ -63,7 +63,6 @@ http://%HOSTIP:%HTTPPORT/want/1067 -L --referer "firstone.html;auto"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/1067 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -74,18 +73,6 @@ Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Referer: http://%HOSTIP:%HTTPPORT/want/1067
 
-=======
-GET /want/1067 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Referer: firstone.html
-
-GET /want/data/10670002.txt?coolsite=yes HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Referer: http://%HOSTIP:%HTTPPORT/want/1067
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -9,7 +9,6 @@ HTTP POST
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 200 OK
 Server: test-server/fake
 Content-Type: text/html
@@ -23,21 +22,6 @@ Server: test-server/fake
 Content-Type: text/html
 Content-Length: 0
 
-=======
-HTTP/1.0 200 OK
-Server: test-server/fake
-Content-Type: text/html
-Content-Length: 0
-
-this is data even though Content-Length is set to zero
-</data>
-<datacheck>
-HTTP/1.0 200 OK
-Server: test-server/fake
-Content-Type: text/html
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </datacheck>
 </reply>
 
@@ -62,21 +46,12 @@ HTTP POST a non-existing file
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST /268 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 0
 Content-Type: application/x-www-form-urlencoded
 
-=======
-POST /268 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 0
-Content-Type: application/x-www-form-urlencoded
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

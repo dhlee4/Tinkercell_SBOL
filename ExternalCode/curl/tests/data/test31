@@ -10,7 +10,6 @@ cookiejar
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -30,27 +29,6 @@ Set-Cookie: test2=yes; domain=se; expires=Sat Feb 2 11:56:27 GMT 2030
 Set-Cookie: magic=yessir; path=/silly/; HttpOnly
 Set-Cookie: blexp=yesyes; domain=.0.0.1; domain=.0.0.1; expiry=totally bad;
 
-=======
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 4
-Content-Type: text/html
-Funny-head: yesyes
-Set-Cookie: foobar=name; domain=anything.com; path=/ ; secure
-Set-Cookie:ismatch=this  ; domain=127.0.0.1; path=/silly/
-Set-Cookie: partmatch=present; domain=127.0.0.1 ; path=/;
-Set-Cookie:eat=this; domain=moo.foo.moo;
-Set-Cookie: eat=this-too; domain=.foo.moo;
-Set-Cookie: nodomainnovalue
-Set-Cookie:   nodomain=value; expires=Fri Feb 2 11:56:27 GMT 2035
-Set-Cookie: novalue; domain=reallysilly
-Set-Cookie: test=yes; domain=foo.com; expires=Sat Feb 2 11:56:27 GMT 2030
-Set-Cookie: test2=yes; domain=se; expires=Sat Feb 2 11:56:27 GMT 2030
-Set-Cookie: magic=yessir; path=/silly/; HttpOnly
-Set-Cookie: blexp=yesyes; domain=.0.0.1; domain=.0.0.1; expiry=totally bad;
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 boo
 </data>
 </reply>
@@ -80,17 +58,10 @@ http://%HOSTIP:%HTTPPORT/we/want/31 -b none -c log/jar31.txt
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/31 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /we/want/31 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <file name="log/jar31.txt" mode="text">
 # Netscape HTTP Cookie File

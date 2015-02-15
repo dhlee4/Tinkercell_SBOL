@@ -41,7 +41,6 @@ http://%HOSTIP:%HTTPPORT/197 --retry 1000
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /197 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -50,16 +49,6 @@ GET /197 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /197 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /197 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 
 <stdout>

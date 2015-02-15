@@ -39,7 +39,6 @@ HTTP with -d, -G and {}
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /199?foo=moo&moo=poo HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -48,16 +47,6 @@ GET /199?foo=moo&moo=poo HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /199?foo=moo&moo=poo HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /199?foo=moo&moo=poo HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

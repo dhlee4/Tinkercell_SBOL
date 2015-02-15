@@ -40,19 +40,11 @@ http://%HOSTIP:%HTTPPORT/93 -x %HOSTIP:%HTTPPORT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://%HOSTIP:%HTTPPORT/93 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET http://%HOSTIP:%HTTPPORT/93 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

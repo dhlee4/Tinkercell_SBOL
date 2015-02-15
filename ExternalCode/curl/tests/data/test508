@@ -39,21 +39,12 @@ http://%HOSTIP:%HTTPPORT/508
 s/^(this is what we post to the silly web server)\r\n/$1\n/ if($has_charconv)
 </strippart>
 <protocol>
-<<<<<<< HEAD
 POST /508 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 45
 Content-Type: application/x-www-form-urlencoded
 
-=======
-POST /508 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 45
-Content-Type: application/x-www-form-urlencoded
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 this is what we post to the silly web server
 </protocol>
 </verify>

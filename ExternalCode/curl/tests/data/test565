@@ -10,7 +10,6 @@ HTTP Digest auth
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 100 Continue
 Server: Microsoft-IIS/5.0
 Date: Sun, 03 Apr 2005 14:57:45 GMT
@@ -48,45 +47,6 @@ Server: Microsoft-IIS/6.0
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 3
 
-=======
-HTTP/1.1 100 Continue
-Server: Microsoft-IIS/5.0
-Date: Sun, 03 Apr 2005 14:57:45 GMT
-X-Powered-By: ASP.NET
-
-HTTP/1.1 401 authentication please swsbounce
-Server: Microsoft-IIS/6.0
-WWW-Authenticate: Digest realm="testrealm", nonce="1053604144"
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 0
-
-</data>
-<data1>
-HTTP/1.1 200 A OK
-Server: Microsoft-IIS/6.0
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 3
-
-ok
-</data1>
-<datacheck>
-HTTP/1.1 100 Continue
-Server: Microsoft-IIS/5.0
-Date: Sun, 03 Apr 2005 14:57:45 GMT
-X-Powered-By: ASP.NET
-
-HTTP/1.1 401 authentication please swsbounce
-Server: Microsoft-IIS/6.0
-WWW-Authenticate: Digest realm="testrealm", nonce="1053604144"
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 0
-
-HTTP/1.1 200 A OK
-Server: Microsoft-IIS/6.0
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 3
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 ok
 </datacheck>
 </reply>
@@ -113,7 +73,6 @@ http://%HOSTIP:%HTTPPORT/565
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 POST /565 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -141,35 +100,6 @@ three
 and a final longer crap: four
 0
 
-=======
-POST /565 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Transfer-Encoding: chunked
-Content-Type: application/x-www-form-urlencoded
-
-
-0
-
-POST /565 HTTP/1.1
-Authorization: Digest username="foo", realm="testrealm", nonce="1053604144", uri="/565", response="877424f750af047634dbd94f9933217b"
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Transfer-Encoding: chunked
-Content-Type: application/x-www-form-urlencoded
-Expect: 100-continue
-
-3
-one
-3
-two
-5
-three
-1d
-and a final longer crap: four
-0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

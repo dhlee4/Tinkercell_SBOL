@@ -12,7 +12,6 @@ httponly
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -25,20 +24,6 @@ Set-Cookie: test4=no; domain=nope.foo.com; path=/moo; secure
 Set-Cookie: test5=name; domain=anything.com; path=/ ; secure
 Content-Length: 4
 
-=======
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Type: text/html
-Funny-head: yesyes
-Set-Cookie: test=yes; httponly; domain=foo.com; expires=Fri Feb 2 11:56:27 GMT 2035
-SET-COOKIE: test2=yes; domain=host.foo.com; expires=Fri Feb 2 11:56:27 GMT 2035
-Set-Cookie: test3=maybe; domain=foo.com; path=/moo; secure
-Set-Cookie: test4=no; domain=nope.foo.com; path=/moo; secure
-Set-Cookie: test5=name; domain=anything.com; path=/ ; secure
-Content-Length: 4
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 boo
 </data>
 </reply>
@@ -68,17 +53,10 @@ http://%HOSTIP:%HTTPPORT/we/want/61 -c log/jar61.txt -H "Host: www.host.foo.com"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/61 HTTP/1.1
 Accept: */*
 Host: www.host.foo.com
 
-=======
-GET /we/want/61 HTTP/1.1
-Accept: */*
-Host: www.host.foo.com
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <file name="log/jar61.txt" mode="text">
 # Netscape HTTP Cookie File

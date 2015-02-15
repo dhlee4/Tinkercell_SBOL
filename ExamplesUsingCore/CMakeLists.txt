@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 INCLUDE_DIRECTORIES( BEFORE
 	${CMAKE_CURRENT_SOURCE_DIR} 
 	${TINKERCELL_SOURCE_DIR}/libSBOLc/headers
@@ -12,13 +11,6 @@ INCLUDE_DIRECTORIES( BEFORE
 #create SimpleMainProgram and link it to the TinkerCellCore library
 ADD_EXECUTABLE( SimpleMainProgram SimpleMainProgram.cpp )
 TARGET_LINK_LIBRARIES( SimpleMainProgram TinkerCellCore)
-=======
-INCLUDE_DIRECTORIES( BEFORE ${CMAKE_CURRENT_SOURCE_DIR} )
-
-#create SimpleMainProgram and link it to the TinkerCellCore library
-ADD_EXECUTABLE( SimpleMainProgram SimpleMainProgram.cpp )
-TARGET_LINK_LIBRARIES( SimpleMainProgram TinkerCellCore )
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 #this is required for all header files that defines a GUI class
 QT4_WRAP_CPP( MyFirstExtension_moc MyFirstExtension.h )
@@ -27,11 +19,7 @@ ADD_EXECUTABLE( MyFirstExtension MyFirstExtension.cpp ${MyFirstExtension_moc} )
 TARGET_LINK_LIBRARIES( MyFirstExtension TinkerCellCore )
 
 #these are two other example program
-<<<<<<< HEAD
 #ADD_SUBDIRECTORY(SimpleDesigner)
-=======
-ADD_SUBDIRECTORY(SimpleDesigner)
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 ADD_SUBDIRECTORY(MultiCell)
 ADD_SUBDIRECTORY(ExtensionUsingOntologies)
 

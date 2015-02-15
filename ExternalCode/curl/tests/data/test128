@@ -36,7 +36,6 @@ the
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -53,24 +52,6 @@ converted
 with
 the
 --crlf option
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-STOR 128
-QUIT
-</protocol>
-<upload>
-file
-with unix newlines
-meant to be
-converted
-with
-the
---crlf option
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </upload>
 </verify>
 </testcase>

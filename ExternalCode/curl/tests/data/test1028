@@ -14,7 +14,6 @@ FILE
 # Server-side
 <reply>
 <data1>
-<<<<<<< HEAD
 HTTP/1.1 302 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake swsclose
@@ -24,17 +23,6 @@ Location: ftp://127.0.0.1:8992/10280002
 Content-Length: 0
 Connection: close
 
-=======
-HTTP/1.1 302 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake swsclose
-Content-Type: text/html
-Funny-head: yesyes
-Location: ftp://127.0.0.1:8992/10280002
-Content-Length: 0
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data1>
 <data2>
 data
@@ -72,7 +60,6 @@ perl -e "print 'Test requires default test server host and port' if ( '%HOSTIP' 
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /10280001 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -96,31 +83,6 @@ Location: ftp://%HOSTIP:%FTPPORT/10280002
 Content-Length: 0
 Connection: close
 
-=======
-GET /10280001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-SIZE 10280002
-RETR 10280002
-QUIT
-</protocol>
-<stdout>
-HTTP/1.1 302 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake swsclose
-Content-Type: text/html
-Funny-head: yesyes
-Location: ftp://%HOSTIP:%FTPPORT/10280002
-Content-Length: 0
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 data
     to
       see

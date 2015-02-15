@@ -46,7 +46,6 @@ upload
 works?
 </upload>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -56,17 +55,6 @@ STOR 505
 RNFR 505
 RNTO 505-forreal
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-STOR 505
-RNFR 505
-RNTO 505-forreal
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

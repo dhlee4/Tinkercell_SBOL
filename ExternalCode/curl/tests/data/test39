@@ -11,11 +11,7 @@ HTTP FORMPOST
 HTTP/1.1 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
-<<<<<<< HEAD
 Content-Length: 10
-=======
-Content-Length: 10
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 blablabla
 </data>
@@ -47,7 +43,6 @@ foo
 ^(User-Agent:|Content-Type: multipart/form-data;|-------).*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST /we/want/39 HTTP/1.1
 User-Agent: curl/7.10.4 (i686-pc-linux-gnu) libcurl/7.10.4 OpenSSL/0.9.7a ipv6 zlib/1.1.3
 Host: %HOSTIP:%HTTPPORT
@@ -76,64 +71,21 @@ Content-Disposition: form-data; name="str2"
 Content-Disposition: form-data; name="file"; filename="fakerfile"
 Content-Type: moo/foobar
 
-=======
-POST /we/want/39 HTTP/1.1
-User-Agent: curl/7.10.4 (i686-pc-linux-gnu) libcurl/7.10.4 OpenSSL/0.9.7a ipv6 zlib/1.1.3
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 810
-Expect: 100-continue
-Content-Type: multipart/form-data; boundary=----------------------------24e78000bd32
-
-------------------------------24e78000bd32
-Content-Disposition: form-data; name="name"
-
-daniel
-------------------------------24e78000bd32
-Content-Disposition: form-data; name="tool"
-
-curl
-------------------------------24e78000bd32
-Content-Disposition: form-data; name="str1"
-
-@literal
-------------------------------24e78000bd32
-Content-Disposition: form-data; name="str2"
-
-<verbatim;type=xxx/yyy
-------------------------------24e78000bd32
-Content-Disposition: form-data; name="file"; filename="fakerfile"
-Content-Type: moo/foobar
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 foo bar
 This is a bar foo
 bar
 foo
-<<<<<<< HEAD
 
 ------------------------------24e78000bd32
 Content-Disposition: form-data; name="file2"; filename="test39.txt"
 Content-Type: text/plain
 
-=======
-
-------------------------------24e78000bd32
-Content-Disposition: form-data; name="file2"; filename="test39.txt"
-Content-Type: text/plain
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 foo bar
 This is a bar foo
 bar
 foo
-<<<<<<< HEAD
 
 ------------------------------24e78000bd32--
-=======
-
-------------------------------24e78000bd32--
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

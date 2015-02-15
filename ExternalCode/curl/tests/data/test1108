@@ -32,17 +32,10 @@ ftp://%HOSTIP:%FTPPORT/1108 --ftp-pret
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 PRET RETR 1108
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-PRET RETR 1108
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 # we expect that the server doesn't understand PRET
 <errorcode>

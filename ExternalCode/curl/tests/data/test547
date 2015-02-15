@@ -12,7 +12,6 @@ HTTP proxy NTLM auth
 <reply>
 
 <data>
-<<<<<<< HEAD
 HTTP/1.1 407 Authorization Required swsclose
 Server: Apache/1.3.27 (Darwin) PHP/4.1.2
 Proxy-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
@@ -21,56 +20,30 @@ Proxy-Authenticate: NTLM
 Content-Type: text/html; charset=iso-8859-1
 Connection: close
 
-=======
-HTTP/1.1 407 Authorization Required swsclose
-Server: Apache/1.3.27 (Darwin) PHP/4.1.2
-Proxy-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-Proxy-Authenticate: Basic realm="gimme all yer s3cr3ts"
-Proxy-Authenticate: NTLM
-Content-Type: text/html; charset=iso-8859-1
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is not the real page
 </data>
 
 # this is returned first since we get no proxy-auth
 <data1001>
-<<<<<<< HEAD
 HTTP/1.1 407 Authorization Required to proxy me my dear
 Proxy-Authenticate: NTLM TlRMTVNTUAACAAAAAgACADAAAAAGgoEAc51AYVDgyNcAAAAAAAAAAG4AbgAyAAAAQ0MCAAQAQwBDAAEAEgBFAEwASQBTAEEAQgBFAFQASAAEABgAYwBjAC4AaQBjAGUAZABlAHYALgBuAHUAAwAsAGUAbABpAHMAYQBiAGUAdABoAC4AYwBjAC4AaQBjAGUAZABlAHYALgBuAHUAAAAAAA==
 Content-Length: 34
 
-=======
-HTTP/1.1 407 Authorization Required to proxy me my dear
-Proxy-Authenticate: NTLM TlRMTVNTUAACAAAAAgACADAAAAAGgoEAc51AYVDgyNcAAAAAAAAAAG4AbgAyAAAAQ0MCAAQAQwBDAAEAEgBFAEwASQBTAEEAQgBFAFQASAAEABgAYwBjAC4AaQBjAGUAZABlAHYALgBuAHUAAwAsAGUAbABpAHMAYQBiAGUAdABoAC4AYwBjAC4AaQBjAGUAZABlAHYALgBuAHUAAAAAAA==
-Content-Length: 34
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Hey you, authenticate or go away!
 </data1001>
 
 # This is supposed to be returned when the server gets the second
 # Authorization: NTLM line passed-in from the client
 <data1002>
-<<<<<<< HEAD
 HTTP/1.1 200 Things are fine in proxy land swsclose
 Server: Microsoft-IIS/5.0
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 42
 
-=======
-HTTP/1.1 200 Things are fine in proxy land swsclose
-Server: Microsoft-IIS/5.0
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 42
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Contents of that page you requested, sir.
 </data1002>
 
 <datacheck>
-<<<<<<< HEAD
 HTTP/1.1 407 Authorization Required swsclose
 Server: Apache/1.3.27 (Darwin) PHP/4.1.2
 Proxy-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
@@ -88,25 +61,6 @@ Server: Microsoft-IIS/5.0
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 42
 
-=======
-HTTP/1.1 407 Authorization Required swsclose
-Server: Apache/1.3.27 (Darwin) PHP/4.1.2
-Proxy-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-Proxy-Authenticate: Basic realm="gimme all yer s3cr3ts"
-Proxy-Authenticate: NTLM
-Content-Type: text/html; charset=iso-8859-1
-Connection: close
-
-HTTP/1.1 407 Authorization Required to proxy me my dear
-Proxy-Authenticate: NTLM TlRMTVNTUAACAAAAAgACADAAAAAGgoEAc51AYVDgyNcAAAAAAAAAAG4AbgAyAAAAQ0MCAAQAQwBDAAEAEgBFAEwASQBTAEEAQgBFAFQASAAEABgAYwBjAC4AaQBjAGUAZABlAHYALgBuAHUAAwAsAGUAbABpAHMAYQBiAGUAdABoAC4AYwBjAC4AaQBjAGUAZABlAHYALgBuAHUAAAAAAA==
-Content-Length: 34
-
-HTTP/1.1 200 Things are fine in proxy land swsclose
-Server: Microsoft-IIS/5.0
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 42
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Contents of that page you requested, sir.
 </datacheck>
 </reply>
@@ -146,7 +100,6 @@ chkhostname curlhost
 ^User-Agent: curl/.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST http://test.remote.haxx.se/path/547 HTTP/1.1
 User-Agent: curl/7.13.2-CVS (i686-pc-linux-gnu) libcurl/7.13.2-CVS OpenSSL/0.9.7e zlib/1.2.2 libidn/0.5.13
 Host: test.remote.haxx.se
@@ -174,35 +127,6 @@ Proxy-Connection: Keep-Alive
 Content-Length: 36
 Content-Type: application/x-www-form-urlencoded
 
-=======
-POST http://test.remote.haxx.se/path/547 HTTP/1.1
-User-Agent: curl/7.13.2-CVS (i686-pc-linux-gnu) libcurl/7.13.2-CVS OpenSSL/0.9.7e zlib/1.2.2 libidn/0.5.13
-Host: test.remote.haxx.se
-Accept: */*
-Proxy-Connection: Keep-Alive
-Content-Length: 36
-Content-Type: application/x-www-form-urlencoded
-
-this is the blurb we want to upload
-POST http://test.remote.haxx.se/path/547 HTTP/1.1
-Proxy-Authorization: NTLM TlRMTVNTUAABAAAABoIIAAAAAAAAAAAAAAAAAAAAAAA=
-User-Agent: curl/7.13.2-CVS (i686-pc-linux-gnu) libcurl/7.13.2-CVS OpenSSL/0.9.7e zlib/1.2.2 libidn/0.5.13
-Host: test.remote.haxx.se
-Accept: */*
-Proxy-Connection: Keep-Alive
-Content-Length: 0
-Content-Type: application/x-www-form-urlencoded
-
-POST http://test.remote.haxx.se/path/547 HTTP/1.1
-Proxy-Authorization: NTLM TlRMTVNTUAADAAAAGAAYAEAAAAAYABgAWAAAAAAAAABwAAAABQAFAHAAAAAIAAgAdQAAAAAAAAAAAAAABoKBAIYrD1xJmhNBNL9fLzuk9PV9436GAxPu0EKWzqQ/sZDVLXnp1JrySgl8A+cibE6z4HMxbGx5Y3VybGhvc3Q=
-User-Agent: curl/7.13.2-CVS (i686-pc-linux-gnu) libcurl/7.13.2-CVS OpenSSL/0.9.7e zlib/1.2.2 libidn/0.5.13
-Host: test.remote.haxx.se
-Accept: */*
-Proxy-Connection: Keep-Alive
-Content-Length: 36
-Content-Type: application/x-www-form-urlencoded
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 this is the blurb we want to upload
 </protocol>
 </verify>

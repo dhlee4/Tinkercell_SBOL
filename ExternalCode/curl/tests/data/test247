@@ -31,19 +31,11 @@ ftp://%HOSTIP:%FTPPORT/247 -T log/test247.txt -z "apr 1 2005 08:00:00"
 <upload>
 </upload>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 MDTM 247
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-MDTM 247
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

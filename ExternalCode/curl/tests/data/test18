@@ -11,33 +11,21 @@ HTTP GET
 <data nocheck="yes">
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 4
-=======
-Content-Length: 4
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 moo
 </data>
 <data2>
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 4
-=======
-Content-Length: 4
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 foo
 </data2>
 <data3>
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 4
-=======
-Content-Length: 4
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 hoo
 </data3>
@@ -62,7 +50,6 @@ multiple requests using {} in URL
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /18 HTTP/1.1
 User-Agent: curl/7.8.1-pre3 (sparc-sun-solaris2.7) libcurl 7.8.1-pre3 (OpenSSL 0.9.6a) (krb4 enabled)
 Host: %HOSTIP:%HTTPPORT
@@ -78,53 +65,24 @@ User-Agent: curl/7.8.1-pre3 (sparc-sun-solaris2.7) libcurl 7.8.1-pre3 (OpenSSL 0
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /18 HTTP/1.1
-User-Agent: curl/7.8.1-pre3 (sparc-sun-solaris2.7) libcurl 7.8.1-pre3 (OpenSSL 0.9.6a) (krb4 enabled)
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /180002 HTTP/1.1
-User-Agent: curl/7.8.1-pre3 (sparc-sun-solaris2.7) libcurl 7.8.1-pre3 (OpenSSL 0.9.6a) (krb4 enabled)
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /180003 HTTP/1.1
-User-Agent: curl/7.8.1-pre3 (sparc-sun-solaris2.7) libcurl 7.8.1-pre3 (OpenSSL 0.9.6a) (krb4 enabled)
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <stdout>
 --_curl_--%HOSTIP:%HTTPPORT/18
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 4
-=======
-Content-Length: 4
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 moo
 --_curl_--%HOSTIP:%HTTPPORT/180002
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 4
-=======
-Content-Length: 4
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 foo
 --_curl_--%HOSTIP:%HTTPPORT/180003
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 4
-=======
-Content-Length: 4
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 hoo
 </stdout>

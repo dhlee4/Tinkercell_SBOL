@@ -26,17 +26,10 @@ ftp://%HOSTIP:%FTPPORT/196 --retry 1
 67
 </errorcode>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 USER anonymous
 PASS ftp@example.com
-=======
-USER anonymous
-PASS ftp@example.com
-USER anonymous
-PASS ftp@example.com
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

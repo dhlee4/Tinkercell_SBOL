@@ -50,7 +50,6 @@ FTP IPv6 dir list with EPRT
 s/^(EPRT \|2\|::1\|)(.*)/$1/
 </strippart>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -58,15 +57,6 @@ EPRT |2|::1|
 TYPE A
 LIST
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPRT |2|::1|
-TYPE A
-LIST
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

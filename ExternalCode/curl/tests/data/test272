@@ -30,19 +30,11 @@ ftp://%HOSTIP:%FTPPORT/272 -z "2004 jan 1 12:12:12 UTC"
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 MDTM 272
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-MDTM 272
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

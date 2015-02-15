@@ -41,7 +41,6 @@ s/^------------------------------[a-z0-9]*/------------------------------/
 s/boundary=----------------------------[a-z0-9]*/boundary=----------------------------/
 </strippart>
 <protocol>
-<<<<<<< HEAD
 POST /want/277 HTTP/1.1
 User-Agent: curl/7.10.4 (i686-pc-linux-gnu) libcurl/7.10.4 OpenSSL/0.9.7a ipv6 zlib/1.1.3
 Host: %HOSTIP:%HTTPPORT
@@ -55,21 +54,6 @@ Content-Disposition: form-data; name="name"
 
 daniel
 --------------------------------
-=======
-POST /want/277 HTTP/1.1
-User-Agent: curl/7.10.4 (i686-pc-linux-gnu) libcurl/7.10.4 OpenSSL/0.9.7a ipv6 zlib/1.1.3
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 145
-Expect: 100-continue
-Content-Type: text/info; boundary=----------------------------
-
-------------------------------
-Content-Disposition: form-data; name="name"
-
-daniel
---------------------------------
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

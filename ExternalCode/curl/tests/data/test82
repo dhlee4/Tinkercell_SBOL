@@ -12,21 +12,12 @@ HTTP proxy NTLM auth
 <reply>
 
 <data>
-<<<<<<< HEAD
 HTTP/1.1 407 We only deal with NTLM my friend
 Server: Microsoft-IIS/5.0
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 34
 Proxy-Authenticate: NTLM
 
-=======
-HTTP/1.1 407 We only deal with NTLM my friend
-Server: Microsoft-IIS/5.0
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 34
-Proxy-Authenticate: NTLM
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is not the real page either!
 </data>
 
@@ -53,7 +44,6 @@ http://%HOSTIP:%HTTPPORT/82 --proxy-user testuser:testpass -x http://%HOSTIP:%HT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://%HOSTIP:%HTTPPORT/82 HTTP/1.1
 Proxy-Authorization: Basic dGVzdHVzZXI6dGVzdHBhc3M=
 User-Agent: curl/7.10.6-pre1 (i686-pc-linux-gnu) libcurl/7.10.6-pre1 OpenSSL/0.9.7a ipv6 zlib/1.1.3
@@ -61,15 +51,6 @@ Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET http://%HOSTIP:%HTTPPORT/82 HTTP/1.1
-Proxy-Authorization: Basic dGVzdHVzZXI6dGVzdHBhc3M=
-User-Agent: curl/7.10.6-pre1 (i686-pc-linux-gnu) libcurl/7.10.6-pre1 OpenSSL/0.9.7a ipv6 zlib/1.1.3
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

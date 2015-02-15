@@ -38,7 +38,6 @@ ftp://%HOSTIP:%FTPPORT/120 -Q "-DELE file"
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -49,18 +48,6 @@ SIZE 120
 RETR 120
 DELE file
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-PASV
-TYPE I
-SIZE 120
-RETR 120
-DELE file
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

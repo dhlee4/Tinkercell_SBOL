@@ -10,7 +10,6 @@ chunked Transfer-Encoding
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 funky chunky!
 Server: fakeit/0.9 fakeitbad/1.0
 Transfer-Encoding: chunked
@@ -34,31 +33,6 @@ Server: fakeit/0.9 fakeitbad/1.0
 Transfer-Encoding: chunked
 Connection: mooo
 
-=======
-HTTP/1.1 200 funky chunky!
-Server: fakeit/0.9 fakeitbad/1.0
-Transfer-Encoding: chunked
-Connection: mooo
-
-40
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-30
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-21;heresatest=moooo
-cccccccccccccccccccccccccccccccc
-
-0
-chunky-trailer: header data
-another-header: yes
-
-</data>
-<datacheck>
-HTTP/1.1 200 funky chunky!
-Server: fakeit/0.9 fakeitbad/1.0
-Transfer-Encoding: chunked
-Connection: mooo
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccc
 </datacheck>
 </reply>
@@ -84,7 +58,6 @@ http://%HOSTIP:%HTTPPORT/1116 -D log/heads1116
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1116 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -98,21 +71,6 @@ Connection: mooo
 
 chunky-trailer: header data
 another-header: yes
-=======
-GET /1116 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-</protocol>
-<file name="log/heads1116">
-HTTP/1.1 200 funky chunky!
-Server: fakeit/0.9 fakeitbad/1.0
-Transfer-Encoding: chunked
-Connection: mooo
-
-chunky-trailer: header data
-another-header: yes
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </file>
 </verify>
 

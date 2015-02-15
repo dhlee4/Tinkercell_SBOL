@@ -46,17 +46,10 @@ HTTP GET URL without slash but with questionmark
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /?260 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /?260 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

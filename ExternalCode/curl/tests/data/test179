@@ -16,11 +16,7 @@ Server: Microsoft-IIS/4.0
 Date: Tue, 25 Sep 2001 19:37:44 GMT
 Content-Type: text/html
 Connection: close
-<<<<<<< HEAD
 Content-Length: 21
-=======
-Content-Length: 21
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 This server says moo
 </data>
@@ -50,21 +46,12 @@ supertrooper.fake	FALSE	/c	FALSE	2139150993	moo2	indeed
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://supertrooper.fake/c/179 HTTP/1.1
 Host: supertrooper.fake
 Accept: */*
 Proxy-Connection: Keep-Alive
 Cookie: moo2=indeed
 
-=======
-GET http://supertrooper.fake/c/179 HTTP/1.1
-Host: supertrooper.fake
-Accept: */*
-Proxy-Connection: Keep-Alive
-Cookie: moo2=indeed
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

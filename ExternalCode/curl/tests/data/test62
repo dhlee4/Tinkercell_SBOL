@@ -12,17 +12,10 @@ httponly
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Type: text/html
 
-=======
-HTTP/1.0 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Type: text/html
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 boo
 </data>
 </reply>
@@ -57,19 +50,11 @@ http://%HOSTIP:%HTTPPORT/we/want/62 -b log/jar62.txt -H "Host: www.host.foo.com"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/62 HTTP/1.1
 Accept: */*
 Cookie: test2=yes; test=yes
 Host: www.host.foo.com
 
-=======
-GET /we/want/62 HTTP/1.1
-Accept: */*
-Cookie: test2=yes; test=yes
-Host: www.host.foo.com
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

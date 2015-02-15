@@ -31,11 +31,7 @@ file
 
 newlinens?
 yes please
-<<<<<<< HEAD
         
-=======
-        
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 [tab][CR] too
 </file>
 </client>
@@ -46,7 +42,6 @@ yes please
 ^(User-Agent:|Content-Type: multipart/form-data;|------------).*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST /we/want/163 HTTP/1.1
 User-Agent: curl/7.11.2-CVS (i686-pc-linux-gnu) libcurl/7.11.2-CVS OpenSSL/0.9.6b zlib/1.1.4 c-ares/1.0.0
 Host: %HOSTIP:%HTTPPORT
@@ -58,19 +53,6 @@ Content-Type: multipart/form-data; boundary=----------------------------c2d1767e
 ------------------------------c2d1767eb6ac
 Content-Disposition: form-data; name="name"
 
-=======
-POST /we/want/163 HTTP/1.1
-User-Agent: curl/7.11.2-CVS (i686-pc-linux-gnu) libcurl/7.11.2-CVS OpenSSL/0.9.6b zlib/1.1.4 c-ares/1.0.0
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 304
-Expect: 100-continue
-Content-Type: multipart/form-data; boundary=----------------------------c2d1767eb6ac
-
-------------------------------c2d1767eb6ac
-Content-Disposition: form-data; name="name"
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 contents
 from
 a
@@ -78,7 +60,6 @@ file
 
 newlinens?
 yes please
-<<<<<<< HEAD
         
 [tab][CR] too
 
@@ -87,16 +68,6 @@ Content-Disposition: form-data; name="tool"
 
 curl
 ------------------------------c2d1767eb6ac--
-=======
-        
-[tab][CR] too
-
-------------------------------c2d1767eb6ac
-Content-Disposition: form-data; name="tool"
-
-curl
-------------------------------c2d1767eb6ac--
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

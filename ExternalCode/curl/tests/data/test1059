@@ -13,19 +13,11 @@ FAILURE
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 501 Method not implemented swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Connection: close
 Content-Length: 0
 
-=======
-HTTP/1.1 501 Method not implemented swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Connection: close
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 </reply>
 
@@ -57,17 +49,10 @@ ftp://test-number:1059/wanted/page -p -x %HOSTIP:%HTTPPORT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 CONNECT test-number:1059 HTTP/1.1
 Host: test-number:1059
 Proxy-Connection: Keep-Alive
 
-=======
-CONNECT test-number:1059 HTTP/1.1
-Host: test-number:1059
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

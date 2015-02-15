@@ -11,17 +11,10 @@ Resume
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 416 Invalid range
 Connection: close
 Content-Length: 0
 
-=======
-HTTP/1.1 416 Invalid range
-Connection: close
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 
 # The file data that exists at the start of the test must be included in
@@ -37,17 +30,10 @@ Content-Length: 0
 012345678
 012345678
 012345678
-<<<<<<< HEAD
 HTTP/1.1 416 Invalid range
 Connection: close
 Content-Length: 0
 
-=======
-HTTP/1.1 416 Invalid range
-Connection: close
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </datacheck>
 
 </reply>
@@ -83,19 +69,11 @@ http://%HOSTIP:%HTTPPORT/1040 -C -
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1040 HTTP/1.1
 Range: bytes=100-
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /1040 HTTP/1.1
-Range: bytes=100-
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

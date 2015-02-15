@@ -3,13 +3,8 @@
  * @brief   SBMLNamespaces class to store level/version and namespace 
  * @author  Sarah Keating
  *
-<<<<<<< HEAD
  * $Id: SBMLNamespaces.h 2657 2011-10-05 21:28:22Z dchandran1 $
  * $HeadURL: svn://svn.code.sf.net/p/tinkercell/code/trunk/ExternalCode/sbml/src/sbml/SBMLNamespaces.h $
-=======
- * $Id$
- * $HeadURL$
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
  *
  * <!--------------------------------------------------------------------------
  * This file is part of libSBML.  Please visit http://sbml.org for more

@@ -48,17 +48,10 @@ perl -e "print 'Test requires default test server host' if ( '%HOSTIP' ne '127.0
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /310 HTTP/1.1
 Host: localhost:%HTTPSPORT
 Accept: */*
 
-=======
-GET /310 HTTP/1.1
-Host: localhost:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

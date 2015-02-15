@@ -37,7 +37,6 @@ Get same cookie page several times
 ^User-Agent: curl.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/27 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -52,22 +51,6 @@ Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Cookie: thewinneris=nowayyouwin
 
-=======
-GET /want/27 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /want/27 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: thewinneris=nowayyouwin
-
-GET /want/27 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: thewinneris=nowayyouwin
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

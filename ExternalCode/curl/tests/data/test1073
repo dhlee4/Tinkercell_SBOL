@@ -15,7 +15,6 @@ chunked Transfer-Encoding
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 301 Redirect swsclose
 Server: testcurl
 Content-Type: text/plain
@@ -23,15 +22,6 @@ Location: /newlocation/10730002
 Content-Length: 0
 Connection: close
 
-=======
-HTTP/1.0 301 Redirect swsclose
-Server: testcurl
-Content-Type: text/plain
-Location: /newlocation/10730002
-Content-Length: 0
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 </reply>
 
@@ -63,7 +53,6 @@ which is impossible in HTTP/1.0
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /1073 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -71,28 +60,13 @@ Transfer-Encoding: chunked
 Expect: 100-continue
 
 7a
-=======
-PUT /1073 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Transfer-Encoding: chunked
-Expect: 100-continue
-
-7a
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is data we upload with PUT
 it comes from stdin so MUST be sent
 with chunked encoding
 which is impossible in HTTP/1.0
-<<<<<<< HEAD
 
 0
 
-=======
-
-0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

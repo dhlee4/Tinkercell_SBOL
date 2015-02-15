@@ -32,7 +32,6 @@ ftp://%HOSTIP:%FTPPORT/blalbla/139 -z "1 jan 1989"
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -43,18 +42,6 @@ TYPE I
 SIZE 139
 RETR 139
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD blalbla
-MDTM 139
-EPSV
-TYPE I
-SIZE 139
-RETR 139
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

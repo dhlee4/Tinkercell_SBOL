@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /****************************************************************************
 
  Copyright (c) 2008 Deepak Chandran
@@ -48,54 +47,3 @@ namespace Tinkercell
 
 
 #endif
-=======
-/****************************************************************************
-
- Copyright (c) 2008 Deepak Chandran
- Contact: Deepak Chandran (dchandran1@gmail.com)
- See COPYRIGHT.TXT
- 
- This tool updates the x,y attribute for "Cell" items when they are moved
-
-****************************************************************************/
-
-#ifndef TINKERCELL_CELLPOSITIONAUTOUPDATINGTOOL_H
-#define TINKERCELL_CELLPOSITIONAUTOUPDATINGTOOL_H
-
-#include <QtGui>
-#include <QtDebug>
-#include <QGraphicsItem>
-#include <QGraphicsScene>
-#include <QTimeLine>
-#include <QTextEdit>
-#include <QTextCursor>
-
-#include "ItemHandle.h"
-#include "Tool.h"
-
-namespace Tinkercell
-{
-
-	class TINKERCELLEXPORT CellPositionUpdateTool : public Tool
-	{
-		Q_OBJECT
-
-	public:
-		CellPositionUpdateTool();
-		bool setMainWindow(MainWindow * main);
-		
-	public slots:
-		
-		void itemsMoved(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<QPointF>& distance);
-		void itemsInserted(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles);
-
-	};
-
-
-}
-
-//extern "C" TINKERCELLEXPORT void loadTCTool(Tinkercell::MainWindow * main);
-
-
-#endif
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea

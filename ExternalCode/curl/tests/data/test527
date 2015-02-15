@@ -40,7 +40,6 @@ ftp://%HOSTIP:%FTPPORT/path/527
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -59,26 +58,6 @@ EPSV
 SIZE 527
 RETR 527
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD path
-EPSV
-TYPE I
-SIZE 527
-RETR 527
-EPSV
-SIZE 527
-RETR 527
-EPSV
-SIZE 527
-RETR 527
-EPSV
-SIZE 527
-RETR 527
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

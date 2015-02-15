@@ -42,21 +42,12 @@ FTP over HTTP proxy with user:pass not in url
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET ftp://michal:aybabtu@host.com/we/want/299 HTTP/1.1
 Authorization: Basic bWljaGFsOmF5YmFidHU=
 Host: host.com:21
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET ftp://michal:aybabtu@host.com/we/want/299 HTTP/1.1
-Authorization: Basic bWljaGFsOmF5YmFidHU=
-Host: host.com:21
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

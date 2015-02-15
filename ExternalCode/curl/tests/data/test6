@@ -39,19 +39,11 @@ http://%HOSTIP:%HTTPPORT/we/want/that/page/6 -b "name=contents;name2=content2"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/that/page/6 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Cookie: name=contents;name2=content2
 
-=======
-GET /we/want/that/page/6 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: name=contents;name2=content2
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -11,15 +11,9 @@ INDEX
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 iMenu results		error.host	1
 0Selector 	/bar	bar.foo.invalid	70
 .
-=======
-iMenu results		error.host	1
-0Selector 	/bar	bar.foo.invalid	70
-.
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 </reply>
 
@@ -43,11 +37,7 @@ Gopher IPv6 index
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 /moo/1203
-=======
-/moo/1203
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -37,7 +37,6 @@ FTP retrieve a byte-range relative to end of file
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -47,17 +46,6 @@ SIZE 1057
 REST 52
 RETR 1057
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-SIZE 1057
-REST 52
-RETR 1057
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

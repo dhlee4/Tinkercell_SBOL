@@ -62,7 +62,6 @@ http://%HOSTIP:%HTTPPORT/want/28 -L
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/28 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -71,16 +70,6 @@ GET /online/1,1795,Welcome,00.html/280002.txt?logout=TRUE HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /want/28 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /online/1,1795,Welcome,00.html/280002.txt?logout=TRUE HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -10,17 +10,10 @@ HTTP PUT
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 
-=======
-HTTP/1.0 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 blablabla
 
 </data>
@@ -48,7 +41,6 @@ more than one byte
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /bzz/1068 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -60,19 +52,6 @@ more than one byte
 
 0
 
-=======
-PUT /bzz/1068 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Transfer-Encoding: chunked
-Expect: 100-continue
-
-13
-more than one byte
-
-0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

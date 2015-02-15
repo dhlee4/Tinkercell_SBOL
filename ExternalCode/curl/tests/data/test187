@@ -64,7 +64,6 @@ http://%HOSTIP:%HTTPPORT?oh=what-weird=test/187 -L
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /?oh=what-weird=test/187 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -73,16 +72,6 @@ GET /root/1870002.txt?coolsite=yes HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /?oh=what-weird=test/187 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /root/1870002.txt?coolsite=yes HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

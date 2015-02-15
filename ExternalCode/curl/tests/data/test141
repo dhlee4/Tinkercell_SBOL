@@ -33,7 +33,6 @@ ftp://%HOSTIP:%FTPPORT/blalbla/141 -I
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -48,22 +47,6 @@ QUIT
 Last-Modified: Wed, 09 Apr 2003 10:26:59 GMT
 Content-Length: 42
 Accept-ranges: bytes
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD blalbla
-MDTM 141
-TYPE I
-SIZE 141
-REST 0
-QUIT
-</protocol>
-<stdout>
-Last-Modified: Wed, 09 Apr 2003 10:26:59 GMT
-Content-Length: 42
-Accept-ranges: bytes
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </stdout>
 </verify>
 </testcase>

@@ -16,7 +16,6 @@ multiprotocol
 # Server-side
 <reply>
 <data1 nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -28,19 +27,6 @@ Connection: close
 Content-Type: text/html
 Funny-head: yesyes
 
-=======
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
-ETag: "21025-dc7-39462498"
-Accept-Ranges: bytes
-Content-Length: 6
-Connection: close
-Content-Type: text/html
-Funny-head: yesyes
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 -foo-
 </data1>
 <data2 nocheck="yes">
@@ -90,7 +76,6 @@ moo
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /20020001 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -119,36 +104,6 @@ Connection: close
 Content-Type: text/html
 Funny-head: yesyes
 
-=======
-GET /20020001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-SIZE 20020002
-RETR 20020002
-opcode: 1
-filename: /20020003
-mode: octet
-QUIT
-</protocol>
-<stdout>
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
-ETag: "21025-dc7-39462498"
-Accept-Ranges: bytes
-Content-Length: 6
-Connection: close
-Content-Type: text/html
-Funny-head: yesyes
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 -foo-
 data
     to

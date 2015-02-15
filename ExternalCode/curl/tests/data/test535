@@ -56,7 +56,6 @@ http://%HOSTIP:%HTTPPORT/535 http://%HOSTIP:%HTTPPORT/5350001
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 GET /535 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -65,16 +64,6 @@ GET /5350001 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /535 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /5350001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

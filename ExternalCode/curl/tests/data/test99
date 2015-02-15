@@ -59,19 +59,11 @@ http://%HOSTIP:%HTTPPORT/99 -C 9999999999
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /99 HTTP/1.1
 Range: bytes=9999999999-
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /99 HTTP/1.1
-Range: bytes=9999999999-
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

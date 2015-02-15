@@ -46,7 +46,6 @@ ftp://ftp-site/moo/1098 ftp://ftp-site/moo/1098 --proxy http://%HOSTIP:%HTTPPORT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET ftp://ftp-site/moo/1098 HTTP/1.1
 Host: ftp-site:21
 Accept: */*
@@ -57,18 +56,6 @@ Host: ftp-site:21
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET ftp://ftp-site/moo/1098 HTTP/1.1
-Host: ftp-site:21
-Accept: */*
-Proxy-Connection: Keep-Alive
-
-GET ftp://ftp-site/moo/1098 HTTP/1.1
-Host: ftp-site:21
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <stdout mode="text">
 HTTP/1.1 200 OK

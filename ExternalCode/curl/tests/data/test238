@@ -31,19 +31,11 @@ ftp://%HOSTIP:%FTPPORT/238
 7, 15
 </errorcode>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 EPSV
 PASV
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-PASV
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

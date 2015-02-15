@@ -13,7 +13,6 @@ chunked Transfer-Encoding
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 302 OK swsbounce swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Length: 8
@@ -37,31 +36,6 @@ monster
 
 0
 
-=======
-HTTP/1.1 302 OK swsbounce swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 8
-Connection: close
-Content-Type: text/plain
-Location: ./10900001
-
-monster
-</data>
-<data1 nocheck="yes">
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Transfer-Encoding: chunked
-Connection: close
-Content-Type: text/plain; charset=us-ascii
-
-0007
-bigger 
-0008
-monster
-
-0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data1>
 
 </reply>
@@ -87,7 +61,6 @@ http://%HOSTIP:%HTTPPORT/1090 -w "%{num_connects}\n%{num_redirects}\n%{size_down
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1090 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -112,32 +85,6 @@ Transfer-Encoding: chunked
 Connection: close
 Content-Type: text/plain; charset=us-ascii
 
-=======
-GET /1090 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /10900001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-</protocol>
-
-<stdout>
-HTTP/1.1 302 OK swsbounce swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 8
-Connection: close
-Content-Type: text/plain
-Location: ./10900001
-
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Transfer-Encoding: chunked
-Connection: close
-Content-Type: text/plain; charset=us-ascii
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 bigger monster
 2
 1

@@ -38,19 +38,11 @@ rtsp://%HOSTIP:%RTSPPORT/567
 
 <verify>
 <protocol>
-<<<<<<< HEAD
 OPTIONS rtsp://%HOSTIP:%RTSPPORT/567 RTSP/1.0
 CSeq: 1
 User-Agent: test567
 Test-Number: 567
 
-=======
-OPTIONS rtsp://%HOSTIP:%RTSPPORT/567 RTSP/1.0
-CSeq: 1
-User-Agent: test567
-Test-Number: 567
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 

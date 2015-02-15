@@ -35,7 +35,6 @@ ftp://%HOSTIP:%FTPPORT/first/dir/here/146 ftp://%HOSTIP:%FTPPORT/146
 ^EPRT \|1\|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\|\d{1,5}\|
 </strip>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -51,23 +50,6 @@ EPSV
 SIZE 146
 RETR 146
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD first
-CWD dir
-CWD here
-EPSV
-TYPE I
-SIZE 146
-RETR 146
-CWD /
-EPSV
-SIZE 146
-RETR 146
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

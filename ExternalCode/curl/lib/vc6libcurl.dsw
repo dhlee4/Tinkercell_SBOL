@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Microsoft Developer Studio Workspace File, Format Version 6.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
@@ -28,34 +27,3 @@ Package=<3>
 
 ###############################################################################
 
-=======
-Microsoft Developer Studio Workspace File, Format Version 6.00
-# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
-
-###############################################################################
-
-Project: "libcurl"=".\vc6libcurl.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Global:
-
-Package=<5>
-{{{
-}}}
-
-Package=<3>
-{{{
-}}}
-
-###############################################################################
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea

@@ -45,19 +45,11 @@ download on.
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/38 HTTP/1.1
 Range: bytes=78-
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /want/38 HTTP/1.1
-Range: bytes=78-
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 
 # the download target file must remain untouched

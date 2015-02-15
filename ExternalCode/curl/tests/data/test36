@@ -16,19 +16,11 @@ Server: fakeit/0.9 fakeitbad/1.0
 Transfer-Encoding: chunked
 Connection: mooo
 
-<<<<<<< HEAD
 2
 a
 
 ILLEGAL
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-=======
-2
-a
-
-ILLEGAL
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 <datacheck>
 HTTP/1.1 200 funky chunky!
@@ -64,17 +56,10 @@ http://%HOSTIP:%HTTPPORT/36
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /36 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /36 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 

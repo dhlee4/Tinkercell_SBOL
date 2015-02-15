@@ -39,7 +39,6 @@ ftp://non-existing-host.haxx.se/path/534 ftp://%HOSTIP:%FTPPORT/path/534
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -49,17 +48,6 @@ TYPE I
 SIZE 534
 RETR 534
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD path
-EPSV
-TYPE I
-SIZE 534
-RETR 534
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

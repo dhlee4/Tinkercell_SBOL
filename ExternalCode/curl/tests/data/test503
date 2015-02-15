@@ -22,13 +22,8 @@ ETag: "21025-dc7-39462498"
 
 </data>
 <datacheck>
-<<<<<<< HEAD
 HTTP/1.1 200 Mighty fine indeed
 
-=======
-HTTP/1.1 200 Mighty fine indeed
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 HTTP/1.1 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -66,7 +61,6 @@ moo
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 CONNECT %HOSTIP:%HTTPSPORT HTTP/1.1
 Host: %HOSTIP:%HTTPSPORT
 Proxy-Authorization: Basic dGVzdDppbmc=
@@ -77,18 +71,6 @@ Authorization: Basic dGVzdDppbmc=
 Host: %HOSTIP:%HTTPSPORT
 Accept: */*
 
-=======
-CONNECT %HOSTIP:%HTTPSPORT HTTP/1.1
-Host: %HOSTIP:%HTTPSPORT
-Proxy-Authorization: Basic dGVzdDppbmc=
-Proxy-Connection: Keep-Alive
-
-GET /503 HTTP/1.1
-Authorization: Basic dGVzdDppbmc=
-Host: %HOSTIP:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

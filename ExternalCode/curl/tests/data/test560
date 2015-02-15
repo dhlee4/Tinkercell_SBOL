@@ -47,17 +47,10 @@ https://%HOSTIP:%HTTPSPORT/560
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /560 HTTP/1.1
 Host: %HOSTIP:%HTTPSPORT
 Accept: */*
 
-=======
-GET /560 HTTP/1.1
-Host: %HOSTIP:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

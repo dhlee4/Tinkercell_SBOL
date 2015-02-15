@@ -10,7 +10,6 @@ HTTP/1.0
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.0 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Length: 9
@@ -23,20 +22,6 @@ HTTP/1.0 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Connection: close
 
-=======
-HTTP/1.0 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 9
-Connection: Keep-Alive
-
-surprise
-</data>
-<data1>
-HTTP/1.0 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 surprise2
 </data1>
 
@@ -61,7 +46,6 @@ http://%HOSTIP:%HTTPPORT/want/1074 http://%HOSTIP:%HTTPPORT/wantmore/10740001
 # Verify data after the test has been "shot"
 <verify>
 <stdout>
-<<<<<<< HEAD
 HTTP/1.0 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Length: 9
@@ -72,18 +56,6 @@ HTTP/1.0 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Connection: close
 
-=======
-HTTP/1.0 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 9
-Connection: Keep-Alive
-
-surprise
-HTTP/1.0 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 surprise2
 </stdout>
 
@@ -91,7 +63,6 @@ surprise2
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/1074 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -100,16 +71,6 @@ GET /wantmore/10740001 HTTP/1.0
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /want/1074 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /wantmore/10740001 HTTP/1.0
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

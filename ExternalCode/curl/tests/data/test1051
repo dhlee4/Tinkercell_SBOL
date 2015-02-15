@@ -10,7 +10,6 @@ followlocation
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 301 Redirect swsclose
 Date: Thu, 29 Jul 2008 14:49:00 GMT
 Server: test-server/fake
@@ -44,41 +43,6 @@ Date: Thu, 29 Jul 2008 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 51
 
-=======
-HTTP/1.1 301 Redirect swsclose
-Date: Thu, 29 Jul 2008 14:49:00 GMT
-Server: test-server/fake
-Location: data/10510002.txt?coolsite=yes
-Content-Length: 0
-Connection: close
-
-</data>
-<data2>
-HTTP/1.1 100 Continue
-
-HTTP/1.1 200 Followed here fine swsclose
-Date: Thu, 29 Jul 2008 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 51
-
-If this is received, the location following worked
-</data2>
-<datacheck>
-HTTP/1.1 301 Redirect swsclose
-Date: Thu, 29 Jul 2008 14:49:00 GMT
-Server: test-server/fake
-Location: data/10510002.txt?coolsite=yes
-Content-Length: 0
-Connection: close
-
-HTTP/1.1 100 Continue
-
-HTTP/1.1 200 Followed here fine swsclose
-Date: Thu, 29 Jul 2008 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 51
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 If this is received, the location following worked
 </datacheck>
 </reply>
@@ -119,21 +83,12 @@ the
 # server says 301 and 100 _after_ the entire PUT body has been sent.
 
 <protocol>
-<<<<<<< HEAD
 PUT /want/1051 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 78
 Expect: 100-continue
 
-=======
-PUT /want/1051 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 78
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Weird
      file
          to
@@ -143,21 +98,12 @@ for
 the
    PUT
       feature
-<<<<<<< HEAD
 PUT /want/data/10510002.txt?coolsite=yes HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 78
 Expect: 100-continue
 
-=======
-PUT /want/data/10510002.txt?coolsite=yes HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 78
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Weird
      file
          to

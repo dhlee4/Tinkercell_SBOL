@@ -66,11 +66,7 @@ namespace Tinkercell
 			CatalogWidget::layoutMode = CatalogWidget::TabView;
 
 		QSettings * settings = MainWindow::getSettings();
-<<<<<<< HEAD
 		settings->beginGroup("CatalogWidget");
-=======
-		settings->beginGroup("CatalogWidget");		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		settings->setValue(tr("Mode"),(int)(CatalogWidget::layoutMode));
 		settings->endGroup();
 		delete settings;
@@ -84,11 +80,7 @@ namespace Tinkercell
 
 		QCursor cursor(pixmap);
 		mainWindow->setCursor(cursor);
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		for (int i=0; i < widgetsToUpdate.size(); ++i)
 			if (widgetsToUpdate[i])
 				widgetsToUpdate[i]->setCursor(cursor);
@@ -104,19 +96,11 @@ namespace Tinkercell
 			if (widgetsToUpdate[i])
 				widgetsToUpdate[i]->setCursor(Qt::ArrowCursor);
 	}
-<<<<<<< HEAD
 
 	bool CatalogWidget::setMainWindow(MainWindow * main)
 	{
 		if (!main) return false;
 
-=======
-	
-	bool CatalogWidget::setMainWindow(MainWindow * main)
-	{
-		if (!main) return false;
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		main->addTool(nodesTree);
 		main->addTool(connectionsTree);
 		Tool::setMainWindow(main);
@@ -125,7 +109,6 @@ namespace Tinkercell
 		{
 			connect(&arrowButton,SIGNAL(pressed()),mainWindow,SLOT(sendEscapeSignal()));
 			connect(this,SIGNAL(sendEscapeSignal(const QWidget*)),mainWindow,SIGNAL(escapeSignal(const QWidget*)));
-<<<<<<< HEAD
 
 			connect(mainWindow,SIGNAL(escapeSignal(const QWidget*)),this,SLOT(escapeSignalSlot(const QWidget*)));
 
@@ -134,14 +117,6 @@ namespace Tinkercell
 
             console()->message("ttt");
 
-=======
-			
-			connect(mainWindow,SIGNAL(escapeSignal(const QWidget*)),this,SLOT(escapeSignalSlot(const QWidget*)));
-			
-			setWindowTitle(tr("Parts and Connections"));
-			setWindowIcon(QIcon(tr(":/images/appicon.png")));
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			if (layoutMode == TreeView)
 			{
 				setUpTreeView();
@@ -156,11 +131,7 @@ namespace Tinkercell
 			}
 
 			if (mainWindow->settingsMenu)
-<<<<<<< HEAD
 			{
-=======
-			{				
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 				QAction * treeViewAction = mainWindow->settingsMenu->addAction(tr("Tree-view catalog"));
 				treeViewAction->setCheckable(true);
 				treeViewAction->setChecked(CatalogWidget::layoutMode == CatalogWidget::TreeView);
@@ -219,11 +190,7 @@ namespace Tinkercell
 		QCursor cursor(nodeFamily->pixmap.scaled(w,h));
 
 		mainWindow->setCursor(cursor);
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		for (int i=0; i < widgetsToUpdate.size(); ++i)
 			if (widgetsToUpdate[i])
 				widgetsToUpdate[i]->setCursor(cursor);
@@ -268,11 +235,7 @@ namespace Tinkercell
 		if (!family || connections.isEmpty() || !currentScene()) return;
 
 		emit buttonPressed(family->name());
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		int w = 20, h = 20;
 
 		if (!family->pixmap.isNull() && (family->pixmap.width() * family->pixmap.height()) > 0.0)
@@ -291,11 +254,7 @@ namespace Tinkercell
 			QCursor cursor(family->pixmap.scaled(w,h));
 
 			mainWindow->setCursor(cursor);
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			for (int i=0; i < widgetsToUpdate.size(); ++i)
 				if (widgetsToUpdate[i])
 					widgetsToUpdate[i]->setCursor(cursor);
@@ -376,19 +335,11 @@ namespace Tinkercell
 	}
 
 	void CatalogWidget::contextMenuEvent(QContextMenuEvent *)
-<<<<<<< HEAD
 	{
 		//emit sendEscapeSignal(this);
 		selectFamiliesToShow();
 	}
 
-=======
-	{		
-		//emit sendEscapeSignal(this);
-		selectFamiliesToShow();
-	}
-	
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 	void CatalogWidget::selectFamiliesToShow()
 	{
 		QStringList allNames;
@@ -446,11 +397,7 @@ namespace Tinkercell
 				connect(tempButton,SIGNAL(pressed()),checkbox,SLOT(toggle()));
 				tempButton->setText(allNames[i]);
 				tempButton->setToolButtonStyle ( Qt::ToolButtonTextBesideIcon );
-<<<<<<< HEAD
 
-=======
-				
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 				table->setCellWidget(i,0,checkbox);
 				table->setCellWidget(i,1,tempButton);
 				if (comboBox)
@@ -461,11 +408,7 @@ namespace Tinkercell
 					else
 						table->setCellWidget(i,2,new QLabel(units[0]));
 			}
-<<<<<<< HEAD
 
-=======
-			
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			QHBoxLayout * hlayout = new QHBoxLayout;
 			QPushButton * okButton = new QPushButton("&OK");
 			connect(okButton,SIGNAL(pressed()),selectFamilyWidget,SLOT(accept()));
@@ -475,17 +418,12 @@ namespace Tinkercell
 			hlayout->addWidget(okButton);
 			hlayout->addWidget(cancelButton);
 			hlayout->addStretch(1);
-<<<<<<< HEAD
 
-=======
-			
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			QVBoxLayout * vlayout = new QVBoxLayout;
 			vlayout->addWidget(table,1);
 			vlayout->addLayout(hlayout,0);
 			selectFamilyWidget->setLayout(vlayout);
 		}
-<<<<<<< HEAD
 
 		//run dialog
 		selectFamilyWidget->exec();
@@ -494,16 +432,6 @@ namespace Tinkercell
 			return;
 
 		//if OK, then update catalog
-=======
-		
-		//run dialog
-		selectFamilyWidget->exec();
-		
-		if (selectFamilyWidget->result() != QDialog::Accepted) 
-			return;
-
-		//if OK, then update catalog	
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		QStringList showlist, hidelist;
 		for (int i=0; i < allNames.size() && selectFamilyCheckBoxes.size(); ++i)
 		{
@@ -511,36 +439,22 @@ namespace Tinkercell
 				showlist << allNames[i];
 			else
 				hidelist << allNames[i];
-<<<<<<< HEAD
 
 			if (selectFamilyComboBoxes.size() > i &&
 				selectFamilyComboBoxes[i] &&
-=======
-			
-			if (selectFamilyComboBoxes.size() > i && 
-				selectFamilyComboBoxes[i] && 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 				selectFamilyComboBoxes[i]->count() > 1)
 			{
 				int k = selectFamilyComboBoxes[i]->currentIndex();
 				if (nodesTree->getFamily(allNames[i]) &&
 					nodesTree->getFamily(allNames[i]) &&
 					k >= 0 && k < nodesTree->getFamily(allNames[i])->measurementUnitOptions.size())
-<<<<<<< HEAD
 					nodesTree->getFamily(allNames[i])->measurementUnit =
-=======
-					nodesTree->getFamily(allNames[i])->measurementUnit = 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 						nodesTree->getFamily(allNames[i])->measurementUnitOptions[k];
 				else
 				if (connectionsTree->getFamily(allNames[i]) &&
 					connectionsTree->getFamily(allNames[i]) &&
 					k >= 0 && k < connectionsTree->getFamily(allNames[i])->measurementUnitOptions.size())
-<<<<<<< HEAD
 					connectionsTree->getFamily(allNames[i])->measurementUnit =
-=======
-					connectionsTree->getFamily(allNames[i])->measurementUnit = 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 						connectionsTree->getFamily(allNames[i])->measurementUnitOptions[k];
 			}
 		}
@@ -551,11 +465,7 @@ namespace Tinkercell
 		settings->beginGroup("CatalogWidget");
 		settings->setValue(tr("familiesInCatalog"),familiesInCatalog);
 		settings->endGroup();
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		delete settings;
 	}
 
@@ -581,11 +491,7 @@ namespace Tinkercell
 		settings->beginGroup("LastSelectedConnections");
 		settings->setValue("numRows",n);
 		settings->endGroup();
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		delete settings;
 	}
 
@@ -684,11 +590,7 @@ namespace Tinkercell
 					QToolButton * button = new QToolButton;
 					button->setIcon(QIcon(family->pixmap));
 					button->setText(family->name());
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 					int w,h;
 
 					if (!family->pixmap.isNull() && (family->pixmap.width() * family->pixmap.height()) > 0.0)
@@ -706,11 +608,7 @@ namespace Tinkercell
 							if (h > 50) h = 50;
 						}
 					}
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 					button->setIconSize(QSize(w, h));
 					button->setToolTip(family->name());
 					button->setPalette(QPalette(QColor(255,255,255)));
@@ -756,20 +654,14 @@ namespace Tinkercell
 
 	void CatalogWidget::makeTabWidget()
 	{
-<<<<<<< HEAD
 	    console()->message("makeTabWidget Start");
 		if (!tabWidget || !connectionsTree || !nodesTree) return;
 
-=======
-		if (!tabWidget || !connectionsTree || !nodesTree) return;
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		int k = tabWidget->currentIndex();
 
 		QStringList tabGroups;
 
 		for (int i=0; i < tabGroupButtons.size(); ++i)
-<<<<<<< HEAD
             {
                 tabGroups << tabGroupButtons[i].first;
                 console()->message(tabGroupButtons[i].first);
@@ -781,15 +673,6 @@ namespace Tinkercell
 		QList<QToolButton*> buttons = nodesTree->treeButtons.values();
 		buttons << connectionsTree->treeButtons.values();
 
-=======
-			tabGroups << tabGroupButtons[i].first;
-
-		QList<QWidget*> tabs;
-		
-		QList<QToolButton*> buttons = nodesTree->treeButtons.values();
-		buttons << connectionsTree->treeButtons.values();
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		for (int i=0; i < buttons.size(); ++i)
 			buttons[i]->setParent(0);
 
@@ -833,14 +716,9 @@ namespace Tinkercell
 		{
 			tabWidget->addTab(tabs[i],tabGroups[i]);
 		}
-<<<<<<< HEAD
 
 		if (k < tabWidget->count() && k >= 0) tabWidget->setCurrentIndex(k);
 		console()->message("makeTabWidget END");
-=======
-		
-		if (k < tabWidget->count() && k >= 0) tabWidget->setCurrentIndex(k);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 	}
 
 	void CatalogWidget::createNewGroup(const QString& group, const QStringList& names)
@@ -870,11 +748,7 @@ namespace Tinkercell
 	{
 		QList<QToolButton*> newButtons;
 		if (!tabWidget || !GlobalSettings::PROGRAM_MODE.isEmpty()) return newButtons;
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		int i = 0;
 
 		for (i=0; i < names.size(); ++i)
@@ -887,11 +761,7 @@ namespace Tinkercell
 			connect(button,SIGNAL(pressed(const QString&,const QPixmap&)),this,SLOT(otherButtonPressed(const QString&, const QPixmap&)));
 			newButtons << button;
 		}
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		for (i=0; i < tabGroupButtons.size(); ++i)
 			if (group.toLower() == tabGroupButtons[i].first.toLower())
 			{
@@ -907,11 +777,7 @@ namespace Tinkercell
 		}
 
 		makeTabWidget();
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		return newButtons;
 	}
 
@@ -924,17 +790,10 @@ namespace Tinkercell
 			{
 				break;
 			}
-<<<<<<< HEAD
 
 		if (i < tabWidget->count()) tabWidget->setCurrentIndex(i);
 	}
 
-=======
-			
-		if (i < tabWidget->count()) tabWidget->setCurrentIndex(i);
-	}
-	
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 	void CatalogWidget::setUpTabView()
 	{
 		tabWidget = new QTabWidget;
@@ -945,15 +804,11 @@ namespace Tinkercell
 		familiesInCatalog = settings->value(tr("familiesInCatalog"),QStringList()).toStringList();
 		int currentIndex = settings->value(tr("currentIndex"),0).toInt();
 		settings->endGroup();
-<<<<<<< HEAD
 
 
 
 		int temp = familiesInCatalog.size();
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		if (familiesInCatalog.size() < 30)
 		{
 			QString appDir = QCoreApplication::applicationDirPath();
@@ -965,7 +820,6 @@ namespace Tinkercell
 				for (int i=0; i < defaultList.size(); ++i)
 					if (!familiesInCatalog.contains(defaultList[i]))
 						familiesInCatalog << defaultList[i];
-<<<<<<< HEAD
 
 				defaultListFile.close();
 			}
@@ -980,21 +834,10 @@ namespace Tinkercell
             }
 
         console()->message("Matching");
-=======
-				
-				defaultListFile.close();
-			}
-		}
-		
-		for (int i=0; i < familiesInCatalog.size(); ++i)
-			familiesInCatalog[i] = familiesInCatalog[i].toLower();
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		for (int i=0; i < tabGroups.size(); ++i)
 		{
 			bool found = false;
 			for (int j=0; j < tabGroupButtons.size(); ++j)
-<<<<<<< HEAD
                 {
                     console()->message(tabGroups[i].first+"-"+tabGroupButtons[j].first);
                     if (tabGroupButtons[j].first == tabGroups[i].first)
@@ -1004,13 +847,6 @@ namespace Tinkercell
                         break;
                     }
                 }
-=======
-				if (tabGroupButtons[j].first == tabGroups[i].first)
-				{
-					found = true;
-					break;
-				}
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			if (!found)
 				tabGroupButtons << QPair< QString,QList<QToolButton*> >(tabGroups[i].first,QList<QToolButton*>());
 		}
@@ -1029,7 +865,6 @@ namespace Tinkercell
 		layout->addWidget(tabWidget);
 		layout->setContentsMargins(0,0,0,0);
 		layout->setSpacing(0);
-<<<<<<< HEAD
 		setLayout(layout);
 		isFirstTime = false;
 
@@ -1041,19 +876,6 @@ namespace Tinkercell
 	{
 		if (!tabWidget) return;
 
-=======
-		setLayout(layout);		
-		isFirstTime = false;
-		
-		if (currentIndex > -1 && currentIndex < tabWidget->count())
-			tabWidget->setCurrentIndex(currentIndex);
-	}
-		
-	void CatalogWidget::showButtons(QStringList& familyNames)
-	{
-		if (!tabWidget) return;
-				
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		bool widgetChanged = false;
 
 		for (int i=0; i < familyNames.size(); ++i)
@@ -1073,30 +895,18 @@ namespace Tinkercell
 			for (int i=0; i < families.size(); ++i)
 			{
 				if (!families[i] || nodes.contains(families[i])) continue;
-<<<<<<< HEAD
 
-=======
-				
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 				nodes << families[i];
 
 				for (int j=0; j < tabGroups.size(); ++j)
 				{
 					bool isA = false;
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 					QString tabName = tabGroups[j].first;
 
 					if (families[i]->isA(tabName))
 						isA = true;
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 					if  (!isA)
 					{
 						for (int k=0; k < tabGroups[j].second.size(); ++k)
@@ -1151,11 +961,7 @@ namespace Tinkercell
 			for (int i=0; i < families.size(); ++i)
 			{
 				if (!families[i] || connections.contains(families[i])) continue;
-<<<<<<< HEAD
 
-=======
-				
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 				connections << families[i];
 
 				for (int j=0; j < tabGroups.size(); ++j)
@@ -1163,11 +969,7 @@ namespace Tinkercell
 					bool isA = false;
 
 					QString tabName = tabGroups[j].first;
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 					if (families[i]->isA(tabName))
 						isA = true;
 
@@ -1223,15 +1025,9 @@ namespace Tinkercell
 	void CatalogWidget::hideButtons(QStringList& familyNames)
 	{
 		if (!tabWidget) return;
-<<<<<<< HEAD
 
 		bool widgetChanged = false;
 
-=======
-				
-		bool widgetChanged = false;
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		for (int i=0; i < familyNames.size(); ++i)
 		{
 			familyNames[i] = familyNames[i].toLower();
@@ -1247,7 +1043,6 @@ namespace Tinkercell
 
 			for (int i=0; i < families.size(); ++i)
 			{
-<<<<<<< HEAD
 				if (!families[i] || !nodes.contains(families[i]))
 					continue;
 
@@ -1261,21 +1056,6 @@ namespace Tinkercell
 					if (families[i]->isA(tabName))
 						isA = true;
 
-=======
-				if (!families[i] || !nodes.contains(families[i])) 
-					continue;
-				
-				nodes.removeAll(families[i]);
-
-				for (int j=0; j < tabGroups.size(); ++j)
-				{					
-					bool isA = false;
-					
-					QString tabName = tabGroups[j].first;
-					if (families[i]->isA(tabName))
-						isA = true;
-					
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 					if  (!isA)
 					{
 						for (int k=0; k < tabGroups[j].second.size(); ++k)

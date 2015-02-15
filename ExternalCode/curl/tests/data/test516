@@ -37,19 +37,11 @@ http://%HOSTIP:%HTTPPORT/516
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST /516 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 0
 
-=======
-POST /516 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

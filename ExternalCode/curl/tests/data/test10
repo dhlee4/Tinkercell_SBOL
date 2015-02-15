@@ -47,21 +47,12 @@ the
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /we/want/10 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 78
 Expect: 100-continue
 
-=======
-PUT /we/want/10 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 78
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Weird
      file
          to

@@ -69,7 +69,6 @@ http://%HOSTIP:%HTTPPORT/want/1104 -L -x %HOSTIP:%HTTPPORT -c log/cookies.jar
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://%HOSTIP:%HTTPPORT/want/1104 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -81,19 +80,6 @@ Accept: */*
 Proxy-Connection: Keep-Alive
 Cookie: test2=true
 
-=======
-GET http://%HOSTIP:%HTTPPORT/want/1104 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Proxy-Connection: Keep-Alive
-
-GET http://%HOSTIP:%HTTPPORT/want/data/11040002 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Proxy-Connection: Keep-Alive
-Cookie: test2=true
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

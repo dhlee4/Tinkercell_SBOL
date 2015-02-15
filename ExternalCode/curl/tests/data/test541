@@ -37,7 +37,6 @@ works?
 <upload>
 </upload>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -47,17 +46,6 @@ STOR 541
 EPSV
 STOR 541
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-STOR 541
-EPSV
-STOR 541
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

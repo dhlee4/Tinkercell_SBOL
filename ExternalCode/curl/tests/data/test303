@@ -10,17 +10,10 @@ timeout
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Connection: close
 
-=======
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 _data_result_data_
 </data>
 <postcmd>
@@ -50,17 +43,10 @@ HTTPS with 8 secs timeout
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/303 HTTP/1.1
 Host: %HOSTIP:%HTTPSPORT
 Accept: */*
 
-=======
-GET /want/303 HTTP/1.1
-Host: %HOSTIP:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <errorcode>
 28

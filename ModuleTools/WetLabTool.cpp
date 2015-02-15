@@ -42,17 +42,10 @@ namespace Tinkercell
 						 this, SLOT(itemsAboutToBeInserted(GraphicsScene* , QList<QGraphicsItem *>&, QList<ItemHandle*>&, QList<QUndoCommand*>&)));
 			connect(mainWindow,SIGNAL(mouseDoubleClicked(GraphicsScene*, QPointF, QGraphicsItem*, Qt::MouseButton, Qt::KeyboardModifiers)),
                     this,SLOT(mouseDoubleClicked(GraphicsScene*, QPointF, QGraphicsItem*, Qt::MouseButton, Qt::KeyboardModifiers)));
-<<<<<<< HEAD
 
             connect(mainWindow,SIGNAL(keyPressed(GraphicsScene*,QKeyEvent *)),
 				this ,SLOT(keyPressed(GraphicsScene*,QKeyEvent *)));
 
-=======
-            
-            connect(mainWindow,SIGNAL(keyPressed(GraphicsScene*,QKeyEvent *)),
-				this ,SLOT(keyPressed(GraphicsScene*,QKeyEvent *)));
-                    
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			connect(mainWindow,SIGNAL(toolLoaded(Tool*)),this,SLOT(toolLoaded(Tool*)));
 
 			toolLoaded(0);
@@ -67,11 +60,7 @@ namespace Tinkercell
 		QStringList familyNames;
 		QString appDir = QCoreApplication::applicationDirPath();
 		QString home = homeDir();
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		if (mainWindow->tool(tr("Nodes Tree")) && !nodesTree)
 		{
 			Tool * tool = static_cast<Tool*>(mainWindow->tool(tr("Nodes Tree")));
@@ -90,12 +79,8 @@ namespace Tinkercell
 		if (nodesTree && !dataFamily)
 		{
 			dataFamily = new NodeFamily(tr("Data"));
-<<<<<<< HEAD
 			//dataFamily->pixmap = QPixmap(tr(":/images/statistics.PNG"));
 			dataFamily->pixmap = QPixmap(tr("D:\tinkercell\icons\statistics.PNG"));
-=======
-			dataFamily->pixmap = QPixmap(tr(":/images/statistics.PNG"));
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			dataFamily->description = tr("Quantitative results about the system of interest");
 			dataFamily->textAttributes[tr("Functional description")] = tr("");
 			dataFamily->graphicsItems << new NodeGraphicsItem(tr(":/images/statistics.xml"));
@@ -110,11 +95,7 @@ namespace Tinkercell
 			for (int i=0; i < childFamilies.size(); ++i)
 				familyNames << childFamilies[i]->name();
 		}
-<<<<<<< HEAD
 /*
-=======
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 		if (connectionsTree && dataFamily && !experimentFamily)
 		{
 			experimentFamily = new ConnectionFamily(tr("Experiment"));
@@ -135,10 +116,7 @@ namespace Tinkercell
 			for (int i=0; i < childFamilies.size(); ++i)
 				familyNames << childFamilies[i]->name();
 		}
-<<<<<<< HEAD
 */
-=======
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 		if (mainWindow->tool(tr("Parts and Connections Catalog")) && !connected1)
 		{
@@ -146,28 +124,17 @@ namespace Tinkercell
 			catalogWidget = static_cast<CatalogWidget*>(tool);
 
 			catalogWidget->createNewGroup(
-<<<<<<< HEAD
 					tr("aaa"),
 					QStringList() 	<< tr("Experiment") << tr("Data")
 			);
 
-=======
-					tr("Wet-Lab"), 
-					QStringList() 	<< tr("Experiment") << tr("Data")
-			);
-			
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 			if (!familyNames.isEmpty())
 				catalogWidget->showButtons(familyNames);
 
 			connected1 = true;
 		}
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 	void WetLabTool::keyPressed(GraphicsScene* scene,QKeyEvent * keyEvent)
 	{
 		if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Space)

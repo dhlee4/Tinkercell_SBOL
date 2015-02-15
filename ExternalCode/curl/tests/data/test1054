@@ -11,7 +11,6 @@ followlocation
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 301 OK swsclose
 Location: moo/testcase/10540002
 Date: Thu, 31 Jul 2008 14:49:00 GMT
@@ -35,31 +34,6 @@ HTTP/1.1 200 OK swsclose
 Date: Thu, 31 Jul 2008 14:49:00 GMT
 Connection: close
 
-=======
-HTTP/1.1 301 OK swsclose
-Location: moo/testcase/10540002
-Date: Thu, 31 Jul 2008 14:49:00 GMT
-Connection: close
-
-</data>
-<data2>
-HTTP/1.1 200 OK swsclose
-Date: Thu, 31 Jul 2008 14:49:00 GMT
-Connection: close
-
-body
-</data2>
-<datacheck>
-HTTP/1.1 301 OK swsclose
-Location: moo/testcase/10540002
-Date: Thu, 31 Jul 2008 14:49:00 GMT
-Connection: close
-
-HTTP/1.1 200 OK swsclose
-Date: Thu, 31 Jul 2008 14:49:00 GMT
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 body
 </datacheck>
 </reply>
@@ -88,7 +62,6 @@ http://%HOSTIP:%HTTPPORT/blah/1054 -L -d @log/test1054.txt --post301
 ^User-Agent:.*
 </strip>
 <protocol nonewline="yes">
-<<<<<<< HEAD
 POST /blah/1054 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -101,20 +74,6 @@ Accept: */*
 Content-Length: 10
 Content-Type: application/x-www-form-urlencoded
 
-=======
-POST /blah/1054 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 10
-Content-Type: application/x-www-form-urlencoded
-
-field=dataPOST /blah/moo/testcase/10540002 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 10
-Content-Type: application/x-www-form-urlencoded
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 field=data
 </protocol>
 </verify>

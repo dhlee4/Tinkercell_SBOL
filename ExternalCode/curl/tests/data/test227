@@ -39,7 +39,6 @@ ftp://%HOSTIP:%FTPPORT/227 -Q "NOOP 1" -Q "+NOOP 2" -Q "-NOOP 3" -Q "*FAIL" -Q "
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -54,22 +53,6 @@ SIZE 227
 RETR 227
 NOOP 3
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-NOOP 1
-FAIL
-EPSV
-PASV
-TYPE I
-NOOP 2
-FAIL HARD
-SIZE 227
-RETR 227
-NOOP 3
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

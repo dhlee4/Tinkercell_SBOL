@@ -12,21 +12,12 @@ IDN
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake swsclose
 Content-Type: text/html
 Funny-head: yesyes
 
-=======
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake swsclose
-Content-Type: text/html
-Funny-head: yesyes
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 </reply>
 
@@ -57,19 +48,11 @@ http://www.едц.se/page/165 -x %HOSTIP:%HTTPPORT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://www.xn--4cab6c.se/page/165 HTTP/1.1
 Host: www.xn--4cab6c.se
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET http://www.xn--4cab6c.se/page/165 HTTP/1.1
-Host: www.xn--4cab6c.se
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

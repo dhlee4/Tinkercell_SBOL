@@ -10,17 +10,10 @@ cookies
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Content-Length: 4
 Connection: close
 
-=======
-HTTP/1.1 200 OK
-Content-Length: 4
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 boo
 </data>
 </reply>
@@ -53,19 +46,11 @@ http://%HOSTIP:%HTTPPORT/we/want/172 -b log/jar172.txt -b "tool=curl; name=fool"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/172 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Cookie: nodomain=value; partmatch=present; tool=curl; name=fool
 
-=======
-GET /we/want/172 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: nodomain=value; partmatch=present; tool=curl; name=fool
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

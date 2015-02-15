@@ -34,7 +34,6 @@ data inside the file
 ^(User-Agent:|Content-Type: multipart/form-data;|------------).*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST /we/want/166 HTTP/1.1
 User-Agent: curl/7.12.0-CVS (i686-pc-linux-gnu) libcurl/7.12.0-CVS OpenSSL/0.9.6b zlib/1.1.4 c-ares/1.2.0 libidn/0.4.3
 Host: %HOSTIP:%HTTPPORT
@@ -50,23 +49,6 @@ Content-Type: application/octet-stream
 data inside the file
 
 ------------------------------b0b3d6d23991--
-=======
-POST /we/want/166 HTTP/1.1
-User-Agent: curl/7.12.0-CVS (i686-pc-linux-gnu) libcurl/7.12.0-CVS OpenSSL/0.9.6b zlib/1.1.4 c-ares/1.2.0 libidn/0.4.3
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 223
-Expect: 100-continue
-Content-Type: multipart/form-data; boundary=----------------------------b0b3d6d23991
-
-------------------------------b0b3d6d23991
-Content-Disposition: form-data; name="name"; filename="fie ld 166"
-Content-Type: application/octet-stream
-
-data inside the file
-
-------------------------------b0b3d6d23991--
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

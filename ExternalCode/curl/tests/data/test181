@@ -40,21 +40,12 @@ the
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 POST /we/want/181 HTTP/1.0
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 79
 Content-Type: application/x-www-form-urlencoded
 
-=======
-POST /we/want/181 HTTP/1.0
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 79
-Content-Type: application/x-www-form-urlencoded
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Weird
      file
          to

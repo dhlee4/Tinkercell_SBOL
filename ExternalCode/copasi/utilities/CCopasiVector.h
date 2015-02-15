@@ -234,11 +234,7 @@ public:
 
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-<<<<<<< HEAD
     this->push_back(Element);
-=======
-    push_back(Element);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     return CCopasiContainer::add(Element);
   }
 
@@ -276,11 +272,7 @@ public:
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-<<<<<<< HEAD
     this->push_back(src);
-=======
-    push_back(src);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     return CCopasiContainer::add(src, adopt);
   }
 
@@ -305,11 +297,7 @@ public:
         else
           {
             CCopasiContainer::remove(*Target);
-<<<<<<< HEAD
             this->erase(Target, Target + 1);
-=======
-            erase(Target, Target + 1);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
           }
       }
   }
@@ -328,11 +316,7 @@ public:
     if (index != C_INVALID_INDEX)
       {
         iterator Target = begin() + index;
-<<<<<<< HEAD
         this->erase(Target, Target + 1);
-=======
-        erase(Target, Target + 1);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
       }
     else
       success = false;
@@ -646,11 +630,7 @@ public:
     if (Element == NULL)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
-<<<<<<< HEAD
     this->push_back(Element);
-=======
-    push_back(Element);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     return CCopasiContainer::add(Element);
   }
 
@@ -672,11 +652,7 @@ public:
 
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-<<<<<<< HEAD
     this->push_back(src);
-=======
-    push_back(src);
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     return CCopasiContainer::add(src, adopt);
   }
 

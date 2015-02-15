@@ -5,13 +5,8 @@
  * @brief   Maintains a list of SIds.  Useful for finding cycles.
  * @author  Ben Bornstein
  *
-<<<<<<< HEAD
  * $Id: IdList.h 2657 2011-10-05 21:28:22Z dchandran1 $
  * $HeadURL: svn://svn.code.sf.net/p/tinkercell/code/trunk/ExternalCode/sbml/src/sbml/validator/constraints/IdList.h $
-=======
- * $Id$
- * $HeadURL$
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
  *
  * <!--------------------------------------------------------------------------
  * This file is part of libSBML.  Please visit http://sbml.org for more

@@ -43,17 +43,10 @@ simple HTTPS GET
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /300 HTTP/1.1
 Host: %HOSTIP:%HTTPSPORT
 Accept: */*
 
-=======
-GET /300 HTTP/1.1
-Host: %HOSTIP:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

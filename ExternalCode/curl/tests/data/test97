@@ -10,19 +10,11 @@ HTTP replaced headers
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 200 OK
 Server: test-server/fake
 Content-Type: text/html
 Content-Length: 6
 
-=======
-HTTP/1.0 200 OK
-Server: test-server/fake
-Content-Type: text/html
-Content-Length: 6
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 blaha
 </data>
 </reply>
@@ -48,21 +40,12 @@ HTTP POST with custom content-type
 ^User-Agent:.*
 </strip>
 <protocol nonewline="yes">
-<<<<<<< HEAD
 POST /97 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Type: silly/type
 Content-Length: 14
 
-=======
-POST /97 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Type: silly/type
-Content-Length: 14
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 hejsanallabarn
 </protocol>
 </verify>

@@ -37,19 +37,11 @@ http://%HOSTIP:%HTTPPORT/249 -z "dec 12 12:00:00 1999 GMT"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /249 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 If-Modified-Since: Sun, 12 Dec 1999 12:00:00 GMT
 
-=======
-GET /249 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-If-Modified-Since: Sun, 12 Dec 1999 12:00:00 GMT
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

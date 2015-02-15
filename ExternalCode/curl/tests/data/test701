@@ -48,17 +48,10 @@ HTTP GET via SOCKS5 proxy
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /701 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /701 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

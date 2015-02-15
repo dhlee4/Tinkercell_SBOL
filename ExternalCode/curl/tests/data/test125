@@ -31,19 +31,11 @@ ftp://%HOSTIP:%FTPPORT/path/to/file/125
 9
 </errorcode>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 CWD path
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD path
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

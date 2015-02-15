@@ -15,7 +15,6 @@ HTTP/1.0
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 401 Authorization Required swsclose
 Server: testcurl
 WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
@@ -25,43 +24,22 @@ Content-Type: text/plain
 Content-Length: 35
 Connection: close
 
-=======
-HTTP/1.0 401 Authorization Required swsclose
-Server: testcurl
-WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Basic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Digest realm="gimme all yer s3cr3ts", nonce="11223344"
-Content-Type: text/plain
-Content-Length: 35
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Try again on this HTTP 1.0 server!
 </data>
 
 # This is supposed to be returned when the server gets a
 # Authorization: Digest line passed-in from the client
 <data1000>
-<<<<<<< HEAD
 HTTP/1.0 200 OK swsclose
 Server: testcurl
 Content-Type: text/plain
 Content-Length: 23
 Connection: close
 
-=======
-HTTP/1.0 200 OK swsclose
-Server: testcurl
-Content-Type: text/plain
-Content-Length: 23
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This IS the real page!
 </data1000>
 
 <datacheck>
-<<<<<<< HEAD
 HTTP/1.0 401 Authorization Required swsclose
 Server: testcurl
 WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
@@ -77,23 +55,6 @@ Content-Type: text/plain
 Content-Length: 23
 Connection: close
 
-=======
-HTTP/1.0 401 Authorization Required swsclose
-Server: testcurl
-WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Basic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Digest realm="gimme all yer s3cr3ts", nonce="11223344"
-Content-Type: text/plain
-Content-Length: 35
-Connection: close
-
-HTTP/1.0 200 OK swsclose
-Server: testcurl
-Content-Type: text/plain
-Content-Length: 23
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This IS the real page!
 </datacheck>
 
@@ -127,40 +88,22 @@ four is the number of lines
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /1071 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 85
 Expect: 100-continue
 
-=======
-PUT /1071 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 85
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is data we upload with PUT
 a second line
 line three
 four is the number of lines
-<<<<<<< HEAD
 PUT /1071 HTTP/1.0
 Authorization: Digest username="testuser", realm="gimme all yer s3cr3ts", nonce="11223344", uri="/1071", response="df4cef6b52a30e65d472dd848d2055a1"
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 85
 
-=======
-PUT /1071 HTTP/1.0
-Authorization: Digest username="testuser", realm="gimme all yer s3cr3ts", nonce="11223344", uri="/1071", response="df4cef6b52a30e65d472dd848d2055a1"
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 85
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is data we upload with PUT
 a second line
 line three

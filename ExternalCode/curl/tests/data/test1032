@@ -46,19 +46,11 @@ HTTP HEAD with --range
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 HEAD /1032 HTTP/1.1
 Range: bytes=1-3
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-HEAD /1032 HTTP/1.1
-Range: bytes=1-3
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

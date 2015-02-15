@@ -11,11 +11,7 @@ config file
 <data>
 HTTP/1.1 200 OK
 Funny-head: yesyes
-<<<<<<< HEAD
 Content-Length: 27
-=======
-Content-Length: 27
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 This is the proof it works
 </data>
@@ -48,19 +44,11 @@ request MOOO
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 MOOO /that.site.com/17 HTTP/1.1
 User-Agent: agent007 license to drill	
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-MOOO /that.site.com/17 HTTP/1.1
-User-Agent: agent007 license to drill	
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -10,7 +10,6 @@ Resume
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 206 Partial Content
 Date: Mon, 13 Nov 2007 13:41:09 GMT
 Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
@@ -18,15 +17,6 @@ Accept-Ranges: bytes
 Content-Length: 60
 Content-Range: bytes 40-99/100
 
-=======
-HTTP/1.1 206 Partial Content
-Date: Mon, 13 Nov 2007 13:41:09 GMT
-Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
-Accept-Ranges: bytes
-Content-Length: 60
-Content-Range: bytes 40-99/100
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 012345678
 012345678
 012345678
@@ -42,7 +32,6 @@ Content-Range: bytes 40-99/100
 012345678
 012345678
 012345678
-<<<<<<< HEAD
 HTTP/1.1 206 Partial Content
 Date: Mon, 13 Nov 2007 13:41:09 GMT
 Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
@@ -50,15 +39,6 @@ Accept-Ranges: bytes
 Content-Length: 60
 Content-Range: bytes 40-99/100
 
-=======
-HTTP/1.1 206 Partial Content
-Date: Mon, 13 Nov 2007 13:41:09 GMT
-Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
-Accept-Ranges: bytes
-Content-Length: 60
-Content-Range: bytes 40-99/100
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 012345678
 012345678
 012345678
@@ -94,19 +74,11 @@ http://%HOSTIP:%HTTPPORT/1043 -C -
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1043 HTTP/1.1
 Range: bytes=40-
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /1043 HTTP/1.1
-Range: bytes=40-
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

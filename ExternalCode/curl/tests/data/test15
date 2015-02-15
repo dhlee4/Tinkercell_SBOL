@@ -9,21 +9,12 @@ HTTP GET
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.4 200 OK
 Fake: yes
 Fake: yes
 Fake: yes
 Content-Length: 26
 
-=======
-HTTP/1.4 200 OK
-Fake: yes
-Fake: yes
-Fake: yes
-Content-Length: 26
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Repeated nonsense-headers
 </data>
 </reply>
@@ -44,21 +35,12 @@ http://%HOSTIP:%HTTPPORT/want/15 --write-out "%{url_effective} %{http_code} %{si
 # Verify data after the test has been "shot"
 <verify>
 <stdout>
-<<<<<<< HEAD
 HTTP/1.4 200 OK
 Fake: yes
 Fake: yes
 Fake: yes
 Content-Length: 26
 
-=======
-HTTP/1.4 200 OK
-Fake: yes
-Fake: yes
-Fake: yes
-Content-Length: 26
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Repeated nonsense-headers
 http://%HOSTIP:%HTTPPORT/want/15 200 26
 </stdout>
@@ -66,17 +48,10 @@ http://%HOSTIP:%HTTPPORT/want/15 200 26
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/15 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /want/15 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

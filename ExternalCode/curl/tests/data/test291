@@ -34,7 +34,6 @@ ftp://%HOSTIP:%FTPPORT/291 --max-filesize 100
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -43,16 +42,6 @@ TYPE I
 SIZE 291
 RETR 291
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-SIZE 291
-RETR 291
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

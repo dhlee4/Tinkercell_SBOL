@@ -8,7 +8,6 @@ HTTP PUT
 
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 200 A OK
 Server: curl test
 Content-Type: text/html; charset=iso-8859-1
@@ -22,21 +21,6 @@ Server: curl test
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 9
 
-=======
-HTTP/1.1 200 A OK
-Server: curl test
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 3
-
-ok
-</data>
-<data2 nocheck="yes">
-HTTP/1.1 200 A OK
-Server: curl test
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 9
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 still ok
 </data2>
 </reply>
@@ -64,7 +48,6 @@ test
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /1064.upload1 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -90,33 +73,6 @@ Server: curl test
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 9
 
-=======
-PUT /1064.upload1 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 5
-
-test
-PUT /10640002.upload2 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 5
-
-test
-</protocol>
-<stdout>
-HTTP/1.1 200 A OK
-Server: curl test
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 3
-
-ok
-HTTP/1.1 200 A OK
-Server: curl test
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 9
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 still ok
 </stdout>
 </verify>

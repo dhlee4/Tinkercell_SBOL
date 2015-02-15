@@ -42,7 +42,6 @@ works
   so does it?
 </upload>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PBSZ 0
@@ -52,17 +51,6 @@ EPSV
 TYPE I
 STOR 401
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PBSZ 0
-PROT C
-PWD
-EPSV
-TYPE I
-STOR 401
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

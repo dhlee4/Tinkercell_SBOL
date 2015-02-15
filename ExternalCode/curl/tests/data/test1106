@@ -10,21 +10,12 @@ HTTP proxy
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Accept-Ranges: bytes
 Content-Length: 6
 
-=======
-HTTP/1.1 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Accept-Ranges: bytes
-Content-Length: 6
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 hello
 </data>
 </reply>
@@ -56,19 +47,11 @@ ftp://%HOSTIP:23456/1106
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET ftp://%HOSTIP:23456/1106 HTTP/1.1
 Host: %HOSTIP:23456
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET ftp://%HOSTIP:23456/1106 HTTP/1.1
-Host: %HOSTIP:23456
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

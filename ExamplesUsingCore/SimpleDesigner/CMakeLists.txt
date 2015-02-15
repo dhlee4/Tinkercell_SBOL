@@ -1,5 +1,4 @@
 SET(LIBRARY_OUTPUT_PATH ${CPP_LIBRARY_OUTPUT_PATH})
-<<<<<<< HEAD
 #SET(LINK_DIR ${TINKERCELL_SOURCE_DIR}/libSBOLc/release/library )
 SET(LINK_DIR ${TINKERCELL_SOURCE_DIR}/libSBOLc)
 
@@ -9,11 +8,6 @@ SET(LINK_DIR ${TINKERCELL_SOURCE_DIR}/libSBOLc)
 INCLUDE_DIRECTORIES( BEFORE
 #	${TINKERCELL_SOURCE_DIR}/libSBOLc/source
 #	${TINKERCELL_SOURCE_DIR}/libSBOLc/headers
-=======
-
-INCLUDE_DIRECTORIES( BEFORE
-    ${TINKERCELL_SOURCE_DIR}/ExternalCode/sbml/include
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     ${TINKERCELL_SOURCE_DIR}/ExternalCode/sbml/src
     ${TINKERCELL_SOURCE_DIR}/ExternalCode/muparser
 	${TINKERCELL_SOURCE_DIR}/c
@@ -26,7 +20,6 @@ INCLUDE_DIRECTORIES( BEFORE
 	${TINKERCELL_SOURCE_DIR}/Core/plots
  )
 
-<<<<<<< HEAD
  #INCLUDE_DIRECTORIES(	${TINKERCELL_SOURCE_DIR}/libSBOLc/release/library/include)
 INCLUDE_DIRECTORIES( ${TINKERCELL_SOURCE_DIR}/libSBOLc/headers)
 #LINK_DIRECTORIES(LINK_DIR)
@@ -39,13 +32,6 @@ QT4_ADD_RESOURCES( SIMPLEDESIGNER_QRC simpledesigner.qrc )
 
 IF( APPLE AND BUILD_BUNDLE )
 
-=======
-QT4_WRAP_CPP( SIMPLEDESIGNER_MOC SimpleDesigner.h)
-QT4_ADD_RESOURCES( SIMPLEDESIGNER_QRC simpledesigner.qrc )
-
-IF( APPLE AND BUILD_BUNDLE )
-  
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
   SET( MACOSX_BUNDLE_SHORT_VERSION_STRING
       ${TINKERCELL_VERSION}
   )
@@ -69,13 +55,8 @@ IF( APPLE AND BUILD_BUNDLE )
 	sbml_sim
     ${QT_LIBRARIES}
   )
-<<<<<<< HEAD
 
   INSTALL(TARGETS SimpleDesigner
-=======
-  
-  INSTALL(TARGETS SimpleDesigner 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     BUNDLE DESTINATION bin/../
     RUNTIME DESTINATION bin/../)
 
@@ -87,7 +68,6 @@ ELSE( APPLE AND BUILD_BUNDLE )
       ${SIMPLEDESIGNER_QRC}
     )
 
-<<<<<<< HEAD
 	LINK_DIRECTORIES( LINK_DIR )
 
     TARGET_LINK_LIBRARIES( SimpleDesigner
@@ -101,25 +81,11 @@ ELSE( APPLE AND BUILD_BUNDLE )
     IF( WIN32 )
 
 	    ADD_EXECUTABLE( SimpleDesigner WIN32
-=======
-    TARGET_LINK_LIBRARIES( SimpleDesigner
-      TinkerCellCore
-      sbml
-      sbml_sim
-      ${QT_LIBRARIES}
-    )
-    
-  ELSE( UNIX OR ( APPLE AND NOT BUILD_BUNDLE ) )
-    IF( WIN32 )
-	
-	    ADD_EXECUTABLE( SimpleDesigner WIN32 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
         SimpleDesigner.cpp
         ${SIMPLEDESIGNER_MOC}
         ${SIMPLEDESIGNER_QRC}
        )
 
-<<<<<<< HEAD
         LINK_DIRECTORIES(${LINK_DIR})
 
 		# link static library specifically
@@ -134,14 +100,6 @@ ELSE( APPLE AND BUILD_BUNDLE )
 			${sbol}
 			${QT_LIBRARIES}
 		)
-=======
-      TARGET_LINK_LIBRARIES( SimpleDesigner
-        TinkerCellCore
-        sbml
-        sbml_sim
-        ${QT_LIBRARIES}
-      )
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     ENDIF( WIN32 )
   ENDIF( UNIX OR ( APPLE AND NOT BUILD_BUNDLE ) )
 

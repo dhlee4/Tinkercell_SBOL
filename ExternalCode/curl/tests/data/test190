@@ -29,17 +29,10 @@ ftp://%HOSTIP:%FTPPORT/path/to/file/190 -m %FTPTIME2
 28
 </errorcode>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 CWD path
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD path
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

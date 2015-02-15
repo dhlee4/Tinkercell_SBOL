@@ -14,11 +14,7 @@ Server: Microsoft-IIS/4.0
 Date: Tue, 25 Sep 2001 19:37:44 GMT
 Content-Type: text/html
 Connection: close
-<<<<<<< HEAD
 Content-Length: 21
-=======
-Content-Length: 21
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 This server says moo
 </data>
@@ -48,19 +44,11 @@ HTTP, junk session cookies
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/53 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Cookie: mooo=indeed
 
-=======
-GET /want/53 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: mooo=indeed
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

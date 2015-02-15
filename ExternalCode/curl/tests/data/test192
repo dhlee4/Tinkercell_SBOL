@@ -33,17 +33,10 @@ http://%HOSTIP:%HTTPPORT/192 -w "%{num_connects}\n"
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /192 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /192 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 
 <stdout>

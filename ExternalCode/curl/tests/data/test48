@@ -38,17 +38,10 @@ HTTP with -d and -G and -I
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 HEAD /48?foo=moo&moo=poo HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-HEAD /48?foo=moo&moo=poo HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

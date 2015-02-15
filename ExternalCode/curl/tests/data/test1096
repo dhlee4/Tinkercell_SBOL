@@ -33,7 +33,6 @@ ftp://%HOSTIP:%FTPPORT/dir/1096 ftp://%HOSTIP:%FTPPORT/dir/1096
 78
 </errorcode>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -46,20 +45,6 @@ EPSV
 SIZE 1096
 RETR 1096
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD dir
-EPSV
-TYPE I
-SIZE 1096
-RETR 1096
-EPSV
-SIZE 1096
-RETR 1096
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

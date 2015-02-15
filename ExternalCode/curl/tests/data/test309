@@ -11,43 +11,25 @@ followlocation
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Location: https://127.0.0.1:8991/data/3090002.txt?coolsite=yes
 Connection: close
 
-=======
-HTTP/1.1 301 This is a weirdo text message swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Location: https://127.0.0.1:8991/data/3090002.txt?coolsite=yes
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This server reply is for testing a simple Location: following to HTTPS URL
 
 </data>
 <data2>
-<<<<<<< HEAD
 HTTP/1.1 200 Followed here fine swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 52
 
-=======
-HTTP/1.1 200 Followed here fine swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 52
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 If this is received, the location following worked
 
 </data2>
 <datacheck>
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -59,19 +41,6 @@ Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 52
 
-=======
-HTTP/1.1 301 This is a weirdo text message swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Location: https://127.0.0.1:8991/data/3090002.txt?coolsite=yes
-Connection: close
-
-HTTP/1.1 200 Followed here fine swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 52
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 If this is received, the location following worked
 
 </datacheck>
@@ -104,7 +73,6 @@ perl -e "print 'Test requires default test server host and port' if ( '%HOSTIP' 
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/309 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -113,16 +81,6 @@ GET /data/3090002.txt?coolsite=yes HTTP/1.1
 Host: %HOSTIP:%HTTPSPORT
 Accept: */*
 
-=======
-GET /want/309 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /data/3090002.txt?coolsite=yes HTTP/1.1
-Host: %HOSTIP:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

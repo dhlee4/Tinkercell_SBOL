@@ -36,7 +36,6 @@ ftp://%HOSTIP:%FTPPORT/121 -Q "-DELE after_transfer" -Q "DELE before_transfer"
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -47,18 +46,6 @@ SIZE 121
 RETR 121
 DELE after_transfer
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-DELE before_transfer
-EPSV
-TYPE I
-SIZE 121
-RETR 121
-DELE after_transfer
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

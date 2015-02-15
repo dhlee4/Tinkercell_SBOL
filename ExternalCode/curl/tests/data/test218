@@ -3,19 +3,11 @@
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.0 200 OK
 Server: test-server/fake
 Content-Type: text/html
 Content-Length: 6
 
-=======
-HTTP/1.0 200 OK
-Server: test-server/fake
-Content-Type: text/html
-Content-Length: 6
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 blaha
 </data>
 </reply>
@@ -44,7 +36,6 @@ just some tiny teeny contents
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /218 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -56,19 +47,6 @@ just some tiny teeny contents
 
 0
 
-=======
-PUT /218 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Transfer-Encoding: chunked
-Expect: 100-continue
-
-1e
-just some tiny teeny contents
-
-0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

@@ -11,7 +11,6 @@ cookies
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Date: Tue, 25 Sep 2001 19:37:44 GMT
 Content-Type: text/html
@@ -19,15 +18,6 @@ Set-Cookie: XToken=xt;Domain=.z.x.com;Path=/
 Cache-control: private
 Content-Length: 62
 
-=======
-HTTP/1.1 200 OK
-Date: Tue, 25 Sep 2001 19:37:44 GMT
-Content-Type: text/html
-Set-Cookie: XToken=xt;Domain=.z.x.com;Path=/
-Cache-control: private
-Content-Length: 62
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This server reply is for testing a simple cookie test case...
 </data>
 </reply>
@@ -51,19 +41,11 @@ HTTP, get cookie with dot prefixed full domain
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://z.x.com/171 HTTP/1.1
 Host: z.x.com
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET http://z.x.com/171 HTTP/1.1
-Host: z.x.com
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <file name="log/jar171" mode="text">
 # Netscape HTTP Cookie File

@@ -9,7 +9,6 @@ HTTP GET
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Server: thebest/1.0
 Content-Type: text/plain
@@ -23,21 +22,6 @@ Server: thebest/1.0
 Content-Type: text/plain
 Content-Length: 7
 
-=======
-HTTP/1.1 200 OK
-Server: thebest/1.0
-Content-Type: text/plain
-Content-Length: 6
-
-first
-</data>
-<data1 nocheck="yes">
-HTTP/1.1 200 OK
-Server: thebest/1.0
-Content-Type: text/plain
-Content-Length: 7
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 second
 </data1>
 </reply>
@@ -61,7 +45,6 @@ http://%HOSTIP:%HTTPPORT/want/1066 http://%HOSTIP:%HTTPPORT/want/10660001 --dump
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/1066 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -93,39 +76,6 @@ Content-Length: 7
 Content-Length: 7
 
 
-=======
-GET /want/1066 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /want/10660001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-</protocol>
-<stdout>
-HTTP/1.1 200 OK
-HTTP/1.1 200 OK
-Server: thebest/1.0
-Server: thebest/1.0
-Content-Type: text/plain
-Content-Type: text/plain
-Content-Length: 6
-Content-Length: 6
-
-
-first
-HTTP/1.1 200 OK
-HTTP/1.1 200 OK
-Server: thebest/1.0
-Server: thebest/1.0
-Content-Type: text/plain
-Content-Type: text/plain
-Content-Length: 7
-Content-Length: 7
-
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 second
 </stdout>
 </verify>

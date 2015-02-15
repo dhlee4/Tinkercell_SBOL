@@ -40,17 +40,10 @@ http://%HOSTIP:%HTTPPORT/we/want/our/1029 -w '%{redirect_url}\n'
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/our/1029 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /we/want/our/1029 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <stdout mode="text">
 HTTP/1.1 301 This is a weirdo text message swsclose

@@ -47,17 +47,10 @@ http://%HOSTIP:%HTTPPORT/292 --max-filesize 1000
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /292 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /292 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

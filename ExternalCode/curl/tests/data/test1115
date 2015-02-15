@@ -9,7 +9,6 @@ HTTP 1xx response code
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 104 Experiment
 Server: Microsoft-IIS/5.0
 Date: Sun, 03 Apr 2005 14:57:45 GMT
@@ -20,18 +19,6 @@ Server: Microsoft-IIS/6.0
 Content-Type: text/html; charset=iso-8859-1
 Content-Length: 0
 
-=======
-HTTP/1.1 104 Experiment
-Server: Microsoft-IIS/5.0
-Date: Sun, 03 Apr 2005 14:57:45 GMT
-X-Powered-By: ASP.NET
-
-HTTP/1.1 200 OK swsbounce
-Server: Microsoft-IIS/6.0
-Content-Type: text/html; charset=iso-8859-1
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </data>
 
 </reply>
@@ -59,17 +46,10 @@ http://%HOSTIP:%HTTPPORT/1115
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1115 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /1115 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

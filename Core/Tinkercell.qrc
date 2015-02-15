@@ -212,7 +212,6 @@
 		<file alias="user.png">../icons/user.png</file>
 		<file alias="brightness.png">../icons/brightness.png</file>
 		<file alias="wikidust.png">../icons/wikidust.png</file>
-<<<<<<< HEAD
 		<file alias="sbol_promoter.png">../icons/sbol_promoter.png</file>
 		<file alias="sbol_promoter.xml">../icons/sbol_promoter.xml</file>
 		<file alias="sbol_operator.png">../icons/sbol_operator.png</file>
@@ -254,7 +253,5 @@
 		<file alias="sbol_user-defined.png">../icons/sbol_user-defined.png</file>
 		<file alias="sbol_user-defined.xml">../icons/sbol_user-defined.xml</file>
 		
-=======
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
     </qresource>
 </RCC>

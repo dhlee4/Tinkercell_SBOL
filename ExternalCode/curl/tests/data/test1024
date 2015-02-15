@@ -11,7 +11,6 @@ cookies
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -19,20 +18,10 @@ Location: ../data/10240002.txt
 Set-Cookie: firstcookie=want; path=/want/
 Content-Length: 69
 
-=======
-HTTP/1.1 301 This is a weirdo text message
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Location: ../data/10240002.txt
-Set-Cookie: firstcookie=want; path=/want/
-Content-Length: 69
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This server reply is for testing a Location: following with cookies
 
 </data>
 <data2>
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -40,37 +29,19 @@ Location: ../want/10240003.txt
 Set-Cookie: nextcookie=data; path=/data/
 Content-Length: 69
 
-=======
-HTTP/1.1 301 This is a weirdo text message
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Location: ../want/10240003.txt
-Set-Cookie: nextcookie=data; path=/data/
-Content-Length: 69
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This server reply is for testing a Location: following with cookies
 
 </data2>
 <data3>
-<<<<<<< HEAD
 HTTP/1.1 200 Followed here fine
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 52
 
-=======
-HTTP/1.1 200 Followed here fine
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 52
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 If this is received, the location following worked
 
 </data3>
 <datacheck>
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
@@ -90,27 +61,6 @@ Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 52
 
-=======
-HTTP/1.1 301 This is a weirdo text message
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Location: ../data/10240002.txt
-Set-Cookie: firstcookie=want; path=/want/
-Content-Length: 69
-
-HTTP/1.1 301 This is a weirdo text message
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Location: ../want/10240003.txt
-Set-Cookie: nextcookie=data; path=/data/
-Content-Length: 69
-
-HTTP/1.1 200 Followed here fine
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 52
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 If this is received, the location following worked
 
 </datacheck>
@@ -135,7 +85,6 @@ http://%HOSTIP:%HTTPPORT/want/1024 -L -c log/jar1024
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want/1024 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -149,21 +98,6 @@ Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Cookie: firstcookie=want
 
-=======
-GET /want/1024 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /data/10240002.txt HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /want/10240003.txt HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: firstcookie=want
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

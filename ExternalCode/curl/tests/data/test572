@@ -86,7 +86,6 @@ speed
 ^If-Modified-Since:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 SETUP rtsp://%HOSTIP:%RTSPPORT/5720001 RTSP/1.0
 CSeq: 1
 Transport: Planes/Trains/Automobiles
@@ -115,36 +114,6 @@ OPTIONS rtsp://%HOSTIP:%RTSPPORT/5720005 RTSP/1.0
 CSeq: 5
 Session: getparams-test
 
-=======
-SETUP rtsp://%HOSTIP:%RTSPPORT/5720001 RTSP/1.0
-CSeq: 1
-Transport: Planes/Trains/Automobiles
-
-GET_PARAMETER rtsp://%HOSTIP:%RTSPPORT/5720002 RTSP/1.0
-CSeq: 2
-Session: getparams-test
-Content-Length: 12
-Content-Type: text/parameters
-
-scale
-speed
-GET_PARAMETER rtsp://%HOSTIP:%RTSPPORT/5720003 RTSP/1.0
-CSeq: 3
-Session: getparams-test
-
-GET_PARAMETER rtsp://%HOSTIP:%RTSPPORT/5720004 RTSP/1.0
-CSeq: 4
-Session: getparams-test
-Content-Length: 24
-Content-Type: text/parameters
-
-packets_received
-jitter
-OPTIONS rtsp://%HOSTIP:%RTSPPORT/5720005 RTSP/1.0
-CSeq: 5
-Session: getparams-test
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 

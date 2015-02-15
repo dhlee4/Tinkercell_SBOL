@@ -12,7 +12,6 @@ followlocation
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message swsclose
 Location: data/10810099.txt?coolsite=yes
 Content-Length: 62
@@ -26,21 +25,6 @@ Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 41
 
-=======
-HTTP/1.1 301 This is a weirdo text message swsclose
-Location: data/10810099.txt?coolsite=yes
-Content-Length: 62
-Connection: close
-
-This server reply is for testing a simple Location: following
-</data>
-<data2 nocheck="yes">
-HTTP/1.1 200 Followed here fine swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 41
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This second URL does not have a location
 </data2>
 </reply>
@@ -64,7 +48,6 @@ http://%HOSTIP:%HTTPPORT/we/want/our/1081 http://%HOSTIP:%HTTPPORT/we/want/our/1
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/our/1081 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -87,30 +70,6 @@ Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
 Content-Length: 41
 
-=======
-GET /we/want/our/1081 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /we/want/our/10810002 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-</protocol>
-<stdout mode="text">
-HTTP/1.1 301 This is a weirdo text message swsclose
-Location: data/10810099.txt?coolsite=yes
-Content-Length: 62
-Connection: close
-
-This server reply is for testing a simple Location: following
-http://%HOSTIP:%HTTPPORT/we/want/our/data/10810099.txt?coolsite=yes
-HTTP/1.1 200 Followed here fine swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: test-server/fake
-Content-Length: 41
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This second URL does not have a location
 
 </stdout>

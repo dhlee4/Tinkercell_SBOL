@@ -97,7 +97,6 @@ ftp://%HOSTIP:%FTPPORT/1086 -m 7
 28
 </errorcode>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -105,15 +104,6 @@ EPSV
 TYPE I
 SIZE 1086
 RETR 1086
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-SIZE 1086
-RETR 1086
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

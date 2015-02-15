@@ -12,19 +12,11 @@ followlocation
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 301 This is a weirdo text message swsclose
 Location: data/10800002.txt?coolsite=yes
 Content-Length: 62
 Connection: close
 
-=======
-HTTP/1.1 301 This is a weirdo text message swsclose
-Location: data/10800002.txt?coolsite=yes
-Content-Length: 62
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This server reply is for testing a simple Location: following
 </data>
 </reply>
@@ -48,7 +40,6 @@ http://%HOSTIP:%HTTPPORT/we/want/our/1080 http://%HOSTIP:%HTTPPORT/we/want/our/1
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/our/1080 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -71,30 +62,6 @@ Location: data/10800002.txt?coolsite=yes
 Content-Length: 62
 Connection: close
 
-=======
-GET /we/want/our/1080 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /we/want/our/1080 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-</protocol>
-<stdout mode="text">
-HTTP/1.1 301 This is a weirdo text message swsclose
-Location: data/10800002.txt?coolsite=yes
-Content-Length: 62
-Connection: close
-
-This server reply is for testing a simple Location: following
-http://%HOSTIP:%HTTPPORT/we/want/our/data/10800002.txt?coolsite=yes
-HTTP/1.1 301 This is a weirdo text message swsclose
-Location: data/10800002.txt?coolsite=yes
-Content-Length: 62
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This server reply is for testing a simple Location: following
 http://%HOSTIP:%HTTPPORT/we/want/our/data/10800002.txt?coolsite=yes
 </stdout>

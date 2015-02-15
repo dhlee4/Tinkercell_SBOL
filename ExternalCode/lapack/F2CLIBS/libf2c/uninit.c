@@ -153,14 +153,11 @@ _uninit_f2c(void *x, int type, long len)
 #include "float.h"
 #include "signal.h"
 
-<<<<<<< HEAD
 #define	_EM_DENORMAL	0x00080000
 #define	_EM_UNDERFLOW	0x00000002
 #define _MCW_EM         0x0008001f              /* interrupt Exception Masks */
 #define _EM_INEXACT     0x00000001              /*   inexact (precision) */
 
-=======
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
  static void
 ieee0(Void)
 {

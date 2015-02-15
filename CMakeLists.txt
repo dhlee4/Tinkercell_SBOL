@@ -92,28 +92,16 @@ ENDIF(COMMAND CMAKE_POLICY)
 #---------------------------------------------------------------------------
 IF( APPLE )
   OPTION( BUILD_BUNDLE "Make A Bundle Application" ON )
-<<<<<<< HEAD
   SET (CMAKE_OSX_ARCHITECTURES "ppc;i386;" CACHE STRING "enable universal binaries" FORCE)
   IF (BUILD_BUNDLE)
      IF (NOT DEFINED TINKERCELL_EXE)
          MESSAGE("Please run CMake CONFIGURE again because TINKERCELL_EXE is not defined")
      ENDIF (NOT DEFINED TINKERCELL_EXE)
-=======
-  SET (CMAKE_OSX_ARCHITECTURES "ppc;i386;" CACHE STRING "enable universal binaries" FORCE) 
-  IF (BUILD_BUNDLE) 
-     IF (NOT DEFINED TINKERCELL_EXE)
-         MESSAGE("Please run CMake CONFIGURE again because TINKERCELL_EXE is not defined")
-     ENDIF (NOT DEFINED TINKERCELL_EXE)     
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
      SET(TINKERCELL_PACKAGE_ROOT_DIR ${TINKERCELL_EXE}.app/Contents/MacOS)
   ELSE(BUILD_BUNDLE)
      SET(TINKERCELL_PACKAGE_ROOT_DIR bin/..)
   ENDIF (BUILD_BUNDLE)
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 ELSE (APPLE)
    SET(TINKERCELL_PACKAGE_ROOT_DIR bin/..)
 ENDIF( APPLE )
@@ -126,7 +114,6 @@ SET(EXECUTABLE_OUTPUT_PATH
  CACHE PATH "Single output directory for building all executables."
 )
 IF (WIN32)
-<<<<<<< HEAD
    SET(TINKERCELL_CPP_PLUGINS_FOLDER
          plugins/windows
          CACHE PATH "Single output directory for building all cpp libraries." FORCE)
@@ -139,31 +126,13 @@ ELSE(WIN32)
                    plugins/mac
                     CACHE PATH "Single output directory for building all cpp libraries." FORCE)
         SET(TINKERCELL_C_PLUGINS_FOLDER
-=======
-   SET(TINKERCELL_CPP_PLUGINS_FOLDER 
-         plugins/windows 
-         CACHE PATH "Single output directory for building all cpp libraries." FORCE)
-   SET(TINKERCELL_C_PLUGINS_FOLDER 
-         plugins/c/windows 
-         CACHE PATH "Single output directory for building all c libraries." FORCE)
-ELSE(WIN32)
-   IF (APPLE)
-        SET(TINKERCELL_CPP_PLUGINS_FOLDER 
-                   plugins/mac
-                    CACHE PATH "Single output directory for building all cpp libraries." FORCE)
-        SET(TINKERCELL_C_PLUGINS_FOLDER 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
                     plugins/c/mac
                     CACHE PATH "Single output directory for building all c libraries." FORCE)
    ELSE(APPLE)
         OPTION(HAVE_64_BIT "64 bit OS" OFF)
         IF( HAVE_64_BIT )
                 MESSAGE(STATUS "64-bit OS")
-<<<<<<< HEAD
                 SET(TINKERCELL_CPP_PLUGINS_FOLDER
-=======
-                SET(TINKERCELL_CPP_PLUGINS_FOLDER 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
                              plugins/ubuntu64
                               CACHE STRING "Single output directory for building all cpp libraries." FORCE)
                 SET(TINKERCELL_C_PLUGINS_FOLDER
@@ -198,15 +167,12 @@ SET(C_LIBRARY_OUTPUT_PATH ${TINKERCELL_BINARY_DIR}/bin/${TINKERCELL_C_PLUGINS_FO
 #---------------------------------------------------------------------------
 # Qt4
 #---------------------------------------------------------------------------
-<<<<<<< HEAD
 #ADD_SUBDIRECTORY (libsbolc)
 #-----
 #libsbolc
 #-----
 #ADD_SUBDIRECTORY(libSBOLc)
 
-=======
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 FIND_PACKAGE( Qt4 )
 FIND_PACKAGE ( OpenGL )
 #--------------------------------------------
@@ -224,11 +190,7 @@ IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 5)
      SET( QT_LIBRARIES ${QT_QT_LIBRARY} )
   ENDIF( QT_USE_FILE )
 ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 5)
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 LINK_DIRECTORIES( BEFORE
     ${CPP_LIBRARY_OUTPUT_PATH}
     ${C_LIBRARY_OUTPUT_PATH}
@@ -236,11 +198,7 @@ LINK_DIRECTORIES( BEFORE
     ${TINKERCELL_BINARY_DIR}/bin
    )
 IF ( WIN32 )
-<<<<<<< HEAD
   LINK_DIRECTORIES(
-=======
-  LINK_DIRECTORIES( 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 	BEFORE
 	${CPP_LIBRARY_OUTPUT_PATH}/Release
 	${CPP_LIBRARY_OUTPUT_PATH}/Debug
@@ -270,11 +228,8 @@ ENDIF(UNIX AND NOT APPLE)
 
 SET(TINKERCELL_BINARY_BIN_DIR ${TINKERCELL_BINARY_DIR}/bin)
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 #----------------------------------------------------------------------------
 #   TinkerCellCore and graphics files
 #----------------------------------------------------------------------------
@@ -317,19 +272,11 @@ ENDIF( BUILD_EXAMPLE_PROGRAMS )
 # Copyright and other files
 #----------------------------------------------------------------------------
 
-<<<<<<< HEAD
 FILE(GLOB TINKERCELL_SUPPORTING_FILES
          ${TINKERCELL_SOURCE_DIR}/ABOUT.TXT
          ${TINKERCELL_SOURCE_DIR}/COPYRIGHT.TXT
          ${TINKERCELL_SOURCE_DIR}/UPDATES.TXT)
 INSTALL(FILES ${TINKERCELL_SUPPORTING_FILES} DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/)
-=======
-FILE(GLOB TINKERCELL_SUPPORTING_FILES 
-         ${TINKERCELL_SOURCE_DIR}/ABOUT.TXT
-         ${TINKERCELL_SOURCE_DIR}/COPYRIGHT.TXT
-         ${TINKERCELL_SOURCE_DIR}/UPDATES.TXT)
-INSTALL(FILES ${TINKERCELL_SUPPORTING_FILES} DESTINATION ${TINKERCELL_PACKAGE_ROOT_DIR}/)  
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 
 #----------------------------------------------------------------------------
 #   TinkerCell main executable
@@ -364,22 +311,15 @@ ENDIF (RUBY_ENABLE)
 ADD_SUBDIRECTORY( DB )
 ADD_SUBDIRECTORY( c )
 
-<<<<<<< HEAD
 ADD_SUBDIRECTORY( ldh_work )
 
-=======
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 OPTION(TINKERCELL_COPY_REPOSITORY "Include copy of the TinkerCell shared repository when creating package" ON)
 #this is the TinkerCell repository that is available automatically via SVN,
 #but its included here in case the user does not have SVN
 IF (TINKERCELL_COPY_REPOSITORY)
 	ADD_SUBDIRECTORY( tinkercellrepo )
 ENDIF (TINKERCELL_COPY_REPOSITORY)
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 #----------------------------------------------------------------------------
 # CPack
 #----------------------------------------------------------------------------
@@ -419,10 +359,6 @@ IF (UNIX AND NOT APPLE)
 ENDIF(UNIX AND NOT APPLE)
 
 # ---------------------
-<<<<<<< HEAD
 # CTEST
-=======
-# CTEST 
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 # INCLUDE( CTest )
 # --------------------

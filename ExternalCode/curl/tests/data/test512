@@ -3,19 +3,11 @@
 # Server-side
 <reply>
 <data mode="text">
-<<<<<<< HEAD
 HTTP/1.1 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: yes
 Connection: close
 
-=======
-HTTP/1.1 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Server: yes
-Connection: close
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 hello
 </data>
 </reply>
@@ -45,17 +37,10 @@ http://%HOSTIP:%HTTPPORT/512
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /512 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /512 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

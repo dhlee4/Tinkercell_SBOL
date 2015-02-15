@@ -62,7 +62,6 @@ http://%HOSTIP:%HTTPPORT/path/530
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 GET /path/5300001 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -79,24 +78,6 @@ GET /path/5300004 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /path/5300001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /path/5300002 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /path/5300003 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /path/5300004 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

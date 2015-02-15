@@ -9,11 +9,7 @@ HTTP custom request
 <reply>
 <data>
 HTTP/1.1 200 Read you
-<<<<<<< HEAD
 Content-Length: 29
-=======
-Content-Length: 29
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Deleted: suppose we got a header like this! ;-)
 
 blabla custom request result
@@ -39,17 +35,10 @@ http://%HOSTIP:%HTTPPORT/want/13 -X DELETE
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 DELETE /want/13 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-DELETE /want/13 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

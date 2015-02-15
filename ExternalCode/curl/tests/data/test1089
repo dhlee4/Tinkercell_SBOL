@@ -12,7 +12,6 @@ followlocation
 # Server-side
 <reply>
 <data nocheck="yes">
-<<<<<<< HEAD
 HTTP/1.1 302 OK swsbounce swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Length: 8
@@ -29,24 +28,6 @@ Content-Length: 15
 Connection: close
 Content-Type: text/plain; charset=us-ascii
 
-=======
-HTTP/1.1 302 OK swsbounce swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 8
-Connection: close
-Content-Type: text/plain
-Location: ./10890001
-
-monster
-</data>
-<data1 nocheck="yes">
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 15
-Connection: close
-Content-Type: text/plain; charset=us-ascii
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 bigger monster
 </data1>
 
@@ -73,7 +54,6 @@ http://%HOSTIP:%HTTPPORT/1089 -w "%{num_connects}\n%{num_redirects}\n%{size_down
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1089 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -98,32 +78,6 @@ Content-Length: 15
 Connection: close
 Content-Type: text/plain; charset=us-ascii
 
-=======
-GET /1089 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /10890001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-</protocol>
-
-<stdout>
-HTTP/1.1 302 OK swsbounce swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 8
-Connection: close
-Content-Type: text/plain
-Location: ./10890001
-
-HTTP/1.1 200 OK
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Length: 15
-Connection: close
-Content-Type: text/plain; charset=us-ascii
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 bigger monster
 2
 1

@@ -59,7 +59,6 @@ rtsp://%HOSTIP:%RTSPPORT/570
 ^If-Modified-Since:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 OPTIONS rtsp://%HOSTIP:%RTSPPORT/5700001 RTSP/1.0
 CSeq: 1
 
@@ -71,19 +70,6 @@ PLAY rtsp://%HOSTIP:%RTSPPORT/5700003 RTSP/1.0
 CSeq: 1000
 Session: asdf
 
-=======
-OPTIONS rtsp://%HOSTIP:%RTSPPORT/5700001 RTSP/1.0
-CSeq: 1
-
-SETUP rtsp://%HOSTIP:%RTSPPORT/5700002 RTSP/1.0
-CSeq: 999
-Transport: RAW/RAW/UDP;unicast;client_port=3056-3057
-
-PLAY rtsp://%HOSTIP:%RTSPPORT/5700003 RTSP/1.0
-CSeq: 1000
-Session: asdf
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 

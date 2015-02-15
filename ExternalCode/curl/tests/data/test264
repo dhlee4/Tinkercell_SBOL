@@ -10,19 +10,11 @@ HTTP proxy Basic auth
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Type: text/html
 Content-Length: 26
 
-=======
-HTTP/1.1 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Type: text/html
-Content-Length: 26
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 the content would go here
 </data>
 </reply>
@@ -46,21 +38,12 @@ http://we.want.that.site.com/264 -x http://f%61ke:user@%HOSTIP:%HTTPPORT
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET http://we.want.that.site.com/264 HTTP/1.1
 Proxy-Authorization: Basic ZmFrZTp1c2Vy
 Host: we.want.that.site.com
 Accept: */*
 Proxy-Connection: Keep-Alive
 
-=======
-GET http://we.want.that.site.com/264 HTTP/1.1
-Proxy-Authorization: Basic ZmFrZTp1c2Vy
-Host: we.want.that.site.com
-Accept: */*
-Proxy-Connection: Keep-Alive
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

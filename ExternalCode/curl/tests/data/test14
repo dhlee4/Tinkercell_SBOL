@@ -34,19 +34,11 @@ http://%HOSTIP:%HTTPPORT/want/14 -i --head
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 HEAD /want/14 HTTP/1.1
 User-Agent: curl/7.4.2-pre4 (sparc-sun-solaris2.7) libcurl 7.4.2-pre4
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-HEAD /want/14 HTTP/1.1
-User-Agent: curl/7.4.2-pre4 (sparc-sun-solaris2.7) libcurl 7.4.2-pre4
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

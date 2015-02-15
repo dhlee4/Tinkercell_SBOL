@@ -47,17 +47,10 @@ HTTP-IPv6 GET (using ip6-localhost)
 ^User-Agent:
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /241 HTTP/1.1
 Host: ip6-localhost:%HTTP6PORT
 Accept: */*
 
-=======
-GET /241 HTTP/1.1
-Host: ip6-localhost:%HTTP6PORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

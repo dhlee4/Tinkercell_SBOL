@@ -14,7 +14,6 @@ HTTP Basic auth
 # Basic authenticated request (we really want to respond with 200 for
 # the second), so just respond with 401 for both and let curl deal with it.
 <data>
-<<<<<<< HEAD
 HTTP/1.1 401 Authorization Required
 Server: testcurl
 WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
@@ -41,34 +40,6 @@ WWW-Authenticate: X-bogus-auth realm="gimme all yer s3cr3ts"
 Content-Type: text/plain
 Content-Length: 0
 
-=======
-HTTP/1.1 401 Authorization Required
-Server: testcurl
-WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Basic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: X-bogus-auth realm="gimme all yer s3cr3ts"
-Content-Type: text/plain
-Content-Length: 0
-
-</data>
-<datacheck>
-HTTP/1.1 401 Authorization Required
-Server: testcurl
-WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Basic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: X-bogus-auth realm="gimme all yer s3cr3ts"
-Content-Type: text/plain
-Content-Length: 0
-
-HTTP/1.1 401 Authorization Required
-Server: testcurl
-WWW-Authenticate: Blackmagic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: Basic realm="gimme all yer s3cr3ts"
-WWW-Authenticate: X-bogus-auth realm="gimme all yer s3cr3ts"
-Content-Type: text/plain
-Content-Length: 0
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </datacheck>
 </reply>
 
@@ -97,26 +68,16 @@ four is the number of lines
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /1075 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 85
 Expect: 100-continue
 
-=======
-PUT /1075 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 85
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is data we upload with PUT
 a second line
 line three
 four is the number of lines
-<<<<<<< HEAD
 PUT /1075 HTTP/1.1
 Authorization: Basic dGVzdHVzZXI6dGVzdHBhc3M=
 Host: %HOSTIP:%HTTPPORT
@@ -124,15 +85,6 @@ Accept: */*
 Content-Length: 85
 Expect: 100-continue
 
-=======
-PUT /1075 HTTP/1.1
-Authorization: Basic dGVzdHVzZXI6dGVzdHBhc3M=
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 85
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 This is data we upload with PUT
 a second line
 line three

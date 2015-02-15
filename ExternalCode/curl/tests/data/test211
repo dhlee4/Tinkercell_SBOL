@@ -29,7 +29,6 @@ data blobb
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -44,22 +43,6 @@ PASV
 SIZE 211
 RETR 211
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD a
-CWD path
-EPSV
-PASV
-TYPE I
-SIZE 211
-RETR 211
-PASV
-SIZE 211
-RETR 211
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

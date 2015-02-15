@@ -39,21 +39,12 @@ a few bytes
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 PUT /we/want/58te%5B%5Dst.txt HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Content-Length: 12
 Expect: 100-continue
 
-=======
-PUT /we/want/58te%5B%5Dst.txt HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Content-Length: 12
-Expect: 100-continue
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 a few bytes
 </protocol>
 </verify>

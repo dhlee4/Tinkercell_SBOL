@@ -10,21 +10,12 @@ cookiejar
 # Server-side
 <reply>
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK swsclose
 Date: Thu, 09 Nov 2010 14:49:00 GMT
 Content-Type: text/html
 Set-Cookie: IPCZQX01af0fca5c=000010008168c200d25dfc4b; path=/; domain=.NOT_DISCLOSED.se
 Content-Length: 4
 
-=======
-HTTP/1.1 200 OK swsclose
-Date: Thu, 09 Nov 2010 14:49:00 GMT
-Content-Type: text/html
-Set-Cookie: IPCZQX01af0fca5c=000010008168c200d25dfc4b; path=/; domain=.NOT_DISCLOSED.se
-Content-Length: 4
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 boo
 </data>
 </reply>
@@ -48,17 +39,10 @@ http://%HOSTIP:%HTTPPORT/we/want/73 -c log/jar73.txt -H "Host: host.NOT_DISCLOSE
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/73 HTTP/1.1
 Accept: */*
 Host: host.NOT_DISCLOSED.se
 
-=======
-GET /we/want/73 HTTP/1.1
-Accept: */*
-Host: host.NOT_DISCLOSED.se
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <file name="log/jar73.txt" mode="text">
 # Netscape HTTP Cookie File

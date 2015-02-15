@@ -53,19 +53,11 @@ Set-Cookie: blexp=yesyes; domain=.0.0.1; domain=.0.0.1; expiry=totally bad;
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /we/want/8 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 Cookie: cookie=perhaps; cookie=yes; partmatch=present; foobar=name; blexp=yesyes
 
-=======
-GET /we/want/8 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-Cookie: cookie=perhaps; cookie=yes; partmatch=present; foobar=name; blexp=yesyes
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

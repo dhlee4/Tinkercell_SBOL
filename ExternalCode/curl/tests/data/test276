@@ -63,7 +63,6 @@ HTTP Location: following with multiple question marks in URLs
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /want?uri=http://anything/276?secondq/276 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
@@ -72,16 +71,6 @@ GET /data/2760002.txt?coolsite=http://anotherurl/?a_second/2760002 HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /want?uri=http://anything/276?secondq/276 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
-GET /data/2760002.txt?coolsite=http://anotherurl/?a_second/2760002 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

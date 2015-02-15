@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Coding 
 RBS 
 Terminator 
@@ -15,24 +14,6 @@ Receptor
 mRNA
  Compartment
  Cell
-=======
-Coding
-RBS
-Terminator
-Activator Binding Site
-Repressor Binding Site
-Vector
-Promoter
-Empty
-Small Molecule
-Enzyme
-Transcription Factor
-Fluorescent Protein
-Receptor
-mRNA
-Compartment
-Cell
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 Activation
 Repression
 Enzyme Catalysis

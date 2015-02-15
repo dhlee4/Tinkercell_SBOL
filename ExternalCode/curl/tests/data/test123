@@ -29,21 +29,12 @@ ftp://%HOSTIP:%FTPPORT/123 -T log/upload123 -C 51
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
 EPSV
 TYPE I
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-EPSV
-TYPE I
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

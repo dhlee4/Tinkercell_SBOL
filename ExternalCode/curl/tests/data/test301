@@ -44,19 +44,11 @@ HTTPS GET with user and password
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /301 HTTP/1.1
 Authorization: Basic ZmFrZTp1c2Vy
 Host: %HOSTIP:%HTTPSPORT
 Accept: */*
 
-=======
-GET /301 HTTP/1.1
-Authorization: Basic ZmFrZTp1c2Vy
-Host: %HOSTIP:%HTTPSPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 <data>
 [insert full protocol verifiction dump here]

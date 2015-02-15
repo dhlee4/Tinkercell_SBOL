@@ -32,7 +32,6 @@ FTP CWD with --ftp-method multicwd
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-<<<<<<< HEAD
 USER anonymous
 PASS ftp@example.com
 PWD
@@ -44,19 +43,6 @@ TYPE I
 SIZE 296
 RETR 296
 QUIT
-=======
-USER anonymous
-PASS ftp@example.com
-PWD
-CWD first
-CWD second
-CWD third
-EPSV
-TYPE I
-SIZE 296
-RETR 296
-QUIT
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>

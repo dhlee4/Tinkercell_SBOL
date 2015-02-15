@@ -12,19 +12,11 @@ FAILURE
 <reply>
 # Some servers (e.g. Apache 1.2) respond this way to an invalid byte range
 <data>
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Connection: close
 Content-Length: 100
 Content-Type: text/plain
 
-=======
-HTTP/1.1 200 OK
-Connection: close
-Content-Length: 100
-Content-Type: text/plain
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 012345678
 012345678
 012345678
@@ -50,19 +42,11 @@ Content-Type: text/plain
 012345678
 012345678
 012345678
-<<<<<<< HEAD
 HTTP/1.1 200 OK
 Connection: close
 Content-Length: 100
 Content-Type: text/plain
 
-=======
-HTTP/1.1 200 OK
-Connection: close
-Content-Length: 100
-Content-Type: text/plain
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </datacheck>
 </reply>
 
@@ -100,19 +84,11 @@ http://%HOSTIP:%HTTPPORT/1042 -C -
 ^User-Agent:.*
 </strip>
 <protocol>
-<<<<<<< HEAD
 GET /1042 HTTP/1.1
 Range: bytes=100-
 Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
-=======
-GET /1042 HTTP/1.1
-Range: bytes=100-
-Host: %HOSTIP:%HTTPPORT
-Accept: */*
-
->>>>>>> 1905cfc9e294ef1fd9bc7c874b4a4e2af0fff3ea
 </protocol>
 </verify>
 </testcase>
