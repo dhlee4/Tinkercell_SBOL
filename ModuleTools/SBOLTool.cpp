@@ -57,8 +57,9 @@ namespace Tinkercell
 
         QGridLayout * layout1 = new QGridLayout;
         QGridLayout * layout2 = new QGridLayout;
+        QGridLayout * layout3 = new QGridLayout;
 
-        layout1->addWidget(new QLabel(tr("name")),0,0);
+/*        layout1->addWidget(new QLabel(tr("name")),0,0);
         layout1->addWidget(new QLabel(tr("concentration")),1,0);
         layout1->addWidget(name1 = new QLineEdit,0,1);
         layout1->addWidget(conc  = new QLineEdit,1,1);
@@ -68,22 +69,99 @@ namespace Tinkercell
         layout2->addWidget(name2 = new QLineEdit,0,1);
         layout2->addWidget(rate  = new QLineEdit,1,1);
 
-        groupBox1 = new QGroupBox(tr(" Species "));
+        layout3->addWidget(new QLabel(tr("name")),0,0);
+        layout3->addWidget(new QLabel(tr("elem3")),1,0);
+        layout3->addWidget(name3 = new QLineEdit, 0, 1);
+        layout3->addWidget(elem3 = new QLineEdit, 1,1);*/
+
+        layout1->addWidget(new QLabel(tr("uri")),0,0);
+        layout1->addWidget(new QLabel(tr("displayId")),1,0);
+        layout1->addWidget(new QLabel (tr("name")),2,0);
+        layout1->addWidget(new QLabel(tr("description")),3,0);
+        layout1->addWidget(new QLabel(tr("type")),4,0);
+
+        layout1->addWidget(DC_uri = new QLineEdit,0,1);
+        layout1->addWidget(DC_displayId = new QLineEdit,1,1);
+        layout1->addWidget(DC_name = new QLineEdit,2,1);
+        layout1->addWidget(DC_description = new QLineEdit,3,1);
+        layout1->addWidget(DC_type = new QLineEdit, 4,1);
+
+        layout2->addWidget(new QLabel(tr("uri")),0,0);
+        layout2->addWidget(new QLabel(tr("nucleotides")),1,0);
+
+        layout2->addWidget(DS_uri = new QLineEdit,0,1);
+        layout2->addWidget(DS_nucleotides = new QLineEdit,1,1);
+
+        layout3->addWidget(new QLabel(tr("uri")),0,0);
+        layout3->addWidget(new QLabel(tr("bioStart")),1,0);
+        layout3->addWidget(new QLabel(tr("bioEnd")),2,0);
+        layout3->addWidget(new QLabel(tr("strand")),3,0);
+
+        layout3->addWidget(SA_uri = new QLineEdit, 0,1);
+        layout3->addWidget(SA_bioStart = new QLineEdit ,1,1);
+        layout3->addWidget(SA_bioEnd = new QLineEdit, 2,1);
+        layout3->addWidget(SA_strand = new QLineEdit,3,1);
+
+        groupBox1 = new QGroupBox(tr("DNA Component"));
         groupBox1->setLayout(layout1);
 
-        groupBox2 = new QGroupBox(tr(" Reaction "));
+        groupBox2 = new QGroupBox(tr("DNA Sequence"));
         groupBox2->setLayout(layout2);
+
+        groupBox3 = new QGroupBox(tr("Sequence Annotation"));
+        groupBox3->setLayout(layout3);
 
         QVBoxLayout * layout4 = new QVBoxLayout;
         layout4->addWidget(groupBox1);
         layout4->addWidget(groupBox2);
-
+        layout4->addWidget(groupBox3);
+        layout4->addWidget(addDS = new QPushButton("Add DNASequence", this));
+        layout4->addWidget(delDS = new QPushButton("Delete DNASequence", this));
+        layout4->addWidget(addSA = new QPushButton("Add SequenceAnnotation", this));
+        layout4->addWidget(delSA = new QPushButton("Delete SequenceAnnotation", this));
+        connect(addSA, SIGNAL(pressed()), this, SLOT(showSA()));
+        connect(addDS, SIGNAL(pressed()), this, SLOT(showDS()));
+        connect(delSA, SIGNAL(pressed()), this, SLOT(hideSA()));
+        connect(delDS, SIGNAL(pressed()), this, SLOT(hideDS()));
         groupBox1->hide();
         groupBox2->hide();
+        groupBox3->hide();
+        delSA->hide();
+        delDS->hide();
 
         setLayout(layout4);
 
 
+    }
+
+    void SBOLTool::hideSA()
+    {
+        groupBox3->hide();
+        addSA->show();
+        delSA->hide();
+    }
+    void SBOLTool::hideDS()
+    {
+        groupBox2->hide();
+        addDS->show();
+        delDS->hide();
+
+    }
+
+    void SBOLTool::showSA()
+    {
+        groupBox3->show();
+        addSA->hide();
+        delSA->show();
+        return;
+    }
+
+    void SBOLTool::showDS()
+    {
+        groupBox2->show();
+        addDS->hide();
+        delDS->show();
+        return;
     }
 
 	bool SBOLTool::setMainWindow(MainWindow * main)
@@ -219,7 +297,7 @@ namespace Tinkercell
 
 
         groupBox1->show();
-        groupBox2->show();
+        //groupBox2->show();
         sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
 		scene->useDefaultBehavior(true);
 		//smode = none;

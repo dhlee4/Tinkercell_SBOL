@@ -88,6 +88,10 @@ namespace Tinkercell
 //		void itemsAboutToBeInserted(GraphicsScene* scene, QList<QGraphicsItem *>& items, QList<ItemHandle*>& handles, QList<QUndoCommand*>& commands);
 		void itemsDropped(GraphicsScene *, const QString&, QPointF);
 		void sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
+		void showSA();
+        void showDS();
+        void hideSA();
+        void hideDS();
 
 	private:
 		ConnectionsTree * connectionsTree;
@@ -96,10 +100,32 @@ namespace Tinkercell
 		int mode;
         QGroupBox * groupBox1;
         QGroupBox * groupBox2;
+        QGroupBox * groupBox3;
         QLineEdit * name1;
         QLineEdit * name2;
+        QLineEdit * name3;
         QLineEdit * conc;
         QLineEdit * rate;
+        QLineEdit * elem3;
+
+        QLineEdit *SA_uri;
+        QLineEdit *SA_bioStart;
+        QLineEdit *SA_bioEnd;
+        QLineEdit *SA_strand;
+
+        QLineEdit *DC_uri;
+        QLineEdit *DC_displayId;
+        QLineEdit *DC_name;
+        QLineEdit *DC_description;
+        QLineEdit *DC_type;
+
+        QLineEdit *DS_uri;
+        QLineEdit *DS_nucleotides;
+
+        QPushButton * addSA;
+        QPushButton * addDS;
+        QPushButton * delSA;
+        QPushButton * delDS;
 
 	};
 
