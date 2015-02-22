@@ -47,6 +47,9 @@
 #define SBOL_USER_DEFINED 120
 #define SBOL_ORIGIN_OF_REPLICATION 121
 
+extern "C"{
+#include "sbol.h"
+}
 
 namespace Tinkercell
 {

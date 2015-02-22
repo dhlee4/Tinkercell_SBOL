@@ -216,6 +216,7 @@ INCLUDE_DIRECTORIES( BEFORE
     ${TINKERCELL_SOURCE_DIR}
     ${TINKERCELL_SOURCE_DIR}/API
     ${TINKERCELL_SOURCE_DIR}/Core
+	${TINKERCELL_SOURCE_DIR}/libSBOLc_source/release/library/include
  )
 
 IF (UNIX AND NOT APPLE)
@@ -311,7 +312,7 @@ ENDIF (RUBY_ENABLE)
 ADD_SUBDIRECTORY( DB )
 ADD_SUBDIRECTORY( c )
 
-ADD_SUBDIRECTORY( ldh_work )
+#ADD_SUBDIRECTORY( ldh_work )
 
 OPTION(TINKERCELL_COPY_REPOSITORY "Include copy of the TinkerCell shared repository when creating package" ON)
 #this is the TinkerCell repository that is available automatically via SVN,
