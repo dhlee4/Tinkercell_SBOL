@@ -59,21 +59,6 @@ namespace Tinkercell
         QGridLayout * layout2 = new QGridLayout;
         QGridLayout * layout3 = new QGridLayout;
 
-/*        layout1->addWidget(new QLabel(tr("name")),0,0);
-        layout1->addWidget(new QLabel(tr("concentration")),1,0);
-        layout1->addWidget(name1 = new QLineEdit,0,1);
-        layout1->addWidget(conc  = new QLineEdit,1,1);
-
-        layout2->addWidget(new QLabel(tr("name")),0,0);
-        layout2->addWidget(new QLabel(tr("rate")),1,0);
-        layout2->addWidget(name2 = new QLineEdit,0,1);
-        layout2->addWidget(rate  = new QLineEdit,1,1);
-
-        layout3->addWidget(new QLabel(tr("name")),0,0);
-        layout3->addWidget(new QLabel(tr("elem3")),1,0);
-        layout3->addWidget(name3 = new QLineEdit, 0, 1);
-        layout3->addWidget(elem3 = new QLineEdit, 1,1);*/
-
         layout1->addWidget(new QLabel(tr("uri")),0,0);
         layout1->addWidget(new QLabel(tr("displayId")),1,0);
         layout1->addWidget(new QLabel (tr("name")),2,0);
@@ -123,13 +108,15 @@ namespace Tinkercell
         connect(addDS, SIGNAL(pressed()), this, SLOT(showDS()));
         connect(delSA, SIGNAL(pressed()), this, SLOT(hideSA()));
         connect(delDS, SIGNAL(pressed()), this, SLOT(hideDS()));
-        groupBox1->hide();
+        groupBox1->show();
         groupBox2->hide();
         groupBox3->hide();
         delSA->hide();
         delDS->hide();
 
         setLayout(layout4);
+        show();
+        mode = 0;
 
 
     }
@@ -190,6 +177,16 @@ namespace Tinkercell
 					mainWindow,SIGNAL(itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)));
 			connect(mainWindow,SIGNAL(itemsDropped(GraphicsScene *, const QString&, QPointF)),
 				this,SLOT(itemsDropped(GraphicsScene *, const QString&, QPointF)));
+            connect(mainWindow,SIGNAL(mousePressed(GraphicsScene *, QPointF, Qt::MouseButton, Qt::KeyboardModifiers)),
+				this,SLOT(sceneClicked(GraphicsScene *, QPointF, Qt::MouseButton, Qt::KeyboardModifiers)));
+            connect(mainWindow,
+				SIGNAL(itemsSelected(GraphicsScene *, const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers)),
+				this,
+				SLOT(itemsSelected(GraphicsScene *, const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers))
+				);
+
+            //GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
+
 
 			connect(mainWindow,SIGNAL(toolLoaded(Tool*)),this,SLOT(toolLoaded(Tool*))); // for loading tool. Initialization
 
@@ -205,11 +202,30 @@ namespace Tinkercell
         return true;
     }
 
+void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers)
+{
+	if (!scene) return;
+
+	QList<QGraphicsItem*> nodeItems;
+	NodeGraphicsItem * node = 0;
+	for(int i=0; i<items.size(); i++)
+        {
+            node = NodeGraphicsItem::cast(items[i]);
+            if(node)
+                {
+                    console()->message(node->name);
+                }
+        }
+
+}
+
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)
 	{
 	    console()->message(name);
 		scene->useDefaultBehavior(false);
 		show();
+		mode = 0;
+		current_type = name.toStdString();
 		if (name.toLower() == tr("promoter"))
             {
                 mode = SBOL_PROMOTER;
@@ -294,17 +310,18 @@ namespace Tinkercell
             {
                 mode = SBOL_USER_DEFINED;
             }
-
-
-        groupBox1->show();
-        //groupBox2->show();
-        sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
-		scene->useDefaultBehavior(true);
+        if(mode != 0)
+            {
+                sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
+                scene->useDefaultBehavior(true);
+            }
 		//smode = none;
 	}
-
-		void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+//GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
+    void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
 	{
+
+	    show();
 		QList<QGraphicsItem*> items;
         items = scene->items();
         NodeGraphicsItem * image = 0;
@@ -315,282 +332,110 @@ namespace Tinkercell
 
         QString appDir = QApplication::applicationDirPath();
         image = new NodeGraphicsItem;
+
         NodeGraphicsReader reader;
 
 		if (mode == SBOL_PROMOTER)
 		{
 			reader.readXml(image, tr(":/images/sbol_promoter.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-            image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_ORIGIN_OF_REPLICATION)
-            {
-                reader.readXml(image, tr(":/images/sbol_origin-of-replication.xml"));
-        image->normalize();
-        image->className = tr("SBOL Object");
-        image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-        image->setPos(point);
-        image->setToolTip(tr("List of events in this model"));
-        scene->insert(tr("Events box inserted"), image);
-        return;
-            }
+        {
+            reader.readXml(image, tr(":/images/sbol_origin-of-replication.xml"));
+        }
         if (mode == SBOL_CDS)
 		{
 			reader.readXml(image, tr(":/images/sbol_cds.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_RIBOSOME_ENTRY_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_ribosome-entry-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_TERMINATOR)
 		{
 			reader.readXml(image, tr(":/images/sbol_terminator.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_OPERATOR)
 		{
 			reader.readXml(image, tr(":/images/sbol_operator.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_INSULATOR)
 		{
 			reader.readXml(image, tr(":/images/sbol_insulator.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_RIBONUCLEASE_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_ribonuclease-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_RNA_STABILITY_ELEMENT)
 		{
 			reader.readXml(image, tr(":/images/sbol_rna-stability-element.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_PROTEASE_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_protease-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_PROTEIN_STABILITY_ELEMENT)
 		{
 			reader.readXml(image, tr(":/images/sbol_protein-stability-element.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_PRIMER_BINDING_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_primer-binding-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_RESTRICTION_ENZYME_RECOGNITION_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_restriction-enzyme-recognition-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_BLUNT_RESTRICTION_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_blunt-restriction-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_FIVE_PRIME_STICKY_RESTRICTION_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_five-prime-sticky-restriction-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE)
 		{
 			reader.readXml(image, tr(":/images/sbol_three-prime-sticky-restriction-site.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_FIVE_PRIME_OVERHANG)
 		{
 			reader.readXml(image, tr(":/images/sbol_five-prime-overhang.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_THREE_PRIME_OVERHANG)
 		{
 			reader.readXml(image, tr(":/images/sbol_three-prime-overhang.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_ASSEMBLY_SCAR)
 		{
 			reader.readXml(image, tr(":/images/sbol_assembly-scar.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_SIGNATURE)
 		{
 			reader.readXml(image, tr(":/images/sbol_signature.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
 
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
 		if (mode == SBOL_USER_DEFINED)
 		{
 			reader.readXml(image, tr(":/images/sbol_user-defined.xml"));
-			image->normalize();
-			image->className = tr("SBOL Object");
-			image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
-			image->defaultSize.height()/image->sceneBoundingRect().height());
-			image->setPos(point);
-			image->setToolTip(tr("List of events in this model"));
-
-			scene->insert(tr("Events box inserted"),image);
-			return;
 		}
-
-	}
+		if (mode != 0)
+            {
+                image->name = QString::fromStdString(current_type);
+                image->normalize();
+                image->className = tr("SBOL Object");
+                image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
+                image->defaultSize.height()/image->sceneBoundingRect().height());
+                image->setPos(point);
+                image->setToolTip(tr("List of events in this model"));
+                scene->insert(tr("Events box inserted"),image);
+                mode = 0;
+                select(0);
+                return;
+            }
+        return;
+    }
 
 	void SBOLTool::toolLoaded(Tool* tool)
 	{

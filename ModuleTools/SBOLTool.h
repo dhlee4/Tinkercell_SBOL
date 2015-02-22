@@ -46,6 +46,7 @@
 #include <QScrollArea>
 #include <QSplashScreen>
 #include <QDialog>
+#include <string>
 
 #include "GraphicsScene.h"
 #include "NodeGraphicsItem.h"
@@ -81,6 +82,10 @@ namespace Tinkercell
 		SBOLTool();
 		bool setMainWindow(MainWindow * main);
 
+	signals:
+		void itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&);
+		void dataChanged(const QList<ItemHandle*>&);
+
 	private slots:
 		void toolLoaded (Tool * tool);
 //		void mouseDoubleClicked (GraphicsScene * scene, QPointF point, QGraphicsItem *, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
@@ -88,6 +93,8 @@ namespace Tinkercell
 //		void itemsAboutToBeInserted(GraphicsScene* scene, QList<QGraphicsItem *>& items, QList<ItemHandle*>& handles, QList<QUndoCommand*>& commands);
 		void itemsDropped(GraphicsScene *, const QString&, QPointF);
 		void sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
+		void itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers);
+
 		void showSA();
         void showDS();
         void hideSA();
@@ -101,12 +108,6 @@ namespace Tinkercell
         QGroupBox * groupBox1;
         QGroupBox * groupBox2;
         QGroupBox * groupBox3;
-        QLineEdit * name1;
-        QLineEdit * name2;
-        QLineEdit * name3;
-        QLineEdit * conc;
-        QLineEdit * rate;
-        QLineEdit * elem3;
 
         QLineEdit *SA_uri;
         QLineEdit *SA_bioStart;
@@ -126,6 +127,8 @@ namespace Tinkercell
         QPushButton * addDS;
         QPushButton * delSA;
         QPushButton * delDS;
+
+        std::string current_type;
 
 	};
 
