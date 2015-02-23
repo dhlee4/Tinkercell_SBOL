@@ -13,6 +13,12 @@ INCLUDE_DIRECTORIES(
       ${TINKERCELL_SOURCE_DIR}/ExternalCode/raptor2/src
       ${TINKERCELL_SOURCE_DIR}/ExternalCode/raptor2/librdfa
       ${TINKERCELL_SOURCE_DIR}/ExternalCode/raptor2/util
+	  ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library/include
+)
+
+LINK_DIRECTORIES(
+	BEFORE
+	${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library
 )
 
 CONFIGURE_FILE( 
@@ -198,12 +204,20 @@ ADD_LIBRARY( TinkerCellCore
   ${TINKERCELL_QRC}
 )
 
+	FIND_LIBRARY(xml2 NAME libxml2.dll.a
+					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+
+	FIND_LIBRARY( sbol NAME libsbol.dll.a
+					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+
 #dependencies
 TARGET_LINK_LIBRARIES( TinkerCellCore
   TinkerCellCore
   muparser  #for parsing math
   cluster      #for clustering plot data
   raptor2    #for parsing RDF
+  xml2
+  sbol
   ${QT_LIBRARIES}
   ${OPENGL_LIBRARY}
 )

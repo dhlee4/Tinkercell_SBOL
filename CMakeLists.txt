@@ -265,9 +265,9 @@ ADD_SUBDIRECTORY( Documentation )
 
 OPTION( BUILD_EXAMPLE_PROGRAMS "Examples that use TinkerCellCore" ON )
 
-IF( BUILD_EXAMPLE_PROGRAMS )
-     ADD_SUBDIRECTORY( ExamplesUsingCore )
-ENDIF( BUILD_EXAMPLE_PROGRAMS )
+#IF( BUILD_EXAMPLE_PROGRAMS )
+#     ADD_SUBDIRECTORY( ExamplesUsingCore )
+#ENDIF( BUILD_EXAMPLE_PROGRAMS )
 
 #----------------------------------------------------------------------------
 # Copyright and other files

@@ -121,6 +121,8 @@ namespace Tinkercell
         show();
         mode = 0;
 
+        Document * doc = createDocument();
+
 
     }
 

@@ -51,8 +51,7 @@ FILE( GLOB ONTOLOGY_MAIN_SRC
 	Main.cpp
 )
 
-
 #create the main program and link it to the TinkerCellCore library  
 ADD_EXECUTABLE( OntologyExample ${ONTOLOGY_MAIN_SRC} ${ONTOLOGY_MAIN_MOC})
-TARGET_LINK_LIBRARIES( OntologyExample TinkerCellCore )
+TARGET_LINK_LIBRARIES( OntologyExample TinkerCellCore)
 

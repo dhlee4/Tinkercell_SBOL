@@ -11,6 +11,9 @@ CONFIGURE_FILE(
 	@ONLY
 )
 
+LINK_DIRECTORIES ( BEFORE
+	${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library )
+
 #------------------
 # include dirs
 #------------------
@@ -36,8 +39,16 @@ INCLUDE_DIRECTORIES( BEFORE
     ${TINKERCELL_SOURCE_DIR}/ExternalCode/copasi
     ${TINKERCELL_SOURCE_DIR}/ExternalCode/sbml/src
     ${TINKERCELL_SOURCE_DIR}/ExternalCode/antimony/src
+	${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library/include
  )
 
+FIND_LIBRARY(xml2 NAME libxml2.dll.a
+				PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+
+FIND_LIBRARY( sbol NAME libsbol.dll.a
+				PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+
+ 
 ADD_DEFINITIONS(-DTINKERCELL_CPP_PLUGINS_FOLDER="${TINKERCELL_CPP_PLUGINS_FOLDER}")
 ADD_DEFINITIONS(-DTINKERCELL_C_PLUGINS_FOLDER="${TINKERCELL_C_PLUGINS_FOLDER}")
 ADD_DEFINITIONS(-DUSE_CLAPACK)
@@ -90,6 +101,13 @@ ENDIF (TINKERCELL_FOR_WIKIDUST)
 #--------------------------------------------------------------------------
 #  Plugins
 #--------------------------------------------------------------------------
+
+	FIND_LIBRARY(xml2 NAME libxml2.dll.a
+					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+
+	FIND_LIBRARY( sbol NAME libsbol.dll.a
+					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+
 
 #INCLUDE (TinkerCellPlugins.cmake) #commented out if plugins are statically loaded
 
