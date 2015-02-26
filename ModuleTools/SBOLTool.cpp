@@ -24,6 +24,7 @@
 #include "TreeButton.h"
 #include "SBOLTool.h"
 #include "GlobalSettings.h"
+#include <sstream>
 
 #define SBOL_PROMOTER 101
 #define SBOL_ASSEMBLY_SCAR 102
@@ -46,10 +47,13 @@
 #define SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE 119
 #define SBOL_USER_DEFINED 120
 #define SBOL_ORIGIN_OF_REPLICATION 121
+#define SSTR( x ) dynamic_cast < std::ostringstream & > (( std::ostringstream() << std::dec << x ) ).str()
 
 extern "C"{
 #include "sbol.h"
 }
+
+static Document * sbol_doc;
 
 namespace Tinkercell
 {
@@ -121,7 +125,7 @@ namespace Tinkercell
         show();
         mode = 0;
 
-        Document * doc = createDocument();
+
 
 
     }
@@ -195,6 +199,59 @@ namespace Tinkercell
 
 			connect(mainWindow,SIGNAL(toolLoaded(Tool*)),this,SLOT(toolLoaded(Tool*))); // for loading tool. Initialization
 
+            sbol_doc = createDocument();
+
+
+// Export Menu
+            GlobalSettings::OPEN_FILE_EXTENSIONS << "SBOL" << "sbol";
+
+            if (mainWindow->fileMenu)
+            {
+                QList<QAction*> actions = mainWindow->fileMenu->actions();
+
+                QAction * targetAction = 0;
+                QMenu * exportmenu = 0;//, * importmenu = 0;
+
+                for (int i=0; i < actions.size(); ++i)
+                    if (actions[i] && actions[i]->menu())
+                    {
+                        if (actions[i]->text() == tr("&Export"))
+                        {
+                            exportmenu = actions[i]->menu();
+                            targetAction = actions[i];
+                        }
+                        else
+                            if (actions[i]->text() == tr("&Import"))
+                            {
+                                //importmenu = actions[i]->menu();
+                                targetAction = actions[i];
+                            }
+                    }
+
+                if (!exportmenu)
+                {
+                    for (int i=0; i < actions.size(); ++i)
+                        if (actions[i] && actions[i]->text() == tr("&Close page"))
+                        {
+                            exportmenu = new QMenu(tr("&Export"));
+                            //importmenu = new QMenu(tr("&Import"));
+                            //mainWindow->fileMenu->insertMenu(actions[i],importmenu);
+                            mainWindow->fileMenu->insertMenu(actions[i],exportmenu);
+                        }
+                }
+
+                if (!exportmenu)
+                {
+                    exportmenu = new QMenu(tr("&Export"));
+                    mainWindow->fileMenu->insertMenu(targetAction,exportmenu);
+                }
+
+                if (exportmenu)
+                {
+                    //importmenu->addAction(tr("load SBML file"),this,SLOT(loadSBMLFile()));
+                    exportmenu->addAction(tr("SBOL"),this,SLOT(saveSBOLFile()));
+                }
+            }
 
 
             //setLayout(layout4);
@@ -207,6 +264,23 @@ namespace Tinkercell
         return true;
     }
 
+void SBOLTool::saveSBOLFile()
+{
+    QString file = QFileDialog::getSaveFileName (this, tr("Save SBOL file"), homeDir());
+    if (file.isNull() || file.isEmpty()) return;
+
+    exportSBOL(0, file);
+    QDesktopServices::openUrl(QUrl(file));
+    return;
+}
+
+void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
+{
+    console()->message(file);
+    writeDocument(sbol_doc, file.toStdString().c_str());
+    return;
+}
+
 void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers)
 {
 	if (!scene) return;
@@ -218,7 +292,12 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
             node = NodeGraphicsItem::cast(items[i]);
             if(node)
                 {
-                    console()->message(node->name);
+                    std::string cur_uri = node->name.toStdString();
+                    DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
+                    DC_uri->setText(QString::fromAscii(getDNAComponentURI(cur_dc)));
+                    DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));
+                    /*console()->message(QString::fromAscii(getDNAComponentURI(cur_dc)));
+                    console()->message(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));*/
                 }
         }
 
@@ -226,101 +305,131 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)
 	{
+	    std::string cur_type = "";
 	    console()->message(name);
 		scene->useDefaultBehavior(false);
 		show();
 		mode = 0;
+		cur_cnt++;
+		std::string temp;
+		temp = authority+SSTR(cur_cnt);
+		DNAComponent *cur_dc = createDNAComponent(sbol_doc, temp.c_str());
+		setDNAComponentURI(cur_dc, temp.c_str());
 		current_type = name.toStdString();
 		if (name.toLower() == tr("promoter"))
             {
+                cur_type = "promoter";
                 mode = SBOL_PROMOTER;
             }
         if (name.toLower() == tr("assembly scar"))
             {
+                cur_type = "assembly scar";
                 mode = SBOL_ASSEMBLY_SCAR;
             }
         if (name.toLower() == tr("blunt restriction site"))
             {
+                cur_type = "blunt restriction site";
                 mode = SBOL_BLUNT_RESTRICTION_SITE;
             }
         if (name.toLower() == tr("cds"))
             {
+                cur_type = "cds";
                 mode = SBOL_CDS;
             }
         if (name.toLower() == tr("five prime overhang"))
             {
+                cur_type = "five prime overhang";
                 mode = SBOL_FIVE_PRIME_OVERHANG;
             }
         if (name.toLower() == tr("five prime sticky restriction site"))
             {
+                cur_type = "five prime sticky restriction site";
                 mode = SBOL_FIVE_PRIME_STICKY_RESTRICTION_SITE;
             }
         if (name.toLower() == tr("insulator"))
             {
+                cur_type = "insulator";
                 mode = SBOL_INSULATOR;
             }
         if (name.toLower() == tr("operator"))
             {
+                cur_type = "operator";
                 mode = SBOL_OPERATOR;
             }
         if (name.toLower() == tr("primer binding site"))
             {
+                cur_type = "primer binding site";
                 mode = SBOL_PRIMER_BINDING_SITE;
             }
         if (name.toLower() == tr("origin of replication"))
             {
+                cur_type = "origin of replication";
                 mode = SBOL_ORIGIN_OF_REPLICATION;
             }
         if (name.toLower() == tr("protease site"))
             {
+                cur_type = "protease site";
                 mode = SBOL_PROTEASE_SITE;
             }
         if (name.toLower() == tr("protein stability element"))
             {
+                cur_type = "protein stability element";
                 mode = SBOL_PROTEIN_STABILITY_ELEMENT;
             }
         if (name.toLower() == tr("restriction enzyme recognition site"))
             {
+                cur_type = "restriction enzyme recognition site";
                 mode = SBOL_RESTRICTION_ENZYME_RECOGNITION_SITE;
             }
         if (name.toLower() == tr("ribonuclease site"))
             {
+                cur_type = "ribonuclease site";
                 mode = SBOL_RIBONUCLEASE_SITE;
             }
         if (name.toLower() == tr("ribosome entry site"))
             {
+                cur_type = "ribosome entry site";
                 mode = SBOL_RIBOSOME_ENTRY_SITE;
             }
         if (name.toLower() == tr("rna stability element"))
             {
+                cur_type = "rna stability element";
                 mode = SBOL_RNA_STABILITY_ELEMENT;
             }
         if (name.toLower() == tr("signature"))
             {
+                cur_type = "signature";
                 mode = SBOL_SIGNATURE;
             }
         if (name.toLower() == tr("terminator"))
             {
+                cur_type = "terminator";
                 mode = SBOL_TERMINATOR;
             }
         if (name.toLower() == tr("three prime overhang"))
             {
+                cur_type = "three prime overhang";
                 mode = SBOL_THREE_PRIME_OVERHANG;
             }
         if (name.toLower() == tr("three prime sticky restriction site"))
             {
+                cur_type = "three prime sticky restriction site";
                 mode = SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE;
             }
         if (name.toLower() == tr("user defined"))
             {
+                cur_type = "user defined";
                 mode = SBOL_USER_DEFINED;
             }
         if(mode != 0)
             {
+                //setDNAComponentType(cur_dc, current_type.c_str());
+                setDNAComponentDisplayID(cur_dc, current_type.c_str());
                 sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
                 scene->useDefaultBehavior(true);
             }
 		//smode = none;
+		//setDNAComponentType(cur_dc, )
 	}
 //GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
     void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
@@ -427,7 +536,9 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 		}
 		if (mode != 0)
             {
-                image->name = QString::fromStdString(current_type);
+                std::string temp;
+                temp = authority+SSTR(cur_cnt);
+                image->name = QString::fromStdString(temp);
                 image->normalize();
                 image->className = tr("SBOL Object");
                 image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,

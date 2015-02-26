@@ -116,6 +116,7 @@ ELSE( APPLE AND BUILD_BUNDLE )
      copasi
      sbml
      antimony
+	 sbol
       ${QT_LIBRARIES}
     )
     ENDIF( WIN32 )

@@ -94,6 +94,8 @@ namespace Tinkercell
 		void itemsDropped(GraphicsScene *, const QString&, QPointF);
 		void sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
 		void itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers);
+		void saveSBOLFile();
+		void exportSBOL(QSemaphore*, const QString&);
 
 		void showSA();
         void showDS();
@@ -119,7 +121,8 @@ namespace Tinkercell
         QLineEdit *DC_name;
         QLineEdit *DC_description;
         QLineEdit *DC_type;
-
+        std::string authority = "http://example.com/dc";
+        int cur_cnt = 0;
         QLineEdit *DS_uri;
         QLineEdit *DS_nucleotides;
 

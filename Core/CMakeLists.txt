@@ -208,7 +208,7 @@ ADD_LIBRARY( TinkerCellCore
 					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
 
 	FIND_LIBRARY( sbol NAME libsbol.dll.a
-					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
+					PATHS ${TINKERCELL_SOURCE_DIR}/libSBOLc)
 
 #dependencies
 TARGET_LINK_LIBRARIES( TinkerCellCore
