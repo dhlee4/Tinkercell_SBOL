@@ -58,6 +58,8 @@
 #include "ItemHandle.h"
 #include "Tool.h"
 
+
+
 #ifndef TINKERCELLEXPORT
 #ifdef Q_WS_WIN
 #   if defined(TC_EXPORTS) || defined(TinkerCell_EXPORTS)
@@ -122,7 +124,11 @@ namespace Tinkercell
         QLineEdit *DC_description;
         QLineEdit *DC_type;
         std::string authority = "http://example.com/dc";
+        std::string authority_ds = "http://example.com/ds";
+        std::string authority_sa = "http://example.com/sa";
         int cur_cnt = 0;
+        int cur_ds_cnt = 0;
+        int cur_sa_cnt = 0;
         QLineEdit *DS_uri;
         QLineEdit *DS_nucleotides;
 
@@ -132,6 +138,7 @@ namespace Tinkercell
         QPushButton * delDS;
 
         std::string current_type;
+
 
 	};
 
