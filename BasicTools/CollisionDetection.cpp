@@ -16,6 +16,7 @@ This class sends a signal whenever two items in the current scene intersect.
 #include "TextGraphicsItem.h"
 #include "CollisionDetection.h"
 #include "NodeSelection.h"
+#include <QSignalSpy>
 
 namespace Tinkercell
 {
@@ -51,15 +52,15 @@ namespace Tinkercell
 	}
 
 	void CollisionDetection::itemsInserted(GraphicsScene * scene, const QList<QGraphicsItem*>& items, const QList<ItemHandle*>&)
-	{		
+	{
 		if (!(nodeBelowCursor != 0 || connectionBelowCursor != 0))
 		{
 			QPointF & p = scene->lastPoint();
 			if (p.isNull()) return;
-			
+
 			QRectF rect(p - QPointF(20,20), p + QPointF(20,20));
 			QList<QGraphicsItem*> existingItems = scene->items(rect);
-			
+
 			for (int i=0; i < existingItems.size(); ++i)
 				if ((nodeBelowCursor = NodeGraphicsItem::cast(existingItems[i])) && !items.contains(nodeBelowCursor))
 					break;
@@ -73,7 +74,7 @@ namespace Tinkercell
 				}
 		}
 
-		if ((nodeBelowCursor && nodeBelowCursor->scene()==scene) || 
+		if ((nodeBelowCursor && nodeBelowCursor->scene()==scene) ||
 			 (connectionBelowCursor && connectionBelowCursor->scene()==scene))
 		{
 			if (nodeBelowCursor != 0 && !ToolGraphicsItem::cast(nodeBelowCursor->topLevelItem()))
@@ -170,13 +171,13 @@ namespace Tinkercell
 				QPainterPath path = selected[0]->mapToScene(selected[0]->shape());
 				QList<QGraphicsItem*> itemsNearby = scene->items(path);
 				NodeGraphicsItem* itemHit = 0;
-				
+
 				for (int i=0; i < itemsNearby.size(); ++i)
 				{
 					itemHit = NodeGraphicsItem::topLevelNodeItem(itemsNearby[i]);
-					if (itemHit && 
-						 itemHit->handle() && 
-						!movingItems.contains(itemHit) && 
+					if (itemHit &&
+						 itemHit->handle() &&
+						!movingItems.contains(itemHit) &&
 						!selected.contains(itemHit))
 					{
 						isControlPoint = false;
@@ -203,7 +204,7 @@ namespace Tinkercell
 			else
 			{
 				NodeGraphicsItem * nodeBelowCursor2 = NodeGraphicsItem::topLevelNodeItem(item);
-				
+
 				if (selected.contains(nodeBelowCursor2))
 					nodeBelowCursor2 = 0;
 
@@ -282,10 +283,10 @@ namespace Tinkercell
 				{
 					if (glowTimer.state() != QTimeLine::NotRunning)
 						glowTimer.stop();
-					
+
 					connectionBelowCursor = connectionBelowCursor2;
 					nodeBelowCursor = nodeBelowCursor2;
-					
+
 					glowTimer.stop();
 					glowTimer.setFrameRange(50,250);
 
@@ -293,7 +294,7 @@ namespace Tinkercell
 					//glowTimer.setUpdateInterval(100);
 					glowTimer.setDuration(2000);
 					glowTimer.setLoopCount(0);
-					
+
 					if (connectionBelowCursor)
 						glowTimer.start();
 					else

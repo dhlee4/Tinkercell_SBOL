@@ -280,6 +280,21 @@ namespace Tinkercell
             head_dc = getDNAComponent(sbol_doc, temp.c_str());
             setDNAComponentDisplayID(head_dc,"Main");
 
+//Connecting Collision Detection
+		static bool ac1 = false;
+		if (!ac1 && mainWindow->tool(tr("Collision Detection")))
+		{
+			QWidget * widget = mainWindow->tool(tr("Collision Detection"));
+			CollisionDetection * collisionDetection = static_cast<CollisionDetection*>(widget);
+			if (collisionDetection)
+			{
+				ac1 = true;
+				connect(collisionDetection,SIGNAL(nodeCollided(const QList<QGraphicsItem*>& , NodeGraphicsItem * , const QList<QPointF>&)),
+						this, SLOT( nodeCollided(const QList<QGraphicsItem*>& , NodeGraphicsItem * , const QList<QPointF>& )));
+			}
+		}
+
+
 
 // Export Menu
             GlobalSettings::OPEN_FILE_EXTENSIONS << "SBOL" << "sbol";
@@ -363,6 +378,9 @@ void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
 void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers)
 {
 	if (!scene) return;
+
+	console()->message("Current Point");
+
     hideDS();
     hideSA();
 	QList<QGraphicsItem*> nodeItems;
@@ -375,7 +393,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                     std::string cur_uri = node->name.toStdString();
                     DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
                     DC_uri->setText(QString::fromAscii(getDNAComponentURI(cur_dc)));
-                    DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));
+                    DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));
 
                     DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
                     if(!cur_ds)
@@ -417,6 +435,138 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
         }
 
 }
+
+	void SBOLTool::nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& )
+	{
+		GraphicsScene * scene = currentScene();
+		if (!scene || !item || items.isEmpty()) return;
+
+		ItemHandle * handle = item->handle();
+        NodeGraphicsItem *node_colided = item;
+		bool partCollided = false;
+
+        NodeGraphicsItem *colided_to;
+		for (int i=0; i < items.size(); i++)
+            {
+                if(items[i])
+                    {
+                        if(NodeGraphicsItem::cast(items[i]) != 0)
+                        {
+
+                            colided_to = NodeGraphicsItem::cast(items[i]);
+                            if(colided_to){
+                                console()->message(node_colided->name);
+                                console()->message(colided_to->name);
+                            }
+
+                        }
+                    }
+            }
+
+        if(node_colided && colided_to)
+            {
+                int direction = 0;
+                QRectF cur_rect = node_colided->sceneBoundingRect();
+
+                if(node_colided->pos().x() < colided_to->pos().x())
+                    {
+                        direction = 1;
+                    }
+                else
+                    {
+                        direction = -1;
+                    }
+                cur_rect.adjust(direction*cur_rect.width(),0,direction*cur_rect.width(),0);
+                colided_to->setPos(cur_rect.center());
+
+
+                NodeGraphicsItem *push = colided_to;
+                NodeGraphicsItem *pop = colided_to;
+                while(push != 0)
+                {
+                    QRectF push_rect = push->sceneBoundingRect();
+                    QList<QGraphicsItem*> cur_list = currentScene()->items(push_rect);
+                    pop = 0;
+
+                    for (int i=0; i<cur_list.size(); i++)
+                        {
+                            NodeGraphicsItem *cur_node;
+                            if((cur_node = NodeGraphicsItem::cast(cur_list[i])) && (cur_node != push))
+                                {
+                                    console()->message("overlapping item");
+                                    console()->message(cur_node->name);
+                                    pop = cur_node;
+                                    break;
+                                }
+                        }
+                    if(pop)
+                        {
+                            QRectF pop_rect = pop->sceneBoundingRect();
+                            pop_rect.adjust(direction*push_rect.width(), 0,direction*push_rect.width(),0);
+                            pop->setPos(pop_rect.center());
+                        }
+                    push = pop;
+                }
+
+                /*for (int i=0; i<all_items.size(); i++)
+                    {
+
+                        if(NodeGraphicsItem::cast(all_items[i])->boundingRect().contains(colided_to->pos()))
+                            {
+                                console()->message(NodeGraphicsItem::cast(all_items[i])->name);
+                            }
+
+                    }*/
+
+
+            }
+
+
+/*
+		if (dnaItem)
+		{
+			QGraphicsItem * itemLeft = dnaItem, * itemRight = dnaItem;
+			ItemHandle * h = getHandle(dnaItem);
+			while (itemLeft)
+			{
+				QRectF p1(itemLeft->sceneBoundingRect());
+				p1.adjust(-10.0,0,-10.0,0.0);
+				QList<QGraphicsItem*> items = scene->items(p1);
+				itemLeft = 0;
+				for (int i=0; i < items.size(); ++i)
+					if (!select.contains(items[i]) && NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("Part") && !handle->isA("Vector") && handle->parent == h->parent)
+					{
+						itemLeft = items[i];
+						select << itemLeft;
+						break;
+					}
+			}
+			while (itemRight)
+			{
+				QRectF p2(itemRight->sceneBoundingRect());
+				p2.adjust(10.0,0,10.0,0.0);
+				QList<QGraphicsItem*> items = scene->items(p2);
+				itemRight = 0;
+				for (int i=0; i < items.size(); ++i)
+					if (!select.contains(items[i]) && NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("Part") && !handle->isA("Vector") && handle->parent == h->parent)
+					{
+						itemRight = items[i];
+						select << itemRight;
+						break;
+					}
+			}
+
+			if (select.isEmpty()) return;
+
+			scene->selected() = select;
+			scene->select(0);
+
+			autoAlignEnabled = false;
+			emit alignCompactHorizontal();
+			autoAlignEnabled = true;
+		}
+		*/
+	}
 
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)
 	{
@@ -655,11 +805,11 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 image->name = QString::fromStdString(temp);
                 image->normalize();
                 image->className = tr("SBOL Object");
-                image->scale(image->defaultSize.width()/image->sceneBoundingRect().width()*2,
+                image->scale(image->defaultSize.width()/image->sceneBoundingRect().width(),
                 image->defaultSize.height()/image->sceneBoundingRect().height());
                 image->setPos(point);
                 image->setToolTip(tr("List of events in this model"));
-                scene->insert(tr("Events box inserted"),image);
+                scene->insert(tr("SBOL Objects"),image);
                 mode = 0;
                 select(0);
             }
@@ -668,7 +818,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 hideSA();
                 hideDS();
                 DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
-                DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
+                DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
                 console()->message("scene clicked");
                 console()->message(QString::fromAscii(getDNAComponentURI(head_dc)));
                 console()->message(QString::fromAscii(getDNAComponentDisplayID(head_dc)));

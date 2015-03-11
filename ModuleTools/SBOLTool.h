@@ -57,7 +57,7 @@
 #include "CatalogWidget.h"
 #include "ItemHandle.h"
 #include "Tool.h"
-
+#include "collisiondetection.h"
 
 
 #ifndef TINKERCELLEXPORT
@@ -96,6 +96,7 @@ namespace Tinkercell
 		void itemsDropped(GraphicsScene *, const QString&, QPointF);
 		void sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
 		void itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers);
+		void nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& );
 		void saveSBOLFile();
 		void exportSBOL(QSemaphore*, const QString&);
 

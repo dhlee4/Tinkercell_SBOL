@@ -2,10 +2,14 @@
 <!DOCTYPE NodeGraphicsItem>
 <listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
     <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+		<listOfColorDefinitions>
+            <colorDefinition id="shape0color" value="#ffffff" alpha="255"/>
+        </listOfColorDefinitions>
 		<listOfStyles>
-			<style idList="blunt-restriction-site" width="50" height="100">
+			<style idList="rna-stability-element" width="50" height="100">
 				<g>
-					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+					<rectangle x="0%" y="0%" width="50" height="100" fill="shape0color" stroke="#ffffff"/>
+					<polygon stroke="#000000" stroke-width="1" stroke-linecap="round">
 						<listOfCurveSegments>
 							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 								<start x="25" y="50" />
@@ -13,7 +17,7 @@
 							</curveSegment>
 						</listOfCurveSegments>
 					</polygon>
-					<polygon stroke="#000000" stroke-width="3" stroke-linecap="round">
+					<polygon stroke="#000000" stroke-width="1" stroke-linecap="round">
 						<listOfCurveSegments>
 							<curveSegment xsi:type="LineSegment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 								<start x="25" y="41" />
@@ -21,7 +25,7 @@
 							</curveSegment>
 						</listOfCurveSegments>
 					</polygon>
-					<ellipse cx="25" cy="25" rx="7" />
+					<ellipse cx="25" cy="25" rx="7" fill="shape0color />
 				</g>
 			</style>
 		</listOfStyles

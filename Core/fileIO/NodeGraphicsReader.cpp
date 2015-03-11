@@ -14,22 +14,22 @@ This file defines an xml reader that reads a NodeGraphicsItem file
 namespace Tinkercell
 {
 	/*! \brief Reads up to the next start node
-	* \return Token Typer*/ 
+	* \return Token Typer*/
 	QXmlStreamReader::TokenType NodeGraphicsReader::readNext()
 	{
-		QXmlStreamReader::readNext();	
+		QXmlStreamReader::readNext();
 		while (!atEnd() && !isStartElement() && !isEndElement()) QXmlStreamReader::readNext();
 		return tokenType();
 	}
 	/*! \brief Reads an NodeGraphicsItem from an XML file using the IO device provided and adds the information to the provided NodeGraphicsItem
 	* \param NodeGraphicsItem pointer that will be read into from XML
 	* \param QIODevice to use
-	* \return void*/ 
+	* \return void*/
 	bool NodeGraphicsReader::readXml(NodeGraphicsItem * node, const QString& fileName)
 	{
 		QFile file (fileName);
 
-		if (!file.open(QFile::ReadOnly | QFile::Text)) 
+		if (!file.open(QFile::ReadOnly | QFile::Text))
 		{
 			return false;
 		}
@@ -42,7 +42,7 @@ namespace Tinkercell
 	/*! \brief Reads an NodeGraphicsItem from an XML file using the IO device provided and adds the information to the provided NodeGraphicsItem
 	* \param NodeGraphicsItem pointer that will be read into from XML
 	* \param QIODevice to use
-	* \return void*/ 
+	* \return void*/
 	void NodeGraphicsReader::readNodeGraphics(NodeGraphicsItem * node, QIODevice * device)
 	{
 		if (!device || !node) return;
@@ -58,7 +58,7 @@ namespace Tinkercell
 		QString fill, stroke, s;
 		QBrush brush;
 		QPen pen;
-		
+
 		while (!atEnd() && !(isEndElement() && name() == "listOfRenderInformation"))
 		{
 			if (isStartElement())
@@ -342,7 +342,7 @@ namespace Tinkercell
 		if (node)
 		{
 			NodeGraphicsItem::Shape * shape = new NodeGraphicsItem::Shape;
-			
+
 			QXmlStreamAttributes vec;
 
 			bool ok;
@@ -459,7 +459,7 @@ namespace Tinkercell
 						}
 						readNext();
 					}
-					
+
 					if (shape->controlPoints.isEmpty())
 					{
 						point = getControlPoint(node,start);
@@ -484,7 +484,7 @@ namespace Tinkercell
 					if (point)
 						shape->controlPoints << point;
 				}
-				
+
 				readNext();
 			}
 			return shape;
@@ -499,7 +499,7 @@ namespace Tinkercell
 		for (int i=0; i < node->controlPoints.size(); ++i)
 			if (node->controlPoints[i] && node->controlPoints[i]->pos() == p)
 				return node->controlPoints[i];
-		
+
 		NodeGraphicsItem::ControlPoint * newPoint = new NodeGraphicsItem::ControlPoint(node);
 		node->controlPoints << newPoint;
 		newPoint->setPos(p);
@@ -515,8 +515,8 @@ namespace Tinkercell
 		bool radialGradient;
 		QString s;
 
-		while (!atEnd() && 
-				!(isEndElement() && 
+		while (!atEnd() &&
+				!(isEndElement() &&
 					(name() == QObject::tr("listOfColorDefinitions") || name() == QObject::tr("listOfGradientDefinitions"))))
 		{
 			if (isStartElement())
@@ -598,14 +598,14 @@ namespace Tinkercell
 								brushStruct.end.ry() = y2;
 						}
 					}
-					while (!(isEndElement() && 
+					while (!(isEndElement() &&
 							(name() == QObject::tr("linearGradient") ||  name() == QObject::tr("radialGradient"))))
 					{
 						if (isStartElement() && name() == QObject::tr("stop"))
 						{
 							QColor color;
 							qreal offset;
-							vec = attributes();					
+							vec = attributes();
 							for (int i=0; i < vec.size(); ++i)
 							{
 								if (vec.at(i).name().toString() == QObject::tr("offset"))
@@ -637,7 +637,7 @@ namespace Tinkercell
 						if (radialGradient)
 						{
 							QRadialGradient gradient(brushStruct.start,
-												sqrt( (brushStruct.end.y()-brushStruct.start.y())*(brushStruct.end.y()-brushStruct.start.y()) + 
+												sqrt( (brushStruct.end.y()-brushStruct.start.y())*(brushStruct.end.y()-brushStruct.start.y()) +
 												(brushStruct.end.x()-brushStruct.start.x())*(brushStruct.end.x()-brushStruct.start.x())));
 							gradient.setStops(stops);
 							brushStruct.brush = QBrush(gradient);

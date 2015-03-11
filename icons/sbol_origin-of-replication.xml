@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE NodeGraphicsItem>
 <listOfRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/level2">
-    <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+     <renderInformation id="TinkerCell_Style" programName="TinkerCell">
+		<listOfColorDefinitions>
+            <colorDefinition id="shape0color" value="#ffffff" alpha="255"/>
+        </listOfColorDefinitions>
 		<listOfStyles>
 			<style idList="origin-of-replication" width="50" height="100">
 				<g>
-					<ellipse cx="25" cy="50" rx="30" ry="30" angleStart="0" angleEnd="360" fill="none" stroke="#000000" stroke-width="3"/>
+					<rectangle x="0%" y="0%" width="50" height="100" fill="shape0color" stroke="#ffffff"/>
+					<ellipse cx="25" cy="50" rx="10" ry="10" angleStart="0" angleEnd="360" fill="shape0color" stroke="#000000" stroke-width="1"/>
 				</g>
 			</style>
 		</listOfStyles
