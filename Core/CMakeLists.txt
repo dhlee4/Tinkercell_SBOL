@@ -13,7 +13,7 @@ INCLUDE_DIRECTORIES(
       ${TINKERCELL_SOURCE_DIR}/ExternalCode/raptor2/src
       ${TINKERCELL_SOURCE_DIR}/ExternalCode/raptor2/librdfa
       ${TINKERCELL_SOURCE_DIR}/ExternalCode/raptor2/util
-	  ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library/include
+	  ${TINKERCELL_SOURCE_DIR}/libSBOLc/release/library/include
 )
 
 LINK_DIRECTORIES(
@@ -204,11 +204,6 @@ ADD_LIBRARY( TinkerCellCore
   ${TINKERCELL_QRC}
 )
 
-	FIND_LIBRARY(xml2 NAME libxml2.dll.a
-					PATHS ${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library)
-
-	FIND_LIBRARY( sbol NAME libsbol.dll.a
-					PATHS ${TINKERCELL_SOURCE_DIR}/libSBOLc)
 
 #dependencies
 TARGET_LINK_LIBRARIES( TinkerCellCore

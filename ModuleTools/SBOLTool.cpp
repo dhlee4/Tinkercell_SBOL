@@ -371,7 +371,8 @@ void SBOLTool::saveSBOLFile()
 void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
 {
     console()->message(file);
-    writeDocument(sbol_doc, file.toStdString().c_str());
+    //writeDocument(sbol_doc);
+    //writeDocument(sbol_doc);
     return;
 }
 

@@ -59,15 +59,15 @@ ENDIF ( WIN32 )
 #--------------------------------------------------------------------------
 
 SET( TINKERCELL_MAJOR_VERSION "1" )
-
-FIND_PACKAGE( Subversion )
-IF( Subversion_FOUND )
-   Subversion_WC_INFO( ${TINKERCELL_SOURCE_DIR} TINKERCELL )
-   MESSAGE(STATUS "Subversion revision number: ${TINKERCELL_WC_REVISION}")
-ELSE( Subversion_FOUND )
-   SET( TINKERCELL_WC_REVISION "0" )
-   MESSAGE(STATUS "Subversion revision number not found" )
-ENDIF( Subversion_FOUND )
+#
+#FIND_PACKAGE( Subversion )
+#IF( Subversion_FOUND )
+#   Subversion_WC_INFO( ${TINKERCELL_SOURCE_DIR} TINKERCELL )
+#   MESSAGE(STATUS "Subversion revision number: ${TINKERCELL_WC_REVISION}")
+#ELSE( Subversion_FOUND )
+#   SET( TINKERCELL_WC_REVISION "0" )
+#   MESSAGE(STATUS "Subversion revision number not found" )
+#ENDIF( Subversion_FOUND )
 
 SET( TINKERCELL_VERSION ${TINKERCELL_WC_REVISION} )
 SET( USER_HOME_DIR $ENV{HOME} )
@@ -216,7 +216,7 @@ INCLUDE_DIRECTORIES( BEFORE
     ${TINKERCELL_SOURCE_DIR}
     ${TINKERCELL_SOURCE_DIR}/API
     ${TINKERCELL_SOURCE_DIR}/Core
-	${TINKERCELL_SOURCE_DIR}/libSBOLc_source/release/library/include
+	${TINKERCELL_SOURCE_DIR}/libSBOLc/release/library/include
  )
 
 IF (UNIX AND NOT APPLE)
@@ -248,6 +248,7 @@ OPTION( PYTHON_ENABLE "Embed Python in TinkerCell" ON ) #embed python?
 OPTION( OCTAVE_ENABLE "Embed Octave in TinkerCell" ON ) #embed octave?
 OPTION( RUBY_ENABLE "Embed Ruby in TinkerCell" ON ) #embed ruby?
 
+ADD_SUBDIRECTORY (libSBOLc)
 ADD_SUBDIRECTORY( Core )   #C++ Core + API
 ADD_SUBDIRECTORY( API )   #C API + SWIG file
 ADD_SUBDIRECTORY( icons )   #icons
