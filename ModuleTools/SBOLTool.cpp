@@ -805,8 +805,8 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 image->name = QString::fromStdString(temp);
                 image->normalize();
                 image->className = tr("SBOL Object");
-                image->scale(image->defaultSize.width()/image->sceneBoundingRect().width(),
-                image->defaultSize.height()/image->sceneBoundingRect().height());
+                image->scale((image->defaultSize.width()*2)/image->sceneBoundingRect().width(),
+                (image->defaultSize.height()*2)/image->sceneBoundingRect().height());
                 image->setPos(point);
                 image->setToolTip(tr("List of events in this model"));
                 scene->insert(tr("SBOL Objects"),image);
