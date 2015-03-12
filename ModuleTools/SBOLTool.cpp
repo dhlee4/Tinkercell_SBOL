@@ -372,7 +372,9 @@ void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
 {
     console()->message(file);
     //writeDocument(sbol_doc);
-    //writeDocument(sbol_doc);
+    //writeDocument(sbol_doc,file.toAscii());
+    //saveSBOLDocument(file.toAscii());
+    writeDocumentToFile(sbol_doc,file.toAscii());
     return;
 }
 
