@@ -83,6 +83,10 @@ namespace Tinkercell
 	public:
 		SBOLTool();
 		bool setMainWindow(MainWindow * main);
+		template<typename T> void dc_str_item_changed(T call_function, QLineEdit*);
+		template<typename T> void ds_str_item_changed(T call_function, QLineEdit*);
+		template<typename T> void sa_str_item_changed(T call_function, QLineEdit*);
+		template<typename T> void sa_int_item_changed(T call_function, QLineEdit*);
 
 	signals:
 		void itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&);
@@ -99,6 +103,19 @@ namespace Tinkercell
 		void nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& );
 		void saveSBOLFile();
 		void exportSBOL(QSemaphore*, const QString&);
+
+		void dc_uriChanged();
+		void dc_displayidChanged();
+        void dc_nameChanged();
+        void dc_descriptionChanged();
+
+        void ds_uriChanged();
+        void ds_nucleotidesChanged();
+
+        void sa_uriChanged();
+        void sa_bioStartChanged();
+        void sa_bioEndChanged();
+        void sa_strandChanged();
 
 		void showSA();
         void showDS();

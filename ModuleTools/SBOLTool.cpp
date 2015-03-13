@@ -127,9 +127,19 @@ namespace Tinkercell
         connect(DC_name,SIGNAL(editingFinished()), this, SLOT(dc_nameChanged()));
         connect(DC_description,SIGNAL(editingFinished()), this, SLOT(dc_descriptionChanged()));
 
-        //connect(DS_nucleotides,SIGNAL(editingFinished()),this,SLOT(ds_nucleotidesChanged()));
-        //connect(DS_uri,SIGNAL(editingFinished()),this,SLOT(ds_uriChanged()));
+        connect(DS_nucleotides,SIGNAL(editingFinished()),this,SLOT(ds_nucleotidesChanged()));
+        connect(DS_uri,SIGNAL(editingFinished()),this,SLOT(ds_uriChanged()));
 
+        connect(SA_uri,SIGNAL(editingFinished()),this,SLOT(sa_uriChanged()));
+        connect(SA_bioStart,SIGNAL(editingFinished()),this,SLOT(sa_bioStartChanged()));
+        connect(SA_bioEnd,SIGNAL(editingFinished()),this,SLOT(sa_bioEndChanged()));
+        connect(SA_strand,SIGNAL(editingFinished()),this,SLOT(sa_strandChanged()));
+        /*
+        void sa_uriChanged();
+        void sa_bioStartChanged();
+        void sa_bioEndChanged();
+        void sa_strandChanged();
+*/
 
         groupBox1->show();
         groupBox2->hide();
@@ -143,7 +153,7 @@ namespace Tinkercell
     }
 
     template<typename T>
-    void SBOLTool::str_item_changed(T call_function, QLineEdit* cur_item)
+    void SBOLTool::dc_str_item_changed(T call_function, QLineEdit* cur_item)
     {
         DNAComponent * cur_dc;
         GraphicsScene * scene = currentScene();
@@ -173,10 +183,96 @@ namespace Tinkercell
             }
     }
 
-    void SBOLTool::dc_uriChanged(){str_item_changed(&setDNAComponentURI, DC_uri);}
-    void SBOLTool::dc_displayidChanged(){str_item_changed(&setDNAComponentDisplayID, DC_displayId);}
-    void SBOLTool::dc_nameChanged(){str_item_changed(&setDNAComponentName, DC_name);}
-    void SBOLTool::dc_descriptionChanged(){str_item_changed(&setDNAComponentDescription,DC_description);}
+    template<typename T>
+    void SBOLTool::ds_str_item_changed(T call_function, QLineEdit* cur_item)
+    {
+        DNAComponent * cur_dc;
+        GraphicsScene * scene = currentScene();
+        if (!scene || scene->selected().size() != 1) return;
+
+        QGraphicsItem * selectedItem = scene->selected()[0];
+
+        if(!selectedItem) return;
+
+        NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+
+        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        DNASequence *cur_ds;
+
+        if(cur_ds = getDNAComponentSequence(cur_dc))
+        {
+            (call_function)(cur_ds, cur_item->text().toAscii());
+        }
+    }
+
+    template<typename T>
+    void SBOLTool::sa_str_item_changed(T call_function, QLineEdit* cur_item)
+    {
+        DNAComponent * cur_dc;
+        GraphicsScene * scene = currentScene();
+        if (!scene || scene->selected().size() != 1) return;
+
+        QGraphicsItem * selectedItem = scene->selected()[0];
+
+        if(!selectedItem) return;
+
+        NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+
+        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        SequenceAnnotation *cur_sa;
+
+        if(cur_sa = getSequenceAnnotation(sbol_doc,SA_uri->text().toAscii()))
+        {
+            (call_function)(cur_sa, cur_item->text().toAscii());
+        }
+    }
+
+    template<typename T>
+    void SBOLTool::sa_int_item_changed(T call_function, QLineEdit* cur_item)
+    {
+        DNAComponent * cur_dc;
+        GraphicsScene * scene = currentScene();
+        if (!scene || scene->selected().size() != 1) return;
+
+        QGraphicsItem * selectedItem = scene->selected()[0];
+
+        if(!selectedItem) return;
+
+        NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+
+        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        SequenceAnnotation *cur_sa;
+
+        if(cur_sa = getSequenceAnnotation(sbol_doc,SA_uri->text().toAscii()))
+        {
+            (call_function)(cur_sa, cur_item->text().toInt());
+        }
+    }
+
+    void SBOLTool::dc_uriChanged(){dc_str_item_changed(&setDNAComponentURI, DC_uri);}
+    void SBOLTool::dc_displayidChanged(){dc_str_item_changed(&setDNAComponentDisplayID, DC_displayId);}
+    void SBOLTool::dc_nameChanged(){dc_str_item_changed(&setDNAComponentName, DC_name);}
+    void SBOLTool::dc_descriptionChanged(){dc_str_item_changed(&setDNAComponentDescription,DC_description);}
+
+    void SBOLTool::ds_uriChanged(){ds_str_item_changed(&setDNASequenceURI, DS_uri);}
+    void SBOLTool::ds_nucleotidesChanged(){ds_str_item_changed(&setDNASequenceNucleotides,DS_nucleotides);}
+
+    void SBOLTool::sa_uriChanged()
+    {
+        sa_str_item_changed(setSequenceAnnotationURI,SA_uri);
+    }
+    void SBOLTool::sa_bioStartChanged()
+    {
+        sa_int_item_changed(setSequenceAnnotationStart,SA_bioStart);
+    }
+    void SBOLTool::sa_bioEndChanged()
+    {
+        sa_int_item_changed(setSequenceAnnotationEnd,SA_bioEnd);
+    }
+    void SBOLTool::sa_strandChanged()
+    {
+        sa_int_item_changed(setSequenceAnnotationStrand,SA_strand);
+    }
 
 
     void SBOLTool::hideSA()
