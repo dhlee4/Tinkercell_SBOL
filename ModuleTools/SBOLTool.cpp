@@ -25,6 +25,7 @@
 #include "SBOLTool.h"
 #include "GlobalSettings.h"
 #include <sstream>
+#include <functional>
 
 #define SBOL_PROMOTER 101
 #define SBOL_ASSEMBLY_SCAR 102
@@ -118,6 +119,18 @@ namespace Tinkercell
         connect(addDS, SIGNAL(pressed()), this, SLOT(showDS()));
         connect(delSA, SIGNAL(pressed()), this, SLOT(hideSA()));
         connect(delDS, SIGNAL(pressed()), this, SLOT(hideDS()));
+
+        //for DNAComponent
+
+        connect(DC_uri,SIGNAL(editingFinished()), this, SLOT(dc_uriChanged()));
+        connect(DC_displayId,SIGNAL(editingFinished()), this, SLOT(dc_displayidChanged()));
+        connect(DC_name,SIGNAL(editingFinished()), this, SLOT(dc_nameChanged()));
+        connect(DC_description,SIGNAL(editingFinished()), this, SLOT(dc_descriptionChanged()));
+
+        //connect(DS_nucleotides,SIGNAL(editingFinished()),this,SLOT(ds_nucleotidesChanged()));
+        //connect(DS_uri,SIGNAL(editingFinished()),this,SLOT(ds_uriChanged()));
+
+
         groupBox1->show();
         groupBox2->hide();
         groupBox3->hide();
@@ -128,6 +141,43 @@ namespace Tinkercell
         mode = 0;
 
     }
+
+    template<typename T>
+    void SBOLTool::str_item_changed(T call_function, QLineEdit* cur_item)
+    {
+        DNAComponent * cur_dc;
+        GraphicsScene * scene = currentScene();
+        if (!scene || scene->selected().size() != 1)
+            {
+
+                if (cur_dc = getDNAComponent(sbol_doc, DC_uri->text().toAscii()))
+                    {
+                        (call_function)(cur_dc, cur_item->text().toAscii());
+                    }
+                return;
+            }
+
+        QGraphicsItem * selectedItem = scene->selected()[0];
+
+        if(!selectedItem) return;
+
+
+        NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+
+        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+
+        (call_function)(cur_dc, cur_item->text().toAscii());
+        if(call_function == &setDNAComponentURI)
+            {
+                cur_node->name = DC_uri->text();
+            }
+    }
+
+    void SBOLTool::dc_uriChanged(){str_item_changed(&setDNAComponentURI, DC_uri);}
+    void SBOLTool::dc_displayidChanged(){str_item_changed(&setDNAComponentDisplayID, DC_displayId);}
+    void SBOLTool::dc_nameChanged(){str_item_changed(&setDNAComponentName, DC_name);}
+    void SBOLTool::dc_descriptionChanged(){str_item_changed(&setDNAComponentDescription,DC_description);}
+
 
     void SBOLTool::hideSA()
     {
@@ -140,27 +190,6 @@ namespace Tinkercell
         groupBox2->hide();
         addDS->show();
         delDS->hide();
-/*        DNAComponent * cur_dc;
-        cur_dc = getDNAComponent(sbol_doc, DC_uri->text().toStdString().c_str());
-        if(!cur_dc)
-            {
-                return;
-            }
-        DNASequence * cur_ds = getDNAComponentSequence(cur_dc);
-        if(!cur_ds)
-            {
-                return;
-            }
-
-        setDNAComponentSequence(cur_dc,0);*/
-
-
-        //no release DNAComponent sequence
-
-        /*
-        deleteDNASequence(cur_ds);
-        */
-
     }
 
     void SBOLTool::showSA()
@@ -278,7 +307,7 @@ namespace Tinkercell
             std::string temp = authority+SSTR(cur_cnt);
             head_dc = createDNAComponent(sbol_doc, temp.c_str());
             head_dc = getDNAComponent(sbol_doc, temp.c_str());
-            setDNAComponentDisplayID(head_dc,"Main");
+            setDNAComponentType(head_dc,"Main");
 
 //Connecting Collision Detection
 		static bool ac1 = false;
@@ -380,6 +409,13 @@ void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
 
 void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers)
 {
+    /*
+        QLineEdit *DC_uri;
+        QLineEdit *DC_displayId;
+        QLineEdit *DC_name;
+        QLineEdit *DC_description;
+        QLineEdit *DC_type;
+*/
 	if (!scene) return;
 
 	console()->message("Current Point");
@@ -396,7 +432,11 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                     std::string cur_uri = node->name.toStdString();
                     DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
                     DC_uri->setText(QString::fromAscii(getDNAComponentURI(cur_dc)));
-                    DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));
+                    DC_type->setText(QString::fromAscii(getDNAComponentType(cur_dc)));
+                    DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));
+                    DC_name->setText(QString::fromAscii(getDNAComponentName(cur_dc)));
+                    DC_description->setText(QString::fromAscii(getDNAComponentDescription(cur_dc)));
+
 
                     DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
                     if(!cur_ds)
@@ -430,8 +470,6 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                         {
                             showSA();
                         }
-
-                    //DC_type->setText((QString::fromAscii(getDNAComponentType(cur_dc))));
                     /*console()->message(QString::fromAscii(getDNAComponentURI(cur_dc)));
                     console()->message(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));*/
                 }
@@ -691,8 +729,8 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
             }
         if(mode != 0)
             {
-//                setDNAComponentType(cur_dc, current_type.c_str());
-                setDNAComponentDisplayID(cur_dc, current_type.c_str());
+                setDNAComponentType(cur_dc, current_type.c_str());
+                //setDNAComponentDisplayID(cur_dc, current_type.c_str());
                 sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
                 scene->useDefaultBehavior(true);
             }
@@ -820,8 +858,13 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
             {
                 hideSA();
                 hideDS();
+                //DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
+                //DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
                 DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
-                DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
+                DC_type->setText(QString::fromAscii(getDNAComponentType(head_dc)));
+                DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
+                DC_name->setText(QString::fromAscii(getDNAComponentName(head_dc)));
+                DC_description->setText(QString::fromAscii(getDNAComponentDescription(head_dc)));
                 console()->message("scene clicked");
                 console()->message(QString::fromAscii(getDNAComponentURI(head_dc)));
                 console()->message(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
