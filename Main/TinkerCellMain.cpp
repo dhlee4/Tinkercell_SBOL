@@ -168,6 +168,7 @@ int main(int argc, char *argv[])
 	mainWindow.addTool(new ViewTablesTool);
 	mainWindow.addTool(new LPSolveInputWindow);
 	mainWindow.addTool(new CellPositionUpdateTool);
+//	mainWindow.addTool(new LoadSaveTool);
 
 	/********* load python, octave, ruby plugins ***********/
 	if (mainWindow.tool("Python Interpreter"))

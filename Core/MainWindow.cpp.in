@@ -84,7 +84,7 @@ namespace Tinkercell
 
 	QString GlobalSettings::homeDir(const QString& filename)
 	{
-		QString & homeDirPath = MainWindow::homeDirPath;		
+		QString & homeDirPath = MainWindow::homeDirPath;
 		if (homeDirPath.contains(GlobalSettings::ORGANIZATIONNAME) && QDir(homeDirPath).exists())
 		{
 		#ifdef Q_WS_WIN
@@ -92,9 +92,9 @@ namespace Tinkercell
 		#endif
 			if (!filename.isNull() && !filename.isEmpty())
 			#ifdef Q_WS_WIN
-				homeDirPath += QString("\\") + filename; 
+				homeDirPath += QString("\\") + filename;
 			#else
-				homeDirPath += QString("/") + filename; 
+				homeDirPath += QString("/") + filename;
 			#endif
 			return homeDirPath;
 		}
@@ -113,9 +113,9 @@ namespace Tinkercell
 
 		if (!filename.isNull() && !filename.isEmpty())
 		#ifdef Q_WS_WIN
-			homeDirPath += QString("\\") + filename; 
+			homeDirPath += QString("\\") + filename;
 		#else
-			homeDirPath += QString("/") + filename; 
+			homeDirPath += QString("/") + filename;
 		#endif
 		return homeDirPath;
 	}
@@ -133,9 +133,9 @@ namespace Tinkercell
 		#endif
 			if (!filename.isNull() && !filename.isEmpty())
 			#ifdef Q_WS_WIN
-				temp += QString("\\") + filename; 
+				temp += QString("\\") + filename;
 			#else
-				temp += QString("/") + filename; 
+				temp += QString("/") + filename;
 			#endif
 			return temp;
 		}
@@ -150,12 +150,12 @@ namespace Tinkercell
 		#ifdef Q_WS_WIN
 			temp = temp.replace("/","\\");
 		#endif
-		
+
 		if (!filename.isNull() && !filename.isEmpty())
 		#ifdef Q_WS_WIN
-			temp += QString("\\") + filename; 
+			temp += QString("\\") + filename;
 		#else
-			temp += QString("/") + filename; 
+			temp += QString("/") + filename;
 		#endif
 
 		return temp;
@@ -168,7 +168,7 @@ namespace Tinkercell
 
 		//home must be inside user's home directory to avoid write permission problems
 		QDir dir = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
-		if (home.contains(dir.absolutePath()))  
+		if (home.contains(dir.absolutePath()))
 			homeDirPath = home;
 	}
 
@@ -224,7 +224,7 @@ namespace Tinkercell
 				if (f2)
 				{
 					new CThread(this,lib);
-					statusBar()->showMessage(lib->fileName() + tr(" successfully loaded"));					
+					statusBar()->showMessage(lib->fileName() + tr(" successfully loaded"));
 					dynamicallyLoadedLibraries.insert(lib->fileName(),lib);
 				}
 				else
@@ -304,7 +304,7 @@ namespace Tinkercell
 
 		connect(this,SIGNAL(itemsRemoved(GraphicsScene*,QList<QGraphicsItem*>,QList<ItemHandle*>)),
 			this,SLOT(itemsRemovedSlot(GraphicsScene*,QList<QGraphicsItem*>,QList<ItemHandle*>)));
-		
+
 		readSettings();
 		loadDefaultPlugins();
 
@@ -314,7 +314,7 @@ namespace Tinkercell
 		QTime midnight(0, 0, 0);
 		qsrand(midnight.secsTo(QTime::currentTime()));
 	}
-	
+
 	void MainWindow::loadDefaultPlugins()
 	{
 		if (GlobalSettings::ENABLE_HISTORY_WINDOW)
@@ -337,7 +337,7 @@ namespace Tinkercell
 				consoleColorMenu->addAction(tr("Error message color"),this,SLOT(changeConsoleErrorMsgColor()));
 			}
 		}
-		
+
 		if (GlobalSettings::ENABLE_LOADSAVE_TOOL)
 		{
 			addTool(new LoadSaveTool);
@@ -347,13 +347,13 @@ namespace Tinkercell
 																GlobalSettings::ENABLE_COLOR_TOOLBAR,
 																GlobalSettings::ENABLE_ZOOM_TOOLBAR,
 																GlobalSettings::ENABLE_TEXT_TOOLBAR));
-	
+
 		if (GlobalSettings::ENABLE_GRAPHING_TOOLS)
 		{
 			addTool(new PlotTool);
    			addTool(new GnuplotTool);
 		}
-		
+
 		addTool(new LabelingTool);
 
 		if (GlobalSettings::ENABLE_CODING_TOOLS)
@@ -362,12 +362,12 @@ namespace Tinkercell
 			addTool(new LoadCLibrariesTool);
 			addTool(new CodingWindow);
 		}
-		
+
 		if (GlobalSettings::ENABLE_PYTHON)
 		{
 			addTool(new PythonTool);
 		}
-		
+
 		if (GlobalSettings::ENABLE_OCTAVE)
 		{
 			addTool(new OctaveTool);
@@ -397,7 +397,7 @@ namespace Tinkercell
 			saveSettings(fileName);
 		}
 	}
-	
+
 	QSettings * MainWindow::getSettings(const QString& filename)
 	{
 		QString settingsFileName = filename;
@@ -407,13 +407,13 @@ namespace Tinkercell
 		QCoreApplication::setOrganizationName(GlobalSettings::ORGANIZATIONNAME);
 		QCoreApplication::setOrganizationDomain(GlobalSettings::PROJECTWEBSITE);
 		QCoreApplication::setApplicationName(GlobalSettings::ORGANIZATIONNAME);
-		
+
 		QSettings * settings = 0;
 
 		if (!settingsFileName.isNull() && !settingsFileName.isEmpty())
 		{
 			QDir homeDir(GlobalSettings::homeDir()), appDir(QCoreApplication::applicationDirPath());
-			
+
 			if (QFile::exists(settingsFileName))
 			{
 				settings = new QSettings( settingsFileName, QSettings::IniFormat );
@@ -437,7 +437,7 @@ namespace Tinkercell
 		{
 			settings = new QSettings(GlobalSettings::ORGANIZATIONNAME, GlobalSettings::ORGANIZATIONNAME);
 		}
-		
+
 		return settings;
 	}
 
@@ -451,12 +451,12 @@ namespace Tinkercell
 		if (!fileName.isNull() && !fileName.isEmpty())
 			readSettings(fileName);
 	}
-	
+
 	void MainWindow::saveSettings(const QString& settingsFileName)
 	{
 		QSettings * settings = getSettings(settingsFileName);
-		
-		settings->beginGroup("MainWindow");		
+
+		settings->beginGroup("MainWindow");
 		settings->setValue("home", homeDirPath);
 		settings->setValue("size", size());
 		settings->setValue("pos", pos());
@@ -466,7 +466,7 @@ namespace Tinkercell
 		settings->setValue("defaultHistoryWindowOption", (int)(defaultHistoryWindowOption));
 		settings->setValue("defaultConsoleWindowOption", (int)(defaultConsoleWindowOption));
 		settings->setValue("windowState", saveState());
-		
+
 		settings->setValue("ConsoleWindow::BackgroundColor", ConsoleWindow::BackgroundColor.name());
 		settings->setValue("ConsoleWindow::PlainTextColor", ConsoleWindow::PlainTextColor.name());
 		settings->setValue("ConsoleWindow::ErrorTextColor", ConsoleWindow::ErrorTextColor.name());
@@ -476,17 +476,17 @@ namespace Tinkercell
 		settings->endGroup();
 		delete settings;
 	}
-	
+
 	void MainWindow::readSettings(const QString& settingsFileName)
 	{
 		QSettings * settings = getSettings(settingsFileName);
-		
+
 		settings->beginGroup("MainWindow");
-		
+
 		QDir dir = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
 		QString home = settings->value("home", tr("")).toString();
-		
-		if (!home.isNull() && !home.isEmpty() && home.contains(dir.absolutePath()))  
+
+		if (!home.isNull() && !home.isEmpty() && home.contains(dir.absolutePath()))
 			homeDirPath = home;
 
 		resize(settings->value("size", QSize(1000, 800)).toSize());
@@ -496,18 +496,18 @@ namespace Tinkercell
 		defaultToolWindowOption = (TOOL_WINDOW_OPTION)(settings->value("defaultToolWindowOption", (int)defaultToolWindowOption).toInt());
 		defaultHistoryWindowOption = (TOOL_WINDOW_OPTION)(settings->value("defaultHistoryWindowOption", (int)defaultHistoryWindowOption).toInt());
 		defaultConsoleWindowOption = (TOOL_WINDOW_OPTION)(settings->value("defaultConsoleWindowOption", (int)defaultConsoleWindowOption).toInt());
-		
+
 		restoreState(settings->value("windowState").toByteArray());
 		settings->endGroup();
 
 		GlobalSettings::PROJECT_VERSION = tr("@TINKERCELL_WC_REVISION@");
 		QString text;
-		
+
 		bool ok;
 		int number = GlobalSettings::PROJECT_VERSION.toInt(&ok);
 		if (ok)
 			GlobalSettings::PROJECT_VERSION = tr("@TINKERCELL_MAJOR_VERSION@.") + QString::number( (int)(number/1000 ) ) + tr(".") + QString::number(number % 1000);
-		
+
 		delete settings;
 	}
 
@@ -522,17 +522,17 @@ namespace Tinkercell
 
 		tempDir.replace(tr("/"),tr("\\"));
 		cmd = tr("del /s /f /q \"") + tempDir + tr("\"");
-		
+
 #else
 
 		cmd = tr("rm -R ") + tempDir;
 
 #endif
 		int r = system(cmd.toAscii().data());
-		
+
 		if (c_api_slots)
 			delete c_api_slots;
-		
+
 		Ontology::cleanup();
 	}
 
@@ -551,18 +551,18 @@ namespace Tinkercell
 			{
 				int i = tabWidget->indexOf(window);
 				if (i > -1 && i < tabWidget->count() && i != tabWidget->currentIndex())
-					tabWidget->setCurrentIndex(i);				
+					tabWidget->setCurrentIndex(i);
 			}
-			
+
 			historyWindow.setStack(&(window->network->history));
-			
+
 			NetworkWindow * oldWindow = currentNetworkWindow;
 
 			currentNetworkWindow = window;
-	
+
 			if (!window->isVisible())
 				window->show();
-			
+
 			if (!window->hasFocus())
 				window->setFocus();
 
@@ -580,7 +580,7 @@ namespace Tinkercell
 		else
 			currentNetworkWindow = 0;
 	}
-	
+
 	QList<NetworkHandle*> MainWindow::networks() const
 	{
 		return allNetworks;
@@ -590,14 +590,14 @@ namespace Tinkercell
 	{
 		NetworkHandle * network = new NetworkHandle(this);
 		GraphicsScene * scene = network->createScene();
-		
+
 		if (scene)
 		{
 			NetworkWindow * subWindow = scene->networkWindow;
 			popIn(subWindow);
 			emit networkOpened(subWindow->network);
 		}
-		
+
 		return scene;
 	}
 
@@ -605,7 +605,7 @@ namespace Tinkercell
 	{
 		NetworkHandle * network = new NetworkHandle(this);
 		TextEditor * editor = network->createTextEditor();
-		
+
 		if (editor)
 		{
 			NetworkWindow * subWindow = editor->networkWindow;
@@ -647,27 +647,29 @@ namespace Tinkercell
 				(GlobalSettings::PROJECTNAME + tr(" files (*.") + GlobalSettings::SAVE_FILE_EXTENSIONS.join(tr(" *.")) + tr(");; All files(*.*)")));
 			if (fileName.isNull() || fileName.isEmpty())
 				return;
-			
+
 			previousFileName = tr("");
 			for (int i=0; i < GlobalSettings::SAVE_FILE_EXTENSIONS.size(); ++i)
 				if (fileName.endsWith(tr(".") + GlobalSettings::SAVE_FILE_EXTENSIONS[i]))
 					 previousFileName = fileName;
-			
+
 			if (previousFileName.isEmpty())
 			{
 				if (!GlobalSettings::SAVE_FILE_EXTENSIONS.isEmpty())
 					fileName += tr(".") + GlobalSettings::SAVE_FILE_EXTENSIONS[0];
 				previousFileName = fileName;
 			}
-			
+
 			previousFileName = QFileInfo(fileName).absolutePath();
 		}
 		else
 		{
 			if (console())
+			{
 				console()->message(fileName);
+            }
 		}
-		
+
 		QFile file (fileName);
 
 		if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -678,16 +680,16 @@ namespace Tinkercell
 			return;
 		}
 
-		emit saveNetwork(fileName);		
+		emit saveNetwork(fileName);
 		currentNetworkWindow->setFileName(fileName);
-		
+
 		statusBar()->showMessage(tr("Saved ") + fileName);
 	}
 
 	void MainWindow::saveWindowAs()
 	{
 		if (!currentNetworkWindow || !currentNetworkWindow->network) return;
-		
+
 		QString fileName =
 			QFileDialog::getSaveFileName(this, tr("Save Current Network"),
 			QFileInfo(currentNetworkWindow->filename).absolutePath(),
@@ -699,16 +701,16 @@ namespace Tinkercell
 		for (int i=0; i < GlobalSettings::SAVE_FILE_EXTENSIONS.size(); ++i)
 			if (fileName.endsWith(tr(".") + GlobalSettings::SAVE_FILE_EXTENSIONS[i]))
 				previousFileName = fileName;
-			
+
 		if (previousFileName.isEmpty())
 		{
 			if (!GlobalSettings::SAVE_FILE_EXTENSIONS.isEmpty())
 				fileName += tr(".") + GlobalSettings::SAVE_FILE_EXTENSIONS[0];
 		}
-		
+
 		QFile file (fileName);
 
-		if (!file.open(QFile::WriteOnly | QFile::Text)) 
+		if (!file.open(QFile::WriteOnly | QFile::Text))
 		{
 			QMessageBox::warning(this, (GlobalSettings::PROJECTNAME + tr(" files")),
 				tr("Cannot write file %1:\n%2.")
@@ -737,7 +739,7 @@ namespace Tinkercell
 		previousFileName = QFileInfo(fileName).absolutePath();
 		bool b = false;
 		emit loadNetwork(fileName, &b);
-		
+
 		if (currentNetworkWindow)
 		{
 			currentNetworkWindow->setFileName(fileName);
@@ -749,7 +751,7 @@ namespace Tinkercell
 		QString dir = QFileInfo(previousFileName).absolutePath();
 
 		QStringList fileNames =
-			QFileDialog::getOpenFileNames(this, 
+			QFileDialog::getOpenFileNames(this,
 			tr("Open File(s)"),
 			dir,
 			(GlobalSettings::PROJECTNAME + tr(" files (*.") + GlobalSettings::OPEN_FILE_EXTENSIONS.join(tr(" *.")) + tr(");; All files(*.*)")));
@@ -786,9 +788,9 @@ namespace Tinkercell
 			textEditor = currentTextEditor();
 			if (!textEditor) return;
 		}
-		
+
 		QString fileName;
-		
+
 		if (!filename.isNull() && !filename.isEmpty())
 		{
 			fileName = filename;
@@ -797,23 +799,23 @@ namespace Tinkercell
 		{
 			QString def = previousFileName;
 			def.replace(QRegExp("\\..*$"),tr(""));
-		
+
 			QString fileTypes;
 			if (scene)
 				fileTypes = tr("Portable Document Format (*.pdf *.PDF);;Portable Network Graphics(*.png *.PNG);;Joint Photographic Experts Group(*.jpg *.jpeg *.JPG)");
 			else
 				fileTypes = tr("Text (*.txt *.TXT);; All files(*.*)");
-		
+
 			fileName =
 				QFileDialog::getSaveFileName(this, tr("Print to File"),
 				def,
 				fileTypes);
-			
+
 			if (fileName.isEmpty())
 				return;
 			previousFileName = QFileInfo(fileName).absolutePath();
 		}
-		
+
 		if (textEditor)
 		{
 			QFile file(fileName);
@@ -824,12 +826,12 @@ namespace Tinkercell
 			}
 			return;
 		}
-		
+
 		QRectF rect = scene->visibleRegion();
 
 		if (!fileName.contains(tr(".")))
 			fileName = fileName + tr(".pdf");
-		
+
 		if (fileName.endsWith(tr("pdf"),Qt::CaseInsensitive))
 		{
 			if (w < 1) w = 100;
@@ -861,17 +863,17 @@ namespace Tinkercell
 			printer.save(fileName,"png");
 		}
 	}
-	
+
 	void MainWindow::addToViewMenu(QWidget * widget)
 	{
 		if (!widget || !viewMenu || toolWindows.contains(widget)) return;
-		
+
 		if (!widget->parentWidget())
 			widget->setParent(this);
 		toolWindows << widget;
-		
+
 		widget->setWindowFlags(Qt::Dialog);
-		
+
 		QAction * action = viewMenu->addAction(widget->windowTitle());
 		action->setCheckable(true);
 		connect(action,SIGNAL(toggled(bool)),widget,SLOT(setVisible(bool)));
@@ -950,10 +952,10 @@ namespace Tinkercell
 		QList<Tool*> list;
 		if (!cat.isNull() && !cat.isEmpty() && toolsHashByCategory.contains(cat))
 			list = toolsHashByCategory.values(cat);
-		
+
 		if (list.isEmpty())
 			list = toolsHash.values();
-		
+
 		return list;
 	}
 
@@ -982,7 +984,7 @@ namespace Tinkercell
 				delete tool;
 		}
 	}
-	
+
 	NetworkWindow * MainWindow::currentWindow() const
 	{
 		return currentNetworkWindow;
@@ -1008,16 +1010,16 @@ namespace Tinkercell
 		    return currentNetworkWindow->network;
 		return 0;
 	}
-	
+
 	void MainWindow::initializeMenus(bool enableScene, bool enableText)
 	{
 		fileMenu = menuBar()->addMenu(tr("&File"));
 		toolBarBasic = new QToolBar(tr("Open/save/new toolbar"),this);
 		toolBarBasic->setObjectName(tr("Open/save/new toolbar"));
-		
+
 		toolBarEdits = new QToolBar(tr("Edit options"),this);
 		toolBarEdits->setObjectName(tr("Edit options"));
-		
+
 		toolBarForTools = new QToolBar(tr("Plug-ins"),this);
 		toolBarForTools->setObjectName(tr("Plug-ins"));
 
@@ -1095,11 +1097,11 @@ namespace Tinkercell
 
 		QMenu * setGridModeMenu = settingsMenu->addMenu(tr("&Grid mode"));
 		QActionGroup * actionGroup = new QActionGroup(this);
-		
+
 		QAction * gridOn = setGridModeMenu->addAction(tr("Grid ON"),this,SLOT(gridOn()));
 		QAction * gridOff = setGridModeMenu->addAction(tr("Grid OFF"),this,SLOT(gridOff()));
 		QAction * gridSz = setGridModeMenu->addAction(tr("Grid size"),this,SLOT(setGridSize()));
-		
+
 		gridOn->setCheckable(true);
 		gridOff->setCheckable(true);
 		gridSz->setCheckable(true);
@@ -1148,7 +1150,7 @@ namespace Tinkercell
 		toolBarBasic->addAction(closeAction);
 		toolBarBasic->addAction(saveAction);
 		toolBarBasic->addAction(printAction);
-		toolBarBasic->addAction(printToFileAction);		
+		toolBarBasic->addAction(printToFileAction);
 
 		toolBarEdits->addAction(arrowAction);
 		toolBarEdits->addAction(undoAction);
@@ -1157,7 +1159,7 @@ namespace Tinkercell
 		toolBarEdits->addAction(cutAction);
 		toolBarEdits->addAction(pasteAction);
 		toolBarEdits->addAction(deleteAction);
-		
+
 		/*QSize iconSize(16,16);
 		toolBarBasic->setIconSize(iconSize);
 		toolBarEdits->setIconSize(iconSize);
@@ -1275,7 +1277,7 @@ namespace Tinkercell
 					list[i]->close();
 				}
 				else
-				if (list[i]->networkWindows.size() > 0 && list[i]->networkWindows[0]) 
+				if (list[i]->networkWindows.size() > 0 && list[i]->networkWindows[0])
 				{
 					currentNetworkWindow = list[i]->networkWindows[0];
 					event->ignore();
@@ -1352,7 +1354,7 @@ namespace Tinkercell
 		if (handles.size() > 0 && scene)
 			emit itemsInserted(scene->network, handles);
 	}
-	
+
 	void MainWindow::addParser(TextParser * parser)
 	{
 		static QActionGroup * actionGroup = 0;
@@ -1533,19 +1535,19 @@ namespace Tinkercell
 
 		qRegisterMetaType< DataTable<qreal> >("DataTable<qreal>");
 		qRegisterMetaType< DataTable<QString> >("DataTable<QString>");
-		
+
 		qRegisterMetaType< NumericalDataTable >("NumericalDataTable");
 		qRegisterMetaType< TextDataTable >("TextDataTable");
-		
+
 		qRegisterMetaType< NumericalDataTable >("NumericalDataTable&");
 		qRegisterMetaType< TextDataTable >("TextDataTable&");
 
 		qRegisterMetaType< DataTable<qreal> >("DataTable<qreal>&");
-		qRegisterMetaType< DataTable<QString> >("DataTable<QString>&");		
+		qRegisterMetaType< DataTable<QString> >("DataTable<QString>&");
 
 		qRegisterMetaType< DataTable<qreal>* >("DataTable<qreal>*");
 		qRegisterMetaType< DataTable<QString>* >("DataTable<QString>*");
-		
+
 		qRegisterMetaType< NumericalDataTable* >("NumericalDataTable*");
 		qRegisterMetaType< TextDataTable* >("TextDataTable*");
 
@@ -1573,9 +1575,9 @@ namespace Tinkercell
 		qRegisterMetaType< tc_items* >("tc_items*");
 		qRegisterMetaType< const char * >("const char *");
 	}
-	
+
 	QHash<void*,bool> MainWindow::invalidPointers;
-	
+
 	bool MainWindow::isValidHandlePointer(void * p)
 	{
 		if (!p || MainWindow::invalidPointers.contains(p)) return false;
@@ -1596,7 +1598,7 @@ namespace Tinkercell
 	{
 		//event->accept();
 	}
-	
+
 	QPair< QList<ItemHandle*>, QList<QGraphicsItem*> > MainWindow::getItemsFromFile(const QString& filename, ItemHandle * root)
 	{
 		QList<ItemHandle*> items;
@@ -1606,7 +1608,7 @@ namespace Tinkercell
 			items.removeAll(root);
 		return QPair< QList<ItemHandle*>, QList<QGraphicsItem*> >(items, gitems);
 	}
-	
+
 	bool GlobalSettings::ENABLE_HISTORY_WINDOW = true;
 	bool GlobalSettings::ENABLE_CONSOLE_WINDOW = true;
 	bool GlobalSettings::ENABLE_GRAPHING_TOOLS = false;
@@ -1622,16 +1624,16 @@ namespace Tinkercell
 	bool GlobalSettings::DO_SVN_UPDATE = false;
 	QString GlobalSettings::PLUGINS_SVN_URL = QString();
 	QString GlobalSettings::SETTINGS_FILE_NAME = QString();
-	
+
 	void DroppableTabWidget::dropEvent(QDropEvent * event)
 	{
 		QList<QUrl> urlList;
 		QList<QFileInfo> files;
 		QString fName;
 		QFileInfo info;
-		
+
 		const QMimeData * mimeData = event->mimeData();
-		
+
 		if (mimeData->hasUrls())
 		{
 			urlList = event->mimeData()->urls(); // returns list of QUrls
@@ -1644,7 +1646,7 @@ namespace Tinkercell
 					files += info;
 			}
 		}
-		
+
 		if (!files.isEmpty() && mainWindow)
 		{
 			event->accept();

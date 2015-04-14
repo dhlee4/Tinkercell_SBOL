@@ -88,12 +88,14 @@ namespace Tinkercell
 		template<typename T> void sa_str_item_changed(T call_function, QLineEdit*);
 		template<typename T> void sa_int_item_changed(T call_function, QLineEdit*);
 
-	signals:
+    signals:
 		void itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&);
 		void dataChanged(const QList<ItemHandle*>&);
 
+
+
 	private slots:
-		void toolLoaded (Tool * tool);
+	    void toolLoaded (Tool * tool);
 //		void mouseDoubleClicked (GraphicsScene * scene, QPointF point, QGraphicsItem *, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
 //		void keyPressed(GraphicsScene*,QKeyEvent *);
 //		void itemsAboutToBeInserted(GraphicsScene* scene, QList<QGraphicsItem *>& items, QList<ItemHandle*>& handles, QList<QUndoCommand*>& commands);
@@ -103,6 +105,9 @@ namespace Tinkercell
 		void nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& );
 		void saveSBOLFile();
 		void exportSBOL(QSemaphore*, const QString&);
+        void loadNetwork(const QString& filename, bool * b);
+        void saveNetwork(const QString& filename);
+        void saveItems(NetworkHandle*, const QString& filename);
 
 		void dc_uriChanged();
 		void dc_displayidChanged();

@@ -26,6 +26,7 @@
 #include "GlobalSettings.h"
 #include <sstream>
 #include <functional>
+#include <fstream>
 
 #define SBOL_PROMOTER 101
 #define SBOL_ASSEMBLY_SCAR 102
@@ -134,6 +135,7 @@ namespace Tinkercell
         connect(SA_bioStart,SIGNAL(editingFinished()),this,SLOT(sa_bioStartChanged()));
         connect(SA_bioEnd,SIGNAL(editingFinished()),this,SLOT(sa_bioEndChanged()));
         connect(SA_strand,SIGNAL(editingFinished()),this,SLOT(sa_strandChanged()));
+
         /*
         void sa_uriChanged();
         void sa_bioStartChanged();
@@ -392,6 +394,10 @@ namespace Tinkercell
 				this,
 				SLOT(itemsSelected(GraphicsScene *, const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers))
 				);
+            connect(mainWindow,SIGNAL(loadNetwork(const QString&, bool*)),this,SLOT(loadNetwork(const QString&, bool*)));
+            connect(mainWindow,SIGNAL(saveNetwork(const QString&)),this,SLOT(saveNetwork(const QString&)));
+
+            //connect(mainWindow, SIGNAL(load))
 
             //GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
 
@@ -495,13 +501,200 @@ void SBOLTool::saveSBOLFile()
 
 void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
 {
-    console()->message(file);
+    console()->message(writeDocumentToString(sbol_doc));
     //writeDocument(sbol_doc);
     //writeDocument(sbol_doc,file.toAscii());
     //saveSBOLDocument(file.toAscii());
     writeDocumentToFile(sbol_doc,file.toAscii());
     return;
 }
+
+/*void SBOLTool::getItemsFromFile(QList<ItemHandle*>& handles, QList<QGraphicsItem*>&, const QString& filename,ItemHandle * root)
+	{
+		if (!handles.isEmpty()) return;
+
+		if (!root && currentWindow())
+			root = currentWindow()->handle;
+
+		//handles = importSBML(filename, root);
+        console()->message("file loaded! SBOL");
+	}*/
+void SBOLTool::loadNetwork(const QString& filename, bool * b)
+{
+
+    NetworkHandle * network = currentNetwork();
+    if (!network || filename.isEmpty()) return;
+    QList<GraphicsScene*> scenes = network->scenes();
+
+    console()->message("network loaded SBOL");
+    //if (b && (*b)) return;
+    console()->message("network loaded SBOL SUCCESS");
+    if (network->globalHandle()->hasTextData("sbol"))
+    {
+        console()->message(network->globalHandle()->textData("sbol"));
+    }
+    std::ofstream oup;
+    oup.open("temp.txt");
+        oup << network->globalHandle()->textData("sbol").toStdString();
+    oup.close();
+    if(sbol_doc)
+        {
+
+        }
+    readDocument(sbol_doc,"temp.txt");
+}
+
+	void SBOLTool::saveItems(NetworkHandle * network, const QString& filename)
+	{
+/*		if (!network || filename.isEmpty()) return;
+
+		QList<GraphicsScene*> scenes = network->scenes();
+		QList<QGraphicsItem*> allitems, handleitems;
+
+		for (int i=0; i < scenes.size(); ++i)
+			if (scenes[i])
+				allitems << scenes[i]->items();
+
+		QList<ItemHandle*> allhandles = network->handles();
+
+		if (network->globalHandle())
+			saveUnitsToTable(network->globalHandle()->textDataTable("Units"));
+
+		for (int i=0; i < allhandles.size(); ++i)
+			if (allhandles[i])
+			{
+				handleitems = allhandles[i]->allGraphicsItems();
+				for (int j=0; j < handleitems.size(); ++j)
+					if (!allitems.contains(handleitems[j]))
+						allitems += handleitems[j];
+			}
+
+		NodeGraphicsItem * node = 0;
+		ConnectionGraphicsItem * connection = 0;
+		TextGraphicsItem * text = 0;
+
+		QFile file (filename);
+
+		if (!file.open(QFile::WriteOnly | QFile::Text))
+		{
+			mainWindow->statusBar()->showMessage(tr("file cannot be opened : ") + filename);
+			if (console())
+                console()->error(tr("file cannot be opened : ") + filename);
+			//qDebug() << "file cannot be opened : " << filename;
+			return;
+		}
+
+		ModelWriter modelWriter;
+		modelWriter.setDevice(&file);
+		modelWriter.setAutoFormatting(true);
+
+		modelWriter.writeStartDocument();
+		modelWriter.writeDTD("<!DOCTYPE TinkerCell>");
+
+		modelWriter.writeStartElement("Model");
+
+		modelWriter.writeStartElement("Handles");
+		modelWriter.writeModel(network,&file);
+		modelWriter.writeEndElement();
+
+		QList<NodeGraphicsItem*> nodeItems;
+		QList<TextGraphicsItem*> textItems;
+		QList<ConnectionGraphicsItem*> connectionItems;
+
+		for (int i=0; i < allitems.size(); ++i)
+		{
+			node = NodeGraphicsItem::topLevelNodeItem(allitems[i]);
+			if (node && !nodeItems.contains(node))
+			{
+				nodeItems << node;
+			}
+			else
+			{
+				connection = ConnectionGraphicsItem::topLevelConnectionItem(allitems[i]);
+				if (connection && !connectionItems.contains(connection))
+				{
+					connectionItems << connection;
+				}
+				else
+				{
+					text = TextGraphicsItem::cast(allitems[i]);
+					if (text && !textItems.contains(text))
+					{
+						textItems << text;
+					}
+				}
+			}
+		}
+
+		modelWriter.writeStartElement(tr("Nodes"));
+		for (int i=0; i < nodeItems.size(); ++i)
+		{
+			node = nodeItems[i];
+			writeNode(node,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(node->scene())));
+		}
+		modelWriter.writeEndElement();
+
+		modelWriter.writeStartElement(tr("Connections"));
+		QList<ConnectionGraphicsItem*> firstSetofConnections;
+		for (int i=0; i < connectionItems.size(); ++i)
+		{
+			if (connectionItems[i] && connectionItems[i]->centerRegionItem &&
+				connectionItems[i]->centerRegionItem->scene() &&
+				!connectionItems[i]->centerRegionItem->connections().isEmpty())
+			{
+				firstSetofConnections += connectionItems[i];
+				connectionItems.removeAt(i);
+				--i;
+			}
+		}
+		for (int i=0; i < firstSetofConnections.size(); ++i)
+		{
+			connection = firstSetofConnections[i];
+			writeConnection(connection,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(connection->scene())));
+		}
+
+		for (int i=0; i < connectionItems.size(); ++i)
+		{
+			connection = connectionItems[i];
+			writeConnection(connection,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(connection->scene())));
+		}
+
+		modelWriter.writeEndElement();
+
+		modelWriter.writeStartElement(tr("Texts"));
+
+		for (int i=0; i < textItems.size(); ++i)
+		{
+			text = textItems[i];
+			writeText(text,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(text->scene())));
+		}
+
+		modelWriter.writeEndElement();
+
+		modelWriter.writeEndElement();
+		modelWriter.writeEndDocument();
+
+		savedNetworks[network] = true;
+
+		emit networkSaved(network);
+
+		mainWindow->statusBar()->showMessage(tr("model saved in ") + filename);*/
+	}
+
+	void SBOLTool::saveNetwork(const QString& filename)
+	{
+	    console()->message("save started");
+	    NetworkHandle * network = currentNetwork();
+		if (!network || filename.isEmpty()) return;
+        console()->message("save passed!");
+		QList<GraphicsScene*> scenes = network->scenes();
+
+		network->globalHandle()->textData("sbol") = QString::fromAscii(writeDocumentToString(sbol_doc));
+		//NetworkHandle * network = currentNetwork();
+		//if (network)
+		//	saveItems(network,filename);
+
+	}
 
 void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers)
 {
@@ -512,6 +705,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
         QLineEdit *DC_description;
         QLineEdit *DC_type;
 */
+    show();
 	if (!scene) return;
 
 	console()->message("Current Point");
@@ -525,6 +719,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
             node = NodeGraphicsItem::cast(items[i]);
             if(node)
                 {
+                    console()->message(node->name);
                     std::string cur_uri = node->name.toStdString();
                     DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
                     DC_uri->setText(QString::fromAscii(getDNAComponentURI(cur_dc)));
@@ -718,6 +913,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 		DNAComponent *cur_dc = createDNAComponent(sbol_doc, temp.c_str());
 		setDNAComponentURI(cur_dc, temp.c_str());
 		current_type = name.toStdString();
+
 		if (name.toLower() == tr("promoter"))
             {
                 cur_type = "promoter";
@@ -836,7 +1032,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 //GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
     void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
 	{
-
+        show();
 	    QList<QGraphicsItem*> items;
         items = scene->items();
         NodeGraphicsItem * image = 0;

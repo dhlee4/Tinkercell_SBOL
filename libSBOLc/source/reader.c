@@ -45,14 +45,14 @@ static PointerArray *getNodesMatchingXPath(xmlNode *node, xmlChar *path) {
 	PointerArray *results_array;
 	xmlNode *result_node;
 	int n;
-	
+
 	// get results
     if (node)
         CONTEXT->node = node;
 	results_set = xmlXPathEvalExpression(path, CONTEXT);
 	if (!results_set)
 		return NULL;
-	
+
 	// put them in the array
 	results_array = createPointerArray();
 	if (results_set->nodesetval && results_set->nodesetval->nodeNr > 0) {
@@ -61,7 +61,7 @@ static PointerArray *getNodesMatchingXPath(xmlNode *node, xmlChar *path) {
 			insertPointerIntoArray(results_array, result_node);
 		}
 	}
-	
+
 	// finish up
 	xmlXPathFreeObject(results_set);
 	CONTEXT->node = NULL;
@@ -184,7 +184,7 @@ static void readDNASequenceContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation
 			xmlNode* node_copy = xmlDocCopyNode(child_node, seq->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(seq->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(seq->doc->xml_doc, xmlDocGetRootElement(seq->doc->xml_doc));
@@ -235,7 +235,7 @@ static void readSequenceAnnotationContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation
 			xmlNode* node_copy = xmlDocCopyNode(child_node, ann->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(ann->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(ann->doc->xml_doc, xmlDocGetRootElement(ann->doc->xml_doc));
@@ -299,7 +299,7 @@ static void readDNAComponentContent(xmlNode *node) {
 
     // add displayID, name, description
     readSBOLCompoundObject(com->base, node);
-    
+
     // add type
 	path = NSPREFIX_RDF ":" NODENAME_TYPE;
 	if (results = getNodesMatchingXPath(node, path)) {
@@ -315,7 +315,7 @@ static void readDNAComponentContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation
 			xmlNode* node_copy = xmlDocCopyNode(child_node, com->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(com->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(com->doc->xml_doc, xmlDocGetRootElement(com->doc->xml_doc));
@@ -347,7 +347,7 @@ static void readDNAComponentReferences(xmlNode *node) {
         setDNAComponentSequence(com, getDNASequence(DESTINATION, (char *)ref_uri));
         xmlFree(ref_uri);
     }
-    
+
     // add annotations
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_ANNOTATION
 					 "/" NSPREFIX_SBOL ":" NODENAME_SEQUENCEANNOTATION;
@@ -382,7 +382,7 @@ static void readCollectionContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation
 			xmlNode* node_copy = xmlDocCopyNode(child_node, col->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(col->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(col->doc->xml_doc, xmlDocGetRootElement(col->doc->xml_doc));
@@ -441,7 +441,7 @@ void readDocument(Document* destination, char* filename) {
 		printf("%s is not a valid SBOL document.\n", filename);
 		return;
 	}
-		
+
 	// create XPath context
 	CONTEXT = xmlXPathNewContext(DOCUMENT);
 	xmlXPathRegisterNs(CONTEXT, NSPREFIX_SBOL, NSURL_SBOL);
@@ -454,14 +454,14 @@ void readDocument(Document* destination, char* filename) {
 	processNodes(readSequenceAnnotationContent, GLOBAL_XPATH NODENAME_SEQUENCEANNOTATION);
 	processNodes(readDNAComponentContent,       GLOBAL_XPATH NODENAME_DNACOMPONENT);
 	processNodes(readCollectionContent,         GLOBAL_XPATH NODENAME_COLLECTION);
-	
+
 	// link them together with pointers
 	processNodes(readSequenceAnnotationReferences, GLOBAL_XPATH NODENAME_SEQUENCEANNOTATION);
 	processNodes(readDNAComponentReferences,       GLOBAL_XPATH NODENAME_DNACOMPONENT);
 	processNodes(readCollectionReferences,         GLOBAL_XPATH NODENAME_COLLECTION);
 
 	#undef GLOBAL_XPATH
-	
+
 	// clean up
 	xmlXPathFreeContext(CONTEXT);
 	xmlFreeDoc(DOCUMENT);
