@@ -1,14 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <malloc.h>
 
 /// @todo remove?
+<<<<<<< HEAD
+#include "sbol.h"
+//#include "property.h"
+//#include "array.h"
+//#include "object.h"
+//#include "document.h"
+//#include "dnacomponent.h"
+//#include "sequenceannotation.h"
+=======
 #include "property.h"
 #include "array.h"
 #include "object.h"
 #include "document.h"
 #include "dnacomponent.h"
 #include "sequenceannotation.h"
+#include "utilities.h"
+>>>>>>> 359edf6a48b340a3707cf503c5a2d495fa27b4d8
 
 SequenceAnnotation* createSequenceAnnotation(Document* doc, const char* uri) {
 	if (!doc || !uri || isSBOLObjectURI(doc, uri))
@@ -53,12 +65,13 @@ SequenceAnnotation* copySequenceAnnotation(SequenceAnnotation* ann, char* id_mod
 	setSequenceAnnotationStart(copy, getSequenceAnnotationStart(ann));
 	setSequenceAnnotationEnd(copy, getSequenceAnnotationEnd(ann));
 	setSequenceAnnotationStrand(copy, getSequenceAnnotationStrand(ann));
-	//ann->precedes = createPointerArray();
 
 	// Copy precedes property
 	copy->precedes = createPointerArray();
+	char *target_uri;
 	for (i = 0; i < getNumPointersInArray(ann->precedes); i++) {
-		insertPointerIntoArray(copy->precedes, getNthPointerInArray(ann->precedes, i));
+		target_uri = (char *)getNthPointerInArray(ann->precedes, i);
+		insertPointerIntoArray(copy->precedes, augmentURI(target_uri, id_modifier));
 	}
 
 	// Copy SubComponent tree recursively
@@ -155,20 +168,41 @@ int getSequenceAnnotationStrand(const SequenceAnnotation* ann) {
  *******************/
 
 void addPrecedesRelationship(SequenceAnnotation * upstream, SequenceAnnotation * downstream) {
-	if (upstream && downstream)
-		insertPointerIntoArray(upstream->precedes, downstream);
+	if (upstream && downstream) {
+		char *downstream_uri = getSequenceAnnotationURI(downstream);
+		insertPointerIntoArray(upstream->precedes, downstream_uri);
+	}
 }
 
 void removePrecedesRelationship(SequenceAnnotation* upstream, SequenceAnnotation* downstream) {
 	if (upstream && downstream) {
-		int index = indexOfPointerInArray(upstream->precedes, downstream);
-		removePointerFromArray(upstream->precedes, index);
+		char *target_uri = getSequenceAnnotationURI(downstream);
+
+		char *query_uri;
+		int FOUND = 0; // found URI in list of URIs
+		int EOL = 0; // end of list
+		int i_uri = 0;  // index of URI in list
+		while (!FOUND && !EOL) {
+			query_uri = (char *)getNthPointerInArray(upstream->precedes, i_uri);
+
+			if (strcmp(query_uri, target_uri) == 0) {
+				FOUND++;
+				removePointerFromArray(upstream->precedes, i_uri);
+			}
+			i_uri++;
+			if (i_uri == getNumPointersInArray(upstream->precedes)) {
+				EOL++;
+			}
+		}
 	}
+	return;
 }
 
 SequenceAnnotation* getNthPrecedes(const SequenceAnnotation* ann, int n) {
-	if (ann && getNumPrecedes(ann) >= n)
-		return (SequenceAnnotation*) getNthPointerInArray(ann->precedes, n);
+	if (ann && getNumPrecedes(ann) >= n) {
+		char *uri = (char *)getNthPointerInArray(ann->precedes, n);
+		return getSequenceAnnotation(ann->doc, uri);
+	}
 	else
 		return NULL;
 }
@@ -186,13 +220,46 @@ int precedes(const SequenceAnnotation* ann1, const SequenceAnnotation* ann2) {
 	return 0;
 }
 
+void insertAnnotationAfter(SequenceAnnotation* upstream, SequenceAnnotation* new_annotation) {
+
+	//	Update start and end of annotation
+	int insert_size = strlen(getDNASequenceNucleotides(getDNAComponentSequence(getSequenceAnnotationSubComponent(new_annotation))));
+	int insertion_site = getPositionProperty(upstream->genbankEnd) + 1;
+	setSequenceAnnotationStart(new_annotation, insertion_site);
+	setSequenceAnnotationEnd(new_annotation, insertion_site + insert_size - 1);
+
+
+	//  Update precedes relationship of annotations 
+	SequenceAnnotation* downstream = NULL;
+	if (getNumPointersInArray(upstream->precedes) > 0) {
+		downstream = getNthPrecedes(upstream, 0);
+		removePrecedesRelationship(upstream, downstream);
+		addPrecedesRelationship(upstream, new_annotation);
+		addPrecedesRelationship(new_annotation, downstream);
+		upstream = new_annotation;
+
+		// Update all start and end indices for annotations downstream from insertion
+		int old_start, old_end = 0;
+		int new_start = 0;
+		int new_end = 0;
+		while (getNumPointersInArray(upstream->precedes) > 0) {
+			downstream = getNthPrecedes(upstream, 0);
+			old_start = getPositionProperty(downstream->genbankStart);
+			old_end = getPositionProperty(downstream->genbankEnd);
+			new_start = old_start + insert_size;
+			new_end = old_end + insert_size;
+			setPositionProperty(downstream->genbankStart, new_start);
+			setPositionProperty(downstream->genbankEnd, new_end);
+			upstream = downstream;
+		}
+	}
+}
+
 void printSequenceAnnotation(const SequenceAnnotation* ann, int tabs) {
     if (!ann)
         return;
     indent(tabs); printf("%s\n", getSequenceAnnotationURI(ann));
-    //int start = ann->genbankStart;
 	int start = getSequenceAnnotationStart(ann);
-    //int end = ann->genbankEnd;
 	int end = getSequenceAnnotationEnd(ann);
     if (start != -1 || end != -1) { /// @todo is 0 valid?
     	indent(tabs+1); printf("%i --> %i\n", start, end);

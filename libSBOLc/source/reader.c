@@ -13,6 +13,7 @@
 #include "collection.h"
 #include "reader.h"
 #include "object.h"
+#include "utilities.h"
 
 #include "sbol.h"
 
@@ -45,14 +46,14 @@ static PointerArray *getNodesMatchingXPath(xmlNode *node, xmlChar *path) {
 	PointerArray *results_array;
 	xmlNode *result_node;
 	int n;
-
+	
 	// get results
     if (node)
         CONTEXT->node = node;
 	results_set = xmlXPathEvalExpression(path, CONTEXT);
 	if (!results_set)
 		return NULL;
-
+	
 	// put them in the array
 	results_array = createPointerArray();
 	if (results_set->nodesetval && results_set->nodesetval->nodeNr > 0) {
@@ -61,7 +62,7 @@ static PointerArray *getNodesMatchingXPath(xmlNode *node, xmlChar *path) {
 			insertPointerIntoArray(results_array, result_node);
 		}
 	}
-
+	
 	// finish up
 	xmlXPathFreeObject(results_set);
 	CONTEXT->node = NULL;
@@ -122,10 +123,10 @@ static void processNodes(void (*read)(xmlNode *), xmlChar *path) {
 }
 
 static int isSBOLNamespace(const xmlChar *uri) {
-	return (strcmp(uri, NSURL_RDF) == 0 ||
-		strcmp(uri, NSURL_RDFS) == 0 ||
-		strcmp(uri, NSURL_SO) == 0 ||
-		strcmp(uri, NSURL_SBOL) == 0);
+	return (strcmp((char*)uri, NSURL_RDF) == 0 ||
+		strcmp((char*)uri, NSURL_RDFS) == 0 ||
+		strcmp((char*)uri, NSURL_SO) == 0 ||
+		strcmp((char*)uri, NSURL_SBOL) == 0);
 }
 
 
@@ -140,21 +141,21 @@ static void readSBOLCompoundObject(SBOLCompoundObject *obj, xmlNode *node) {
 
 	// add displayID
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_DISPLAYID;
-	if (content = getContentsOfNodeMatchingXPath(node, path)) {
+	if ((content = getContentsOfNodeMatchingXPath(node, path))) {
 		setSBOLCompoundObjectDisplayID(obj, (char *)content);
 		xmlFree(content);
 	}
 
 	// add name
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_NAME;
-	if (content = getContentsOfNodeMatchingXPath(node, path)) {
+	if ((content = getContentsOfNodeMatchingXPath(node, path))) {
 		setSBOLCompoundObjectName(obj, (char *)content);
 		xmlFree(content);
 	}
 
 	// add description
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_DESCRIPTION;
-	if (content = getContentsOfNodeMatchingXPath(node, path)) {
+	if ((content = getContentsOfNodeMatchingXPath(node, path))) {
 		setSBOLCompoundObjectDescription(obj, (char *)content);
 		xmlFree(content);
 	}
@@ -174,7 +175,7 @@ static void readDNASequenceContent(xmlNode *node) {
 
 	// add nucleotides
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_NUCLEOTIDES;
-	if (nt = getContentsOfNodeMatchingXPath(node, path)) {
+	if ((nt = getContentsOfNodeMatchingXPath(node, path))) {
 		setDNASequenceNucleotides(seq, (char *)nt);
 		xmlFree(nt);
 	}
@@ -184,7 +185,7 @@ static void readDNASequenceContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
 			xmlNode* node_copy = xmlDocCopyNode(child_node, seq->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(seq->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(seq->doc->xml_doc, xmlDocGetRootElement(seq->doc->xml_doc));
@@ -210,21 +211,21 @@ static void readSequenceAnnotationContent(xmlNode *node) {
 
 	// add bioStart
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_BIOSTART;
-	if (contents = getContentsOfNodeMatchingXPath(node, path)) {
+	if ((contents = getContentsOfNodeMatchingXPath(node, path))) {
 		setSequenceAnnotationStart(ann, strToInt((char *)contents));
 		xmlFree(contents);
 	}
 
 	// add bioEnd
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_BIOEND;
-	if (contents = getContentsOfNodeMatchingXPath(node, path)) {
+        if ((contents = getContentsOfNodeMatchingXPath(node, path))) {
 		setSequenceAnnotationEnd(ann, strToInt((char *)contents));
 		xmlFree(contents);
 	}
 
 	// add strand
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_STRAND;
-	if (contents = getContentsOfNodeMatchingXPath(node, path)) {
+        if ((contents = getContentsOfNodeMatchingXPath(node, path))) {
 		setSequenceAnnotationStrand(ann, strToPolarity((char *)contents));
 		xmlFree(contents);
 	}
@@ -235,7 +236,7 @@ static void readSequenceAnnotationContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
 			xmlNode* node_copy = xmlDocCopyNode(child_node, ann->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(ann->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(ann->doc->xml_doc, xmlDocGetRootElement(ann->doc->xml_doc));
@@ -262,14 +263,14 @@ static void readSequenceAnnotationReferences(xmlNode *node) {
 	// add subComponent
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_SUBCOMPONENT
 					 "/" NSPREFIX_SBOL ":" NODENAME_DNACOMPONENT;
-	if (ref_uri = getURIOfNodeMatchingXPath(node, path)) {
+	if ((ref_uri = getURIOfNodeMatchingXPath(node, path))) {
 		setSequenceAnnotationSubComponent(ann, getDNAComponent(DESTINATION, (char *)ref_uri));
 		xmlFree(ref_uri);
 	}
 
 	// add precedes
 	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_PRECEDES;
-	if (results = getNodesMatchingXPath(node, path)) {
+	if ((results = getNodesMatchingXPath(node, path))) {
 		for (n=0; n<getNumPointersInArray(results); n++) {
 			ref_node = (xmlNode *) getNthPointerInArray(results, n);
 			ref_uri  = getNodeURI(ref_node);
@@ -299,10 +300,10 @@ static void readDNAComponentContent(xmlNode *node) {
 
     // add displayID, name, description
     readSBOLCompoundObject(com->base, node);
-
+    
     // add type
-	path = NSPREFIX_RDF ":" NODENAME_TYPE;
-	if (results = getNodesMatchingXPath(node, path)) {
+    path = (unsigned char*)NSPREFIX_RDF ":" NODENAME_TYPE;
+	if ((results = getNodesMatchingXPath(node, path))) {
 		type_node = (xmlNode *)getNthPointerInArray(results, 0);
 		type_property = xmlGetNsProp(type_node, BAD_CAST NODENAME_RESOURCE, BAD_CAST NSURL_RDF);
 		setDNAComponentType(com, (char *)type_property);
@@ -315,7 +316,7 @@ static void readDNAComponentContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
 			xmlNode* node_copy = xmlDocCopyNode(child_node, com->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(com->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(com->doc->xml_doc, xmlDocGetRootElement(com->doc->xml_doc));
@@ -343,15 +344,16 @@ static void readDNAComponentReferences(xmlNode *node) {
     // add sequence
     path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_DNASEQUENCE_REF
     				 "/" NSPREFIX_SBOL ":" NODENAME_DNASEQUENCE;
-    if (ref_uri = getURIOfNodeMatchingXPath(node, path)) {
+    if ((ref_uri = getURIOfNodeMatchingXPath(node, path))) {
         setDNAComponentSequence(com, getDNASequence(DESTINATION, (char *)ref_uri));
         xmlFree(ref_uri);
     }
-
+    
     // add annotations
-	path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_ANNOTATION
-					 "/" NSPREFIX_SBOL ":" NODENAME_SEQUENCEANNOTATION;
-    if (ref_nodes = getNodesMatchingXPath(node, path)) {
+    path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_ANNOTATION
+      "/" NSPREFIX_SBOL ":" NODENAME_SEQUENCEANNOTATION;
+
+    if ((ref_nodes = getNodesMatchingXPath(node, path))) {
         for (n=0; n<getNumPointersInArray(ref_nodes); n++) {
             ref_node = (xmlNode *) getNthPointerInArray(ref_nodes, n);
             ref_uri = getNodeURI(ref_node);
@@ -382,7 +384,7 @@ static void readCollectionContent(xmlNode *node) {
 	child_node = node->children;
 	while (child_node) {
 		if (child_node->ns && !isSBOLNamespace(child_node->ns->href)) {
-			// copy xml tree and save it in the SBOLDocument object as a structural annotation
+			// copy xml tree and save it in the SBOLDocument object as a structural annotation 
 			xmlNode* node_copy = xmlDocCopyNode(child_node, col->doc->xml_doc, 1);
 			node_copy = xmlAddChild(xmlDocGetRootElement(col->doc->xml_doc), node_copy);
 			i = xmlReconciliateNs(col->doc->xml_doc, xmlDocGetRootElement(col->doc->xml_doc));
@@ -410,7 +412,7 @@ static void readCollectionReferences(xmlNode *node) {
     // add components
     path = BAD_CAST "./" NSPREFIX_SBOL ":" NODENAME_COMPONENT
     				 "/" NSPREFIX_SBOL ":" NODENAME_DNACOMPONENT;
-    if (ref_nodes = getNodesMatchingXPath(node, path)) {
+    if ((ref_nodes = getNodesMatchingXPath(node, path))) {
         for (n=0; n<getNumPointersInArray(ref_nodes); n++) {
             ref_node = (xmlNode *) getNthPointerInArray(ref_nodes, n);
             ref_uri = getNodeURI(ref_node);
@@ -441,7 +443,7 @@ void readDocument(Document* destination, char* filename) {
 		printf("%s is not a valid SBOL document.\n", filename);
 		return;
 	}
-
+		
 	// create XPath context
 	CONTEXT = xmlXPathNewContext(DOCUMENT);
 	xmlXPathRegisterNs(CONTEXT, NSPREFIX_SBOL, NSURL_SBOL);
@@ -454,14 +456,14 @@ void readDocument(Document* destination, char* filename) {
 	processNodes(readSequenceAnnotationContent, GLOBAL_XPATH NODENAME_SEQUENCEANNOTATION);
 	processNodes(readDNAComponentContent,       GLOBAL_XPATH NODENAME_DNACOMPONENT);
 	processNodes(readCollectionContent,         GLOBAL_XPATH NODENAME_COLLECTION);
-
+	
 	// link them together with pointers
 	processNodes(readSequenceAnnotationReferences, GLOBAL_XPATH NODENAME_SEQUENCEANNOTATION);
 	processNodes(readDNAComponentReferences,       GLOBAL_XPATH NODENAME_DNACOMPONENT);
 	processNodes(readCollectionReferences,         GLOBAL_XPATH NODENAME_COLLECTION);
 
 	#undef GLOBAL_XPATH
-
+	
 	// clean up
 	xmlXPathFreeContext(CONTEXT);
 	xmlFreeDoc(DOCUMENT);
