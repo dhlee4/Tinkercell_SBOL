@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////
 /// @file
-/// 
+///
 /// Contains functions for importing SBOL objects
 /// from an XML file. Only readDocument is meant to be
 /// exported; everything else supports it.
-/// 
+///
 /// @todo Figure out how to generate documentation for
 ///       static functions.
 ///////////////////////////////////////////////////////////
@@ -94,5 +94,6 @@ static void readCollectionReferences(xmlNode *node);
 /// if the document is invalid.
 /// @todo Return an error code on invalid documents
 SBOLAPIEXPORTS void readDocument(Document* doc, char* filename);
+SBOLAPIEXPORTS void readSBOLString(Document* doc, const char* filename, int *ret);
 
 #endif

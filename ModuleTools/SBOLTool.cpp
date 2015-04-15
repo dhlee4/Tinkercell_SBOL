@@ -502,9 +502,11 @@ void SBOLTool::saveSBOLFile()
 void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
 {
     console()->message(writeDocumentToString(sbol_doc));
-    //writeDocument(sbol_doc);
-    //writeDocument(sbol_doc,file.toAscii());
-    //saveSBOLDocument(file.toAscii());
+    NetworkHandle * network = currentNetwork();
+    if (network)
+        {
+            network->globalHandle()->textData("sbol") = QString::fromAscii(writeDocumentToString(sbol_doc));
+        }
     writeDocumentToFile(sbol_doc,file.toAscii());
     return;
 }
@@ -531,17 +533,51 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
     console()->message("network loaded SBOL SUCCESS");
     if (network->globalHandle()->hasTextData("sbol"))
     {
+        console()->message("SBOL Component exist");
+        //console()->message(network->globalHandle()->textData("sbol"));
+        if(sbol_doc)
+        {
+            deleteDocument(sbol_doc);
+        }
+        sbol_doc = createDocument();
         console()->message(network->globalHandle()->textData("sbol"));
+        int *ret_val = new int;
+        readSBOLString(sbol_doc,network->globalHandle()->textData("sbol").toStdString().c_str(),ret_val);
+        if(*ret_val == 1)
+            {
+                console()->message("Not Valid XML");
+            }
+        else if (*ret_val == 2)
+            {
+                console()->message("not valid SBOL");
+            }
+        else if (*ret_val <=0)
+            {
+                console()->message(QString::fromStdString(SSTR(*ret_val)));
+            }
+        else if (*ret_val == 3)
+            {
+                console()->message(QString::fromAscii(writeDocumentToString(sbol_doc)));
+            }
+        delete ret_val;
     }
-    std::ofstream oup;
-    oup.open("temp.txt");
+/*    std::ofstream oup;
+    oup.open("temp.sbol");
         oup << network->globalHandle()->textData("sbol").toStdString();
     oup.close();
+
     if(sbol_doc)
         {
-
+            deleteDocument(sbol_doc);
         }
-    readDocument(sbol_doc,"temp.txt");
+    sbol_doc = createDocument();
+    readDocument(sbol_doc,"D:\Tinkercell\BUILD\bin\temp.sbol");
+    console()->message(QString::fromAscii(writeDocumentToString(sbol_doc)));
+    //console()->message(isValidSBOL(sbol_doc));*/
+
+
+
+
 }
 
 	void SBOLTool::saveItems(NetworkHandle * network, const QString& filename)
@@ -688,7 +724,6 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
 		if (!network || filename.isEmpty()) return;
         console()->message("save passed!");
 		QList<GraphicsScene*> scenes = network->scenes();
-
 		network->globalHandle()->textData("sbol") = QString::fromAscii(writeDocumentToString(sbol_doc));
 		//NetworkHandle * network = currentNetwork();
 		//if (network)
@@ -839,65 +874,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                         }
                     push = pop;
                 }
-
-                /*for (int i=0; i<all_items.size(); i++)
-                    {
-
-                        if(NodeGraphicsItem::cast(all_items[i])->boundingRect().contains(colided_to->pos()))
-                            {
-                                console()->message(NodeGraphicsItem::cast(all_items[i])->name);
-                            }
-
-                    }*/
-
-
             }
-
-
-/*
-		if (dnaItem)
-		{
-			QGraphicsItem * itemLeft = dnaItem, * itemRight = dnaItem;
-			ItemHandle * h = getHandle(dnaItem);
-			while (itemLeft)
-			{
-				QRectF p1(itemLeft->sceneBoundingRect());
-				p1.adjust(-10.0,0,-10.0,0.0);
-				QList<QGraphicsItem*> items = scene->items(p1);
-				itemLeft = 0;
-				for (int i=0; i < items.size(); ++i)
-					if (!select.contains(items[i]) && NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("Part") && !handle->isA("Vector") && handle->parent == h->parent)
-					{
-						itemLeft = items[i];
-						select << itemLeft;
-						break;
-					}
-			}
-			while (itemRight)
-			{
-				QRectF p2(itemRight->sceneBoundingRect());
-				p2.adjust(10.0,0,10.0,0.0);
-				QList<QGraphicsItem*> items = scene->items(p2);
-				itemRight = 0;
-				for (int i=0; i < items.size(); ++i)
-					if (!select.contains(items[i]) && NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("Part") && !handle->isA("Vector") && handle->parent == h->parent)
-					{
-						itemRight = items[i];
-						select << itemRight;
-						break;
-					}
-			}
-
-			if (select.isEmpty()) return;
-
-			scene->selected() = select;
-			scene->select(0);
-
-			autoAlignEnabled = false;
-			emit alignCompactHorizontal();
-			autoAlignEnabled = true;
-		}
-		*/
 	}
 
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)

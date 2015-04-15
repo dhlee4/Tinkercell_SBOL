@@ -14,14 +14,14 @@
 
 // folder structure
 // set using CMake
-#define SBOL_SOURCE_DIR  "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/source"  ///< Holds source code for libSBOLc.
-#define SBOL_ROOT_DIR    "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc"    ///< Top-level project folder.
-#define SBOL_BUILD_DIR   "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/build"   ///< Folder for temporary build files.
-#define SBOL_SCHEMA_DIR  "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/schema"  ///< Holds the SBOL schema files.
-#define SBOL_TEST_DIR    "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/tests"    ///< Holds source code for the tests.
-#define SBOL_EXAMPLE_DIR "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/examples" ///< Holds example SBOL documents and code.
-#define SBOL_RELEASE_DIR "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/release" ///< Folder for generated binaries, docs, etc.
-#define SBOL_MANUAL_DIR  "/Users/jakebeal/projects/SynBioIRAD/BioCompiler/libSBOLc/manual"  ///< Holds source code for the SBOL manual.
+#define SBOL_SOURCE_DIR  "D:/Tinkercell/libSBOLc/source"  ///< Holds source code for libSBOLc.
+#define SBOL_ROOT_DIR    "D:/Tinkercell/libSBOLc"    ///< Top-level project folder.
+#define SBOL_BUILD_DIR   "D:/Tinkercell/libSBOLc/build"   ///< Folder for temporary build files.
+#define SBOL_SCHEMA_DIR  "D:/Tinkercell/libSBOLc/schema"  ///< Holds the SBOL schema files.
+#define SBOL_TEST_DIR    "D:/Tinkercell/libSBOLc/tests"    ///< Holds source code for the tests.
+#define SBOL_EXAMPLE_DIR "D:/Tinkercell/libSBOLc/examples" ///< Holds example SBOL documents and code.
+#define SBOL_RELEASE_DIR "D:/Tinkercell/libSBOLc/release" ///< Folder for generated binaries, docs, etc.
+#define SBOL_MANUAL_DIR  "D:/Tinkercell/libSBOLc/manual"  ///< Holds source code for the SBOL manual.
 
 #define SBOL_SCHEMA_FILENAME SBOL_SCHEMA_DIR "/sbol.xsd" ///< Schema to use when validating documents.
 
