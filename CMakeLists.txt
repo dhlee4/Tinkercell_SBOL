@@ -248,7 +248,7 @@ OPTION( PYTHON_ENABLE "Embed Python in TinkerCell" ON ) #embed python?
 OPTION( OCTAVE_ENABLE "Embed Octave in TinkerCell" ON ) #embed octave?
 OPTION( RUBY_ENABLE "Embed Ruby in TinkerCell" ON ) #embed ruby?
 
-ADD_SUBDIRECTORY (libSBOLc)
+#ADD_SUBDIRECTORY (libSBOLc)
 ADD_SUBDIRECTORY( Core )   #C++ Core + API
 ADD_SUBDIRECTORY( API )   #C API + SWIG file
 ADD_SUBDIRECTORY( icons )   #icons
