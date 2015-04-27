@@ -59,6 +59,7 @@ IF( APPLE AND BUILD_BUNDLE )
      copasi
      sbml
      antimony
+
     ${QT_LIBRARIES}
   )
 
@@ -117,7 +118,6 @@ ELSE( APPLE AND BUILD_BUNDLE )
      sbml
      antimony
 	 sbol
-	 xml2
       ${QT_LIBRARIES}
     )
     ENDIF( WIN32 )

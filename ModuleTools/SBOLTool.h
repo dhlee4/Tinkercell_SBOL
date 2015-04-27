@@ -71,6 +71,9 @@
 #    define TINKERCELLEXPORT
 #endif
 #endif
+/*extern "C"{
+#include "sbol.h"
+}*/
 
 namespace Tinkercell
 {

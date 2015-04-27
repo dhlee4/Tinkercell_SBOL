@@ -52,6 +52,7 @@
 #define SSTR( x ) dynamic_cast < std::ostringstream & > (( std::ostringstream() << std::dec << x ) ).str()
 
 //need to do something about it from here
+
 extern "C"{
 #include "sbol.h"
 }

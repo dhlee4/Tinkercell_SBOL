@@ -16,10 +16,10 @@ INCLUDE_DIRECTORIES(
 	  ${TINKERCELL_SOURCE_DIR}/libSBOLc/release/library/include
 )
 
-LINK_DIRECTORIES(
-	BEFORE
-	${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library
-)
+#LINK_DIRECTORIES(
+#	BEFORE
+#	${TINKERCELL_SOURCE_DIR}/ExternalCode/libSBOLc_source/release/library
+#)
 
 CONFIGURE_FILE( 
 	${TINKERCELL_SOURCE_DIR}/Core/coding/CodingWindow.cpp.in
@@ -190,6 +190,9 @@ ADD_DEFINITIONS(-DQT_SHARED)
 #-------------------------------------------------------------------------------------------------------------
 #  Create the Core library
 #-------------------------------------------------------------------------------------------------------------
+#FIND_PACKAGE(sbol)
+#FIND_PACKAGE( LibXml2 )
+
 ADD_LIBRARY( TinkerCellCore
   SHARED
   ${MUPARSER_SRC}
@@ -211,8 +214,8 @@ TARGET_LINK_LIBRARIES( TinkerCellCore
   muparser  #for parsing math
   cluster      #for clustering plot data
   raptor2    #for parsing RDF
-  xml2
-  sbol
+#  xml2
+#  sbol
   ${QT_LIBRARIES}
   ${OPENGL_LIBRARY}
 )

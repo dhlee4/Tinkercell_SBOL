@@ -20,9 +20,6 @@ SET( TINKERCELL_CORE_HDRS
   ../Core/ItemFamily.h
   )
   
-FIND_LIBRARY( sbol NAME libsbol.dll.a
-				PATHS ${TINKERCELL_SOURCE_DIR}/libSBOLc_source/release/library)
-
 QT4_WRAP_CPP( TinkercellCore_MOC ${TINKERCELL_CORE_HDRS})
 
 QT4_WRAP_CPP( ModuleTool_MOC ModuleTool.h )
@@ -38,7 +35,6 @@ TARGET_LINK_LIBRARIES( ModuleTool
   ModuleTool
   NodesTree
   TinkerCellCore
-  sbol
 )
 
 INSTALL(TARGETS ModuleTool
