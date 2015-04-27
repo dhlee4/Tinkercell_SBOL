@@ -134,6 +134,9 @@ namespace Tinkercell
         void hideSA();
         void hideDS();
 
+        void importSBOLDocument(QString &file);
+        void renderSBOLDocument(SBOLObject *target);
+
 	private:
 		ConnectionsTree * connectionsTree;
 		NodesTree * nodesTree;
@@ -168,6 +171,8 @@ namespace Tinkercell
         QPushButton * delDS;
 
         std::string current_type;
+        Document * sbol_doc;
+        DNAComponent * head_dc;
 
 
 	};

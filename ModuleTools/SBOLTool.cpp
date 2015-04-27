@@ -61,8 +61,7 @@
 #include "sbol.h"
 }*/
 
-static Document * sbol_doc;
-static DNAComponent * head_dc;
+
 //to here
 
 namespace Tinkercell
@@ -156,6 +155,15 @@ namespace Tinkercell
         setLayout(layout4);
         show();
         mode = 0;
+
+    }
+
+    void SBOLTool::importSBOLDocument(QString& file)
+    {
+
+    }
+    void SBOLTool::renderSBOLDocument(SBOLObject* target)
+    {
 
     }
 
@@ -440,7 +448,7 @@ namespace Tinkercell
                 QList<QAction*> actions = mainWindow->fileMenu->actions();
 
                 QAction * targetAction = 0;
-                QMenu * exportmenu = 0;//, * importmenu = 0;
+                QMenu * exportmenu = 0, * importmenu = 0;
 
                 for (int i=0; i < actions.size(); ++i)
                     if (actions[i] && actions[i]->menu())
@@ -453,7 +461,7 @@ namespace Tinkercell
                         else
                             if (actions[i]->text() == tr("&Import"))
                             {
-                                //importmenu = actions[i]->menu();
+                                importmenu = actions[i]->menu();
                                 targetAction = actions[i];
                             }
                     }
@@ -481,6 +489,16 @@ namespace Tinkercell
                     //importmenu->addAction(tr("load SBML file"),this,SLOT(loadSBMLFile()));
                     exportmenu->addAction(tr("SBOL"),this,SLOT(saveSBOLFile()));
                 }
+
+                if(!importmenu)
+                    {
+                        importmenu = new QMenu(tr("&Import"));
+                        mainWindow->fileMenu->insertMenu(targetAction, importmenu);
+                    }
+                if(importmenu)
+                    {
+                        importmenu->addAction(tr("SBOL"),this,SLOT(importSBOLDocument()));
+                    }
             }
 
 
