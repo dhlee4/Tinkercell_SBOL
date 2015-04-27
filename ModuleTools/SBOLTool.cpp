@@ -5,6 +5,9 @@
  See COPYRIGHT.TXT
 
 ****************************************************************************/
+
+
+
 #include <math.h>
 #include <QRegExp>
 #include <QProcess>
@@ -51,11 +54,12 @@
 #define SBOL_ORIGIN_OF_REPLICATION 121
 #define SSTR( x ) dynamic_cast < std::ostringstream & > (( std::ostringstream() << std::dec << x ) ).str()
 
+
 //need to do something about it from here
 
-extern "C"{
+/*extern "C"{
 #include "sbol.h"
-}
+}*/
 
 static Document * sbol_doc;
 static DNAComponent * head_dc;

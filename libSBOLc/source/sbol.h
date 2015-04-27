@@ -13,6 +13,7 @@
 #ifndef SBOL_HEADER
 #define SBOL_HEADER
 
+
 #include "constants.h"
 #include "document.h"
 #include "object.h"

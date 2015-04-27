@@ -11,6 +11,8 @@
 #ifndef TINKERCELL_SBOLTOOL_H
 #define TINKERCELL_SBOLTOOL_H
 
+#define LIBXML_STATIC
+
 #include <QtGui>
 #include <QIcon>
 #include <QPixmap>
@@ -71,9 +73,11 @@
 #    define TINKERCELLEXPORT
 #endif
 #endif
-/*extern "C"{
+
+
+extern "C"{
 #include "sbol.h"
-}*/
+}
 
 namespace Tinkercell
 {
