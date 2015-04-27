@@ -422,7 +422,7 @@ namespace Tinkercell
             std::string temp = authority+SSTR(cur_cnt);
             head_dc = createDNAComponent(sbol_doc, temp.c_str());
             head_dc = getDNAComponent(sbol_doc, temp.c_str());
-            setDNAComponentType(head_dc,"http://purl.obolibrary.org/obo/Main");
+            setDNAComponentType(head_dc,"Main");
 
 //Connecting Collision Detection
 		static bool ac1 = false;
@@ -581,7 +581,6 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
         else if (*ret_val == 3)
             {
                 console()->message(QString::fromAscii(writeDocumentToString(sbol_doc)));
-                head_dc = getDNAComponent(sbol_doc, "http://example.com/dc1");
             }
         delete ret_val;
     }
@@ -1022,7 +1021,6 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
             }
         if(mode != 0)
             {
-                current_type = "http://purl.obolibrary.org/obo/"+current_type;
                 setDNAComponentType(cur_dc, current_type.c_str());
                 //setDNAComponentDisplayID(cur_dc, current_type.c_str());
                 sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
