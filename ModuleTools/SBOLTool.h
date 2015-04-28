@@ -12,6 +12,7 @@
 #define TINKERCELL_SBOLTOOL_H
 
 #define LIBXML_STATIC
+//for Errors of SBOL.h -> .cpp
 
 #include <QtGui>
 #include <QIcon>
@@ -134,7 +135,7 @@ namespace Tinkercell
         void hideSA();
         void hideDS();
 
-        void importSBOLDocument(QString &file);
+        void importSBOLDocument();
         void renderSBOLDocument(SBOLObject *target);
 
 	private:
@@ -171,7 +172,7 @@ namespace Tinkercell
         QPushButton * delDS;
 
         std::string current_type;
-        Document * sbol_doc;
+//        Document * sbol_doc;
         DNAComponent * head_dc;
 
 

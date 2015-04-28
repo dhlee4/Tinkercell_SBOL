@@ -61,7 +61,8 @@
 #include "sbol.h"
 }*/
 
-
+static Document * sbol_doc;
+//static DNAComponent * head_dc;
 //to here
 
 namespace Tinkercell
@@ -155,15 +156,6 @@ namespace Tinkercell
         setLayout(layout4);
         show();
         mode = 0;
-
-    }
-
-    void SBOLTool::importSBOLDocument(QString& file)
-    {
-
-    }
-    void SBOLTool::renderSBOLDocument(SBOLObject* target)
-    {
 
     }
 
@@ -472,8 +464,8 @@ namespace Tinkercell
                         if (actions[i] && actions[i]->text() == tr("&Close page"))
                         {
                             exportmenu = new QMenu(tr("&Export"));
-                            //importmenu = new QMenu(tr("&Import"));
-                            //mainWindow->fileMenu->insertMenu(actions[i],importmenu);
+                            importmenu = new QMenu(tr("&Import"));
+                            mainWindow->fileMenu->insertMenu(actions[i],importmenu);
                             mainWindow->fileMenu->insertMenu(actions[i],exportmenu);
                         }
                 }
@@ -511,6 +503,53 @@ namespace Tinkercell
 
         return true;
     }
+
+
+void SBOLTool::importSBOLDocument()
+{
+    QString file = QFileDialog::getOpenFileName(this, tr("import SBOL Document"), homeDir());
+    if (file.isNull() || file.isEmpty()) return;
+
+    console()->message(file);
+    deleteDocument(sbol_doc);
+    sbol_doc = createDocument();
+    readDocument(sbol_doc, (char*)file.toStdString().c_str());
+    head_dc = getNthDNAComponent(sbol_doc,0);
+    renderSBOLDocument((SBOLObject*)head_dc);
+}
+void SBOLTool::renderSBOLDocument(SBOLObject* target)
+{
+    //Start to Render the target
+    if(isDNAComponent(sbol_doc,target))
+        {
+            DNAComponent *dc_target = (DNAComponent*) target;
+            int n_sa = getNumSequenceAnnotationsFor(dc_target);
+            if(n_sa != 0)
+                {
+                    for(int i=0; i<n_sa; i++)
+                        {
+                            SequenceAnnotation *cur_sa;
+                            DNAComponent *cur_dc;
+                            cur_sa = getNthSequenceAnnotationFor(dc_target,i);
+                            if (!cur_sa) break;
+                            cur_dc = getSequenceAnnotationSubComponent(cur_sa);
+                            if(!cur_dc) break;
+                            console()->message(QString::fromAscii(getDNAComponentURI(cur_dc)));
+                        }
+                }
+            else
+                {
+                    console()->message("No SA!");
+                }
+        }
+    if(isCollection(sbol_doc,target))
+        {
+            console()->message("Colelction!!");
+
+        }
+    console()->message("Working");
+}
+
 
 void SBOLTool::saveSBOLFile()
 {

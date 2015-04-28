@@ -10,7 +10,7 @@
 #ifndef SBOL_TYPES_HEADER
 #define SBOL_TYPES_HEADER
 
-#define SBOL_DEBUG_STATEMENTS ///< Set using CMake. Adds some print statements for debugging.
+/* #undef SBOL_DEBUG_STATEMENTS */
 
 // folder structure
 // set using CMake
