@@ -176,8 +176,10 @@ namespace Tinkercell
 		addAction(QIcon(), tr("SBOL Export"), tr("View the DNA sequence of selected items"));
     }
 
+
     void SBOLTool::itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles)
     {
+        mode = 0;
 		for (int i=0; i < handles.size(); ++i)
 		{
 			if (handles[i] && handles[i]->isA(tr("Part")) && !handles[i]->isA(tr("Empty")) && !handles[i]->tools.contains(this))
@@ -185,7 +187,124 @@ namespace Tinkercell
             if (handles[i] && handles[i]->isA(tr("SBOL")))
                 {
                     handles[i]->tools += this;
-                    console()->message("SBOL type");
+                    DNAComponent *cur_dc;
+                    std::string cur_uri = authority+"/"+NodeHandle::cast(handles[i])->name.toStdString();
+                    cur_dc = createDNAComponent(sbol_doc, (char*)cur_uri.c_str());
+                    setDNAComponentDisplayID(cur_dc,(char*)NodeHandle::cast(handles[i])->name.toStdString().c_str());
+                    console()->message(NodeHandle::cast(handles[i])->name);
+                    console()->message(QString::fromStdString(cur_uri));
+                    std::string cur_type = "";
+                    if (handles[i]->isA(tr("sbol_promoter")))
+                        {
+                            cur_type = "promoter";
+                            mode = SBOL_PROMOTER;
+                        }
+                    if (handles[i]->isA(tr("sbol_assembly-scar")))
+                        {
+                            cur_type = "assembly scar";
+                            mode = SBOL_ASSEMBLY_SCAR;
+                        }
+                    if (handles[i]->isA(tr("sbol_blunt-restriction-site")))
+                        {
+                            cur_type = "blunt restriction site";
+                            mode = SBOL_BLUNT_RESTRICTION_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_cds")))
+                        {
+                            cur_type = "cds";
+                            mode = SBOL_CDS;
+                        }
+                    if (handles[i]->isA(tr("sbol_five-prime-overhang")))
+                        {
+                            cur_type = "five prime overhang";
+                            mode = SBOL_FIVE_PRIME_OVERHANG;
+                        }
+                    if (handles[i]->isA(tr("sbol_five-prime-sticky-restriction-site")))
+                        {
+                            cur_type = "five prime sticky restriction site";
+                            mode = SBOL_FIVE_PRIME_STICKY_RESTRICTION_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_insulator")))
+                        {
+                            cur_type = "insulator";
+                            mode = SBOL_INSULATOR;
+                        }
+                    if (handles[i]->isA(tr("sbol_operator")))
+                        {
+                            cur_type = "operator";
+                            mode = SBOL_OPERATOR;
+                        }
+                    if (handles[i]->isA(tr("sbol_primer-binding-site")))
+                        {
+                            cur_type = "primer binding site";
+                            mode = SBOL_PRIMER_BINDING_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_origin-of-replication")))
+                        {
+                            cur_type = "origin of replication";
+                            mode = SBOL_ORIGIN_OF_REPLICATION;
+                        }
+                    if (handles[i]->isA(tr("sbol_protease-site")))
+                        {
+                            cur_type = "protease site";
+                            mode = SBOL_PROTEASE_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_protein-stability-element")))
+                        {
+                            cur_type = "protein stability element";
+                            mode = SBOL_PROTEIN_STABILITY_ELEMENT;
+                        }
+                    if (handles[i]->isA(tr("sbol_restriction-enzyme-recognition-site")))
+                        {
+                            cur_type = "restriction enzyme recognition site";
+                            mode = SBOL_RESTRICTION_ENZYME_RECOGNITION_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_ribonuclease-site")))
+                        {
+                            cur_type = "ribonuclease site";
+                            mode = SBOL_RIBONUCLEASE_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_ribosome-entry-site")))
+                        {
+                            cur_type = "ribosome entry site";
+                            mode = SBOL_RIBOSOME_ENTRY_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_rna-stability-element")))
+                        {
+                            cur_type = "rna stability element";
+                            mode = SBOL_RNA_STABILITY_ELEMENT;
+                        }
+                    if (handles[i]->isA(tr("sbol_signature")))
+                        {
+                            cur_type = "signature";
+                            mode = SBOL_SIGNATURE;
+                        }
+                    if (handles[i]->isA(tr("sbol_terminator")))
+                        {
+                            cur_type = "terminator";
+                            mode = SBOL_TERMINATOR;
+                        }
+                    if (handles[i]->isA(tr("sbol_three-prime-overhang")))
+                        {
+                            cur_type = "three prime overhang";
+                            mode = SBOL_THREE_PRIME_OVERHANG;
+                        }
+                    if (handles[i]->isA(tr("sbol_three-prime-sticky-restriction-site")))
+                        {
+                            cur_type = "three prime sticky restriction site";
+                            mode = SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE;
+                        }
+                    if (handles[i]->isA(tr("sbol_user-defined")))
+                        {
+                            cur_type = "user defined";
+                            mode = SBOL_USER_DEFINED;
+                        }
+
+                    if (mode != 0)
+                        {
+                            setDNAComponentType(cur_dc, r_glymps_map[cur_type].c_str());
+                            mode = 0;
+                        }
                 }
 		}
         return;
@@ -921,10 +1040,20 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 	if (!scene) return;
 
 	console()->message("Current Point");
+	ItemHandle *handle = 0;
 	for(int i=0; i<items.size(); i++)
         {
+            handle = getHandle(items[i]);
+            if(handle && handle->isA("SBOL"))
+                {
+                    console()->message("SBOL OBJECT!!");
+                    show();
+                }
             if(!NodeGraphicsItem::cast(items[i])) return;
-            if(!getDNAComponent(sbol_doc,NodeGraphicsItem::cast(items[i])->name.toAscii()))
+            NodeGraphicsItem *node = NodeGraphicsItem::cast(items[i]);
+            std::string cur_uri = authority+"/"+handle->name.toStdString();
+            console()->message(QString::fromStdString(cur_uri));
+            if(!getDNAComponent(sbol_doc,(char*)cur_uri.c_str()))
                 {
                     return;
                 }
@@ -937,12 +1066,15 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 	NodeGraphicsItem * node = 0;
 	for(int i=0; i<items.size(); i++)
         {
+            ItemHandle *handle = getHandle(items[i]);
             node = NodeGraphicsItem::cast(items[i]);
             if(node)
                 {
                     console()->message(node->name);
-                    std::string cur_uri = node->name.toStdString();
+                    std::string cur_uri = authority+"/"+ handle->name.toStdString();
+                    console()->message(QString::fromStdString(cur_uri));
                     DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
+
                     DC_uri->setText(QString::fromAscii(getDNAComponentURI(cur_dc)));
                     std::string cur_temp = getDNAComponentType(cur_dc);
                     console()->message(QString::fromStdString(cur_temp));
