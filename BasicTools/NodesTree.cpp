@@ -21,6 +21,8 @@
 #include "NetworkHandle.h"
 #include "UndoCommands.h"
 
+#include <fstream>
+
 namespace Tinkercell
 {
 	 QString NodesTree::themeDirectory("Bio1");
@@ -355,11 +357,24 @@ namespace Tinkercell
 
 			QListWidget * nodesListWidget = new QListWidget(mainWindow);
 
+            std::ofstream oup;
+            oup.open("temp.txt");
+
 			for (int j = 0; j < list.size(); ++j)
 			{
 				QFileInfo fileInfo = list.at(j);
-				if (fileInfo.completeSuffix().toLower() == tr("png") &&
-					QFile::exists(fileInfo.baseName() + tr(".xml")))
+				/*char* temp = new char[120];
+				temp = (char*)fileInfo.baseName().toStdString().c_str();
+				delete temp;*/
+				oup << "====" << std::endl;
+				oup << fileInfo.baseName().toStdString() << std::endl;
+				oup << fileInfo.completeSuffix().toLower().toStdString() << std::endl;
+				QString tempp = fileInfo.baseName()+tr(".xml");
+				oup << tempp.toStdString() << std::endl;
+				oup << QFile::exists(QCoreApplication::applicationDirPath()+ fileInfo.baseName() + tr(".xml")) << std::endl;
+				oup<< "=====" << std::endl;
+				if ((fileInfo.completeSuffix().toLower() == tr("png")) &&
+					(QFile::exists(QCoreApplication::applicationDirPath()+ fileInfo.baseName() + tr(".xml"))))
 				{
 					QListWidgetItem * item = new QListWidgetItem(QIcon(fileInfo.absoluteFilePath()),
 						fileInfo.baseName(),nodesListWidget);
@@ -369,6 +384,7 @@ namespace Tinkercell
 					nodesFilesList << item->data(3).toString();
 				}
 			}
+			oup.close();
 
 		  nodeSelectionDialog = new QDialog(this);
 		  nodeSelectionDialog->setSizeGripEnabled(true);

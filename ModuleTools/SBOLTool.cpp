@@ -437,6 +437,8 @@ namespace Tinkercell
 	bool SBOLTool::setMainWindow(MainWindow * main)
     {
 		Tool::setMainWindow(main);
+		console()->message(QCoreApplication::applicationDirPath());
+		console()->message(GlobalSettings::homeDir());
         if (mainWindow != 0)
         {
             cur_cnt++;
@@ -458,10 +460,10 @@ namespace Tinkercell
             connect(mainWindow,SIGNAL(keyPressed(GraphicsScene*,QKeyEvent *)),
 				this ,SLOT(keyPressed(GraphicsScene*,QKeyEvent *)));
 */
-            connect(this, SIGNAL(itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)),
+            /*connect(this, SIGNAL(itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)),
 					mainWindow,SIGNAL(itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)));
 			connect(mainWindow,SIGNAL(itemsDropped(GraphicsScene *, const QString&, QPointF)),
-				this,SLOT(itemsDropped(GraphicsScene *, const QString&, QPointF)));
+				this,SLOT(itemsDropped(GraphicsScene *, const QString&, QPointF)));*/
             connect(mainWindow,SIGNAL(mousePressed(GraphicsScene *, QPointF, Qt::MouseButton, Qt::KeyboardModifiers)),
 				this,SLOT(sceneClicked(GraphicsScene *, QPointF, Qt::MouseButton, Qt::KeyboardModifiers)));
             connect(mainWindow,
@@ -1067,7 +1069,6 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 	    console()->message(name);
 
 
-
 		scene->useDefaultBehavior(false);
 		show();
 		mode = 0;
@@ -1199,7 +1200,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
     void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
 	{
         show();
-	    QList<QGraphicsItem*> items;
+	    /*QList<QGraphicsItem*> items;
         items = scene->items();
         NodeGraphicsItem * image = 0;
         ItemHandle * globalHandle = 0;
@@ -1313,7 +1314,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 select(0);
             }
         else
-            {
+            {*/
                 hideSA();
                 hideDS();
                 //DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
@@ -1329,7 +1330,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 
                 addSA->hide();
                 addDS->hide();
-            }
+            //}
         //show();
         return;
     }
