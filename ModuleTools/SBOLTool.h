@@ -50,6 +50,7 @@
 #include <QSplashScreen>
 #include <QDialog>
 #include <string>
+#include <map>
 
 #include "GraphicsScene.h"
 #include "NodeGraphicsItem.h"
@@ -103,6 +104,7 @@ namespace Tinkercell
 
 
 	private slots:
+	    void select(int);
 	    void toolLoaded (Tool * tool);
 //		void mouseDoubleClicked (GraphicsScene * scene, QPointF point, QGraphicsItem *, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
 //		void keyPressed(GraphicsScene*,QKeyEvent *);
@@ -111,6 +113,8 @@ namespace Tinkercell
 		void sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
 		void itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers);
 		void nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& );
+		void itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles);
+
 		void saveSBOLFile();
 		void exportSBOL(QSemaphore*, const QString&);
         void loadNetwork(const QString& filename, bool * b);
@@ -170,11 +174,14 @@ namespace Tinkercell
         QPushButton * addDS;
         QPushButton * delSA;
         QPushButton * delDS;
+        NodeGraphicsItem item;
 
         std::string current_type;
 //        Document * sbol_doc;
         DNAComponent * head_dc;
-
+        void init_glymps();
+        std::map<std::string, std::string> glymps_map, r_glymps_map;
+        std::string type_temp;
 
 	};
 

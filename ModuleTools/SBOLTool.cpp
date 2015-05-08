@@ -67,8 +67,11 @@ static Document * sbol_doc;
 
 namespace Tinkercell
 {
-    SBOLTool::SBOLTool() : Tool(tr("SBOL Visual Tool"),tr("Module tools"))
+
+    SBOLTool::SBOLTool() : Tool(tr("SBOL Tool"),tr("Module tools"))
     {
+        type_temp = "http://purl.obolibrary.org/obo/";
+        init_glymps();
         setPalette(QPalette(QColor(255,255,255,255)));
         setAutoFillBackground(true);
 
@@ -157,6 +160,68 @@ namespace Tinkercell
         show();
         mode = 0;
 
+        QString appDir = QCoreApplication::applicationDirPath();
+		NodeGraphicsReader reader;
+		reader.readXml(&item,tr(":/images/DNATool.xml"));
+		item.setToolTip(tr("SBOL Export"));
+		setToolTip(tr("SBOL Export"));
+
+		item.normalize();
+		item.scale(35.0/item.sceneBoundingRect().width(),35.0/item.sceneBoundingRect().height());
+
+		ToolGraphicsItem * gitem = new ToolGraphicsItem(this);
+		addGraphicsItem(gitem);
+		gitem->addToGroup(&item);
+
+		addAction(QIcon(), tr("SBOL Export"), tr("View the DNA sequence of selected items"));
+    }
+
+    void SBOLTool::itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles)
+    {
+		for (int i=0; i < handles.size(); ++i)
+		{
+			if (handles[i] && handles[i]->isA(tr("Part")) && !handles[i]->isA(tr("Empty")) && !handles[i]->tools.contains(this))
+					handles[i]->tools += this;
+            if (handles[i] && handles[i]->isA(tr("SBOL")))
+                {
+                    handles[i]->tools += this;
+                    console()->message("SBOL type");
+                }
+		}
+        return;
+    }
+
+    void SBOLTool::init_glymps()
+    {
+        std::map<std::string,std::string> temp_glymps_map;
+        temp_glymps_map.clear();
+        temp_glymps_map["SO:0000167"] = "promoter";
+        temp_glymps_map["SO:0001953"] = "assembly scar";
+        temp_glymps_map["SO:0000057"] = "operator";
+        temp_glymps_map["SO:0000316"] = "cds";
+        temp_glymps_map["SO:0000139"] = "ribosome entry site";
+        temp_glymps_map["SO:0000141"] = "terminator";
+        temp_glymps_map["SO:0000627"] = "insulator";
+        temp_glymps_map["SBOL:0000008"] = "ribonuclease site";
+        temp_glymps_map["SO:0001957"] = "rna stability element";
+        temp_glymps_map["SO:0001956"] = "protease site";
+        temp_glymps_map["SO:0001955"] = "protein stability element";
+        temp_glymps_map["SO:0000296"] = "origin of replication";
+        temp_glymps_map["SO:0005850"] = "primer binding site";
+        temp_glymps_map["SO:0001687"] = "restriction enzyme recognition site";
+        temp_glymps_map["SO:0001691"] = "blunt restriction site";
+        temp_glymps_map["SBOL:0000016"] = "five prime sticky restriction site";
+        temp_glymps_map["SBOL:0000017"] = "three prime sticky restriction site";
+        temp_glymps_map["SO:0001933"] = "five prime overhang";
+        temp_glymps_map["SO:0001932"] = "three prime overhang";
+        temp_glymps_map["SBOL:0000020"] = "signature";
+        temp_glymps_map["SBOL:0000021"] = "user defined";
+
+        for(std::map<std::string,std::string>::iterator it = temp_glymps_map.begin(); it != temp_glymps_map.end(); ++it)
+            {
+                r_glymps_map[it->second] = type_temp+it->first;
+                glymps_map[type_temp+it->first] = it->second;
+            }
     }
 
     template<typename T>
@@ -364,6 +429,11 @@ namespace Tinkercell
         return;
     }
 
+    void SBOLTool::select(int)
+    {
+        console()->message("Export Selected!!");
+    }
+
 	bool SBOLTool::setMainWindow(MainWindow * main)
     {
 		Tool::setMainWindow(main);
@@ -401,20 +471,18 @@ namespace Tinkercell
 				);
             connect(mainWindow,SIGNAL(loadNetwork(const QString&, bool*)),this,SLOT(loadNetwork(const QString&, bool*)));
             connect(mainWindow,SIGNAL(saveNetwork(const QString&)),this,SLOT(saveNetwork(const QString&)));
-
-            //connect(mainWindow, SIGNAL(load))
-
-            //GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
-
-
 			connect(mainWindow,SIGNAL(toolLoaded(Tool*)),this,SLOT(toolLoaded(Tool*))); // for loading tool. Initialization
+            connect(mainWindow,SIGNAL(itemsInserted(NetworkHandle*,const QList<ItemHandle*>&)),
+						  this, SLOT(itemsInserted(NetworkHandle*,const QList<ItemHandle*>&)));
+
 
             sbol_doc = createDocument();
 
             std::string temp = authority+SSTR(cur_cnt);
             head_dc = createDNAComponent(sbol_doc, temp.c_str());
             head_dc = getDNAComponent(sbol_doc, temp.c_str());
-            setDNAComponentType(head_dc,"Main");
+            temp = type_temp+"SBOL:0000021";
+            setDNAComponentType(head_dc,temp.c_str());
 
 //Connecting Collision Detection
 		static bool ac1 = false;
@@ -514,8 +582,13 @@ void SBOLTool::importSBOLDocument()
     deleteDocument(sbol_doc);
     sbol_doc = createDocument();
     readDocument(sbol_doc, (char*)file.toStdString().c_str());
+
+    console()->message("File Read");
+    console()->message(QString::fromAscii(writeDocumentToString(sbol_doc)));
+
     head_dc = getNthDNAComponent(sbol_doc,0);
     renderSBOLDocument((SBOLObject*)head_dc);
+
 }
 void SBOLTool::renderSBOLDocument(SBOLObject* target)
 {
@@ -526,6 +599,10 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
             int n_sa = getNumSequenceAnnotationsFor(dc_target);
             if(n_sa != 0)
                 {
+                    int gap = 120;
+                    int x = (int)(currentScene()->width()/2.0)-((n_sa*gap)/2);
+                    int y = (int)(currentScene()->height()/2.0);
+
                     for(int i=0; i<n_sa; i++)
                         {
                             SequenceAnnotation *cur_sa;
@@ -535,6 +612,44 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
                             cur_dc = getSequenceAnnotationSubComponent(cur_sa);
                             if(!cur_dc) break;
                             console()->message(QString::fromAscii(getDNAComponentURI(cur_dc)));
+                            /*
+
+                            DRAW the cur_dc's
+                            for 1 DC ->
+
+                            */
+                            QString cur_type = QString::fromAscii(getDNAComponentType(cur_dc));
+
+                            console()->message(cur_type);
+
+                            QPointF *temp = new QPointF;
+                            temp->setX(x);
+                            temp->setY(y);
+
+                            /*if(it_s == std::string::npos)
+                                {
+                                    console()->message(tr("no item"));
+                                }
+                            else
+                                {
+                                    console()->message("BEFORE");
+                                    console()->message(QString::fromStdString(s_cur_type));
+                                    s_cur_type.replace(it_s, it_s+type_temp.size(), "");
+                                    console()->message(QString::fromStdString(s_cur_type));
+                                }
+*/                          std::map<std::string,std::string>::iterator it;
+                            it = glymps_map.find(cur_type.toStdString());
+                            if (it == glymps_map.end())
+                            {
+                                cur_type = tr("user defined");
+                            }
+                            else
+                                {
+                                    cur_type = QString::fromStdString(it->second);
+                                }
+                            itemsDropped(currentScene(), cur_type, *temp);
+                            delete temp;
+                            x = x+gap;
                         }
                 }
             else
@@ -544,10 +659,9 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
         }
     if(isCollection(sbol_doc,target))
         {
-            console()->message("Colelction!!");
+            console()->message("Collection!!");
 
         }
-    console()->message("Working");
 }
 
 
@@ -802,10 +916,18 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
         QLineEdit *DC_description;
         QLineEdit *DC_type;
 */
-    show();
 	if (!scene) return;
 
 	console()->message("Current Point");
+	for(int i=0; i<items.size(); i++)
+        {
+            if(!NodeGraphicsItem::cast(items[i])) return;
+            if(!getDNAComponent(sbol_doc,NodeGraphicsItem::cast(items[i])->name.toAscii()))
+                {
+                    return;
+                }
+        }
+    show();
 
     hideDS();
     hideSA();
@@ -820,11 +942,12 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                     std::string cur_uri = node->name.toStdString();
                     DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
                     DC_uri->setText(QString::fromAscii(getDNAComponentURI(cur_dc)));
-                    DC_type->setText(QString::fromAscii(getDNAComponentType(cur_dc)));
+                    std::string cur_temp = getDNAComponentType(cur_dc);
+                    console()->message(QString::fromStdString(cur_temp));
+                    DC_type->setText(QString::fromStdString(glymps_map[cur_temp]));
                     DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));
                     DC_name->setText(QString::fromAscii(getDNAComponentName(cur_dc)));
                     DC_description->setText(QString::fromAscii(getDNAComponentDescription(cur_dc)));
-
 
                     DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
                     if(!cur_ds)
@@ -835,7 +958,6 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                         {
                             showDS();
                         }
-
 
                     SequenceAnnotation * cur_sa = 0;
 
@@ -943,6 +1065,9 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 	{
 	    std::string cur_type = "";
 	    console()->message(name);
+
+
+
 		scene->useDefaultBehavior(false);
 		show();
 		mode = 0;
@@ -951,116 +1076,118 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 		temp = authority+SSTR(cur_cnt);
 		DNAComponent *cur_dc = createDNAComponent(sbol_doc, temp.c_str());
 		setDNAComponentURI(cur_dc, temp.c_str());
-		current_type = name.toStdString();
 
-		if (name.toLower() == tr("promoter"))
+
+
+
+		if (name.toLower() == tr("sbol_promoter"))
             {
                 cur_type = "promoter";
                 mode = SBOL_PROMOTER;
             }
-        if (name.toLower() == tr("assembly scar"))
+        if (name.toLower() == tr("sbol_assembly-scar"))
             {
                 cur_type = "assembly scar";
                 mode = SBOL_ASSEMBLY_SCAR;
             }
-        if (name.toLower() == tr("blunt restriction site"))
+        if (name.toLower() == tr("sbol_blunt-restriction-site"))
             {
                 cur_type = "blunt restriction site";
                 mode = SBOL_BLUNT_RESTRICTION_SITE;
             }
-        if (name.toLower() == tr("cds"))
+        if (name.toLower() == tr("sbol_cds"))
             {
                 cur_type = "cds";
                 mode = SBOL_CDS;
             }
-        if (name.toLower() == tr("five prime overhang"))
+        if (name.toLower() == tr("sbol_five-prime-overhang"))
             {
                 cur_type = "five prime overhang";
                 mode = SBOL_FIVE_PRIME_OVERHANG;
             }
-        if (name.toLower() == tr("five prime sticky restriction site"))
+        if (name.toLower() == tr("sbol_five-prime-sticky-restriction-site"))
             {
                 cur_type = "five prime sticky restriction site";
                 mode = SBOL_FIVE_PRIME_STICKY_RESTRICTION_SITE;
             }
-        if (name.toLower() == tr("insulator"))
+        if (name.toLower() == tr("sbol_insulator"))
             {
                 cur_type = "insulator";
                 mode = SBOL_INSULATOR;
             }
-        if (name.toLower() == tr("operator"))
+        if (name.toLower() == tr("sbol_operator"))
             {
                 cur_type = "operator";
                 mode = SBOL_OPERATOR;
             }
-        if (name.toLower() == tr("primer binding site"))
+        if (name.toLower() == tr("sbol_primer-binding-site"))
             {
                 cur_type = "primer binding site";
                 mode = SBOL_PRIMER_BINDING_SITE;
             }
-        if (name.toLower() == tr("origin of replication"))
+        if (name.toLower() == tr("sbol_origin-of-replication"))
             {
                 cur_type = "origin of replication";
                 mode = SBOL_ORIGIN_OF_REPLICATION;
             }
-        if (name.toLower() == tr("protease site"))
+        if (name.toLower() == tr("sbol_protease-site"))
             {
                 cur_type = "protease site";
                 mode = SBOL_PROTEASE_SITE;
             }
-        if (name.toLower() == tr("protein stability element"))
+        if (name.toLower() == tr("sbol_protein-stability-element"))
             {
                 cur_type = "protein stability element";
                 mode = SBOL_PROTEIN_STABILITY_ELEMENT;
             }
-        if (name.toLower() == tr("restriction enzyme recognition site"))
+        if (name.toLower() == tr("sbol_restriction-enzyme-recognition-site"))
             {
                 cur_type = "restriction enzyme recognition site";
                 mode = SBOL_RESTRICTION_ENZYME_RECOGNITION_SITE;
             }
-        if (name.toLower() == tr("ribonuclease site"))
+        if (name.toLower() == tr("sbol_ribonuclease-site"))
             {
                 cur_type = "ribonuclease site";
                 mode = SBOL_RIBONUCLEASE_SITE;
             }
-        if (name.toLower() == tr("ribosome entry site"))
+        if (name.toLower() == tr("sbol_ribosome-entry-site"))
             {
                 cur_type = "ribosome entry site";
                 mode = SBOL_RIBOSOME_ENTRY_SITE;
             }
-        if (name.toLower() == tr("rna stability element"))
+        if (name.toLower() == tr("sbol_rna-stability-element"))
             {
                 cur_type = "rna stability element";
                 mode = SBOL_RNA_STABILITY_ELEMENT;
             }
-        if (name.toLower() == tr("signature"))
+        if (name.toLower() == tr("sbol_signature"))
             {
                 cur_type = "signature";
                 mode = SBOL_SIGNATURE;
             }
-        if (name.toLower() == tr("terminator"))
+        if (name.toLower() == tr("sbol_terminator"))
             {
                 cur_type = "terminator";
                 mode = SBOL_TERMINATOR;
             }
-        if (name.toLower() == tr("three prime overhang"))
+        if (name.toLower() == tr("sbol_three-prime-overhang"))
             {
                 cur_type = "three prime overhang";
                 mode = SBOL_THREE_PRIME_OVERHANG;
             }
-        if (name.toLower() == tr("three prime sticky restriction site"))
+        if (name.toLower() == tr("sbol_three-prime-sticky-restriction-site"))
             {
                 cur_type = "three prime sticky restriction site";
                 mode = SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE;
             }
-        if (name.toLower() == tr("user defined"))
+        if (name.toLower() == tr("sbol_user-defined"))
             {
                 cur_type = "user defined";
                 mode = SBOL_USER_DEFINED;
             }
         if(mode != 0)
             {
-                setDNAComponentType(cur_dc, current_type.c_str());
+                setDNAComponentType(cur_dc, r_glymps_map[cur_type].c_str());
                 //setDNAComponentDisplayID(cur_dc, current_type.c_str());
                 sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
                 scene->useDefaultBehavior(true);
@@ -1211,7 +1338,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 	{
 		static bool connected1 = false;
 
-		if (mainWindow->tool(tr("Parts and Connections Catalog")) && !connected1)
+/*		if (mainWindow->tool(tr("Parts and Connections Catalog")) && !connected1)
 		{
 			Tool * tool = static_cast<Tool*>(mainWindow->tool(tr("Parts and Connections Catalog")));
 			catalogWidget = static_cast<CatalogWidget*>(tool);
@@ -1281,7 +1408,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                                                                                   << tr("User Defined")
                                                                     );
 			connected1 = true;
-		}
+		}*/
 	}
 /*
 	void WetLabTool::keyPressed(GraphicsScene* scene,QKeyEvent * keyEvent)

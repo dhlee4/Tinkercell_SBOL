@@ -180,14 +180,14 @@ namespace Tinkercell
 	void DNASequenceViewerTextEdit::keyPressEvent ( QKeyEvent * event )
 	{
 		int key = event->key();
-		if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space || 
+		if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space ||
 			 key == Qt::Key_Up || key == Qt::Key_Down || key == Qt::Key_Right || key == Qt::Key_Left ||
 			 key == Qt::Key_PageUp || key == Qt::Key_PageDown)
 		{
 			int i = currentNodeIndex();
 			QTextCursor cursor = textCursor();
 			QTextCharFormat currentFormat = cursor.charFormat();
-			
+
 			int k = cursor.position();
 			int start = k, len = 0;
 			while (cursor.charFormat().background().color() == currentFormat.background().color())
@@ -202,11 +202,11 @@ namespace Tinkercell
 					++len;
 					if (!cursor.movePosition(QTextCursor::Right)) break;
 			}
-			
+
 			QString text = toPlainText();
 			text = text.left(start + len);
 			text = text.right(len);
-			
+
 			if (i > -1)
 			{
 				emit clearLabels();
@@ -235,13 +235,13 @@ namespace Tinkercell
 
 		textEdit = new DNASequenceViewerTextEdit;
 		annotationsTable = new QTableWidget;
-		
+
 		connect(annotationsTable, SIGNAL(cellChanged(int,int)), this, SLOT(tableValueChanged(int,int)));
-		
+
 		layout->addWidget(textEdit,2);
 
 		QVBoxLayout * layout2 = new QVBoxLayout;
-		layout2->addWidget(annotationsTable);		
+		layout2->addWidget(annotationsTable);
 		annotationsGroup = new QGroupBox(" Sequence annotation ");
 		annotationsGroup->setLayout(layout2);
 
@@ -264,10 +264,10 @@ namespace Tinkercell
 		ToolGraphicsItem * gitem = new ToolGraphicsItem(this);
 		addGraphicsItem(gitem);
 		gitem->addToGroup(&item);
-		
+
 		addAction(QIcon(), tr("DNA sequence"), tr("View the DNA sequence of selected items"));
 	}
-	
+
 	bool DNASequenceViewer::setMainWindow(MainWindow* main)
 	{
 		Tool::setMainWindow(main);
@@ -286,7 +286,7 @@ namespace Tinkercell
 			dockWidget->setAttribute(Qt::WA_ContentsPropagated);
 			dockWidget->hide();
 			dockWidget->setFloating(true);
-			
+
 			if (mainWindow->tool(tr("Labeling Tool")))
 			{
 				LabelingTool * labelsTool = static_cast<LabelingTool*>(mainWindow->tool(tr("Labeling Tool")));
@@ -365,9 +365,9 @@ namespace Tinkercell
 								node = node2;
 						}
 				}
-				
+
 				if (!node) continue;
-				
+
 				handlesUp.clear();
 				AutoGeneRegulatoryTool::findAllParts(node,tr("Part"),handlesUp,true,QStringList());
 				if (!handlesUp.isEmpty())
@@ -387,7 +387,7 @@ namespace Tinkercell
 		{
 			AutoGeneRegulatoryTool::findAllParts(node,tr("Part"),handlesDown,false,QStringList());
 		}
-		
+
 		if (h && h->isA("Part") && !handlesDown.contains(h))
 			handlesDown.push_front(h);
 
@@ -429,11 +429,11 @@ namespace Tinkercell
 			connected = true;
 		}
 	}
-	
+
 	void DNASequenceViewer::updateAnnotationsTable(ItemHandle * h)
 	{
 		if (!annotationsTable || !annotationsGroup) return;
-		
+
 		disconnect(annotationsTable, SIGNAL(cellChanged(int,int)), this, SLOT(tableValueChanged(int,int)));
 		if (!h)
 		{
@@ -458,7 +458,7 @@ namespace Tinkercell
 			annotationsTable->clearContents();
 			annotationsTable->setRowCount(annotationsData.rows() + 1);
 			annotationsTable->setHorizontalHeaderLabels(QStringList() << "position" << "description");
-			
+
 			for (int i=0; i < annotationsData.rows(); ++i)
 			{
 				annotationsTable->setItem ( i, 0, new QTableWidgetItem( annotationsData(i,0) ) );
@@ -468,11 +468,11 @@ namespace Tinkercell
 
 		connect(annotationsTable, SIGNAL(cellChanged(int,int)), this, SLOT(tableValueChanged(int,int)));
 	}
-	
+
 	void DNASequenceViewer::tableValueChanged(int r, int c)
 	{
 		if (!annotationsTable || !currentHandle || !currentNetwork()) return;
-		
+
 		if (c == 0)
 		{
 			QString s = annotationsTable->item(r,c)->text();
@@ -493,9 +493,9 @@ namespace Tinkercell
 					col2 += s2;
 				}
 			}
-		
+
 		ItemHandle * h = currentHandle;
-		
+
 		TextDataTable annotationsData;
 		annotationsData.resize(col1.size(), annotationsTable->columnCount());
 		annotationsData.setColumnName(0,"position");
@@ -506,7 +506,7 @@ namespace Tinkercell
 			annotationsData(i,0) = col1[i];
 			annotationsData(i,1) = col2[i];
 		}
-	
+
 		if (annotationsData.rows() > 0)
 		{
 			currentNetwork()->changeData(h->name + tr(" sequence annotated"), h, tr("sequence annotation"), &annotationsData);

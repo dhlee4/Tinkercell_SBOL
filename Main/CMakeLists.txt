@@ -112,7 +112,7 @@ ENDIF (TINKERCELL_FOR_WIKIDUST)
 #-----------------------------------
 
 FILE(GLOB ONTOLOGY_RDF_FILES 
-#	${TINKERCELL_SOURCE_DIR}/NodesTree/*.xml
+	${TINKERCELL_SOURCE_DIR}/NodesTree/*.xml
 	${TINKERCELL_SOURCE_DIR}/BasicTools/*.txt
 	${TINKERCELL_SOURCE_DIR}/BasicTools/*.nt
 )
