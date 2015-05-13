@@ -79,15 +79,15 @@ namespace Tinkercell
 					name = words.first().left(1) + words.last().left(1);
 					name += tr("1");
 				}
-				
+
 				if (name.length() > 3)
 					name = name.left( 3 ) + tr("1");
-				
+
 				if (!name[0].isLetter())
 						name = tr("S") + name;
 			}
 
-			QList<NodeFamily*> allFamilies;		
+			QList<NodeFamily*> allFamilies;
 			allFamilies += family;
 			qreal xpos = point.x();
 			qreal height = 0.0;
@@ -114,7 +114,7 @@ namespace Tinkercell
 				if (!handle->name[0].isLetter())
 						handle->name = tr("S") + handle->name;
 				handle->name = scene->network->makeUnique(handle->name,usedNames);
-				
+
 				NodeGraphicsItem * image = 0;
 
 				for (int i=0; i < nodeFamily->graphicsItems.size(); ++i)
@@ -170,10 +170,12 @@ namespace Tinkercell
 	{
 		connectToNodesTree();
 	}
-	
+
 	void NodeInsertion::itemsDropped(GraphicsScene * scene, const QString& family, QPointF point)
 	{
-		if (mainWindow && scene->useDefaultBehavior() && !selectedNodeFamily && !family.isEmpty() && 
+	    console()->message("Current Family:");
+	    console()->message(family);
+		if (mainWindow && scene->useDefaultBehavior() && !selectedNodeFamily && !family.isEmpty() &&
 			nodesTree && nodesTree->getFamily(family))
 		{
 			selectedNodeFamily = nodesTree->getFamily(family);

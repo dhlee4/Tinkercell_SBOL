@@ -157,7 +157,6 @@ namespace Tinkercell
         delSA->hide();
         delDS->hide();
         setLayout(layout4);
-        show();
         mode = 0;
 
         QString appDir = QCoreApplication::applicationDirPath();
@@ -189,6 +188,16 @@ namespace Tinkercell
                     handles[i]->tools += this;
                     DNAComponent *cur_dc;
                     std::string cur_uri = authority+"/"+NodeHandle::cast(handles[i])->name.toStdString();
+                    if(sbol_doc == 0)
+                        {
+                            sbol_doc = createDocument();
+
+                            /*std::string temp = authority+SSTR(cur_cnt);
+                            head_dc = createDNAComponent(sbol_doc, temp.c_str());
+                            head_dc = getDNAComponent(sbol_doc, temp.c_str());
+                            temp = type_temp+"SBOL:0000021";
+                            setDNAComponentType(head_dc,temp.c_str());*/
+                        }
                     cur_dc = createDNAComponent(sbol_doc, (char*)cur_uri.c_str());
                     setDNAComponentDisplayID(cur_dc,(char*)NodeHandle::cast(handles[i])->name.toStdString().c_str());
                     console()->message(NodeHandle::cast(handles[i])->name);
@@ -305,6 +314,18 @@ namespace Tinkercell
                             setDNAComponentType(cur_dc, r_glymps_map[cur_type].c_str());
                             mode = 0;
                         }
+                    NodeHandle *node = NodeHandle::cast(handles[i]);
+                    if (handles[i]->isA(tr("SBOL")) && handles[i]->hasTextData(tr("Text Attributes")))
+                    {
+                        DataTable<QString> data(handles[i]->textDataTable(tr("Text Attributes")));
+                        std::string tempp = cur_uri+"_ds";
+                        if(data.hasRow(tr("sequence")))
+                            {
+                                DNASequence *cur_ds = createDNASequence(sbol_doc,(char*)tempp.c_str());
+                                setDNASequenceNucleotides(cur_ds, (char*)data.value(tr("sequence"),0).toStdString().c_str());
+                                setDNAComponentSequence(cur_dc,cur_ds);
+                            }
+                    }
                 }
 		}
         return;
@@ -550,7 +571,100 @@ namespace Tinkercell
 
     void SBOLTool::select(int)
     {
-        console()->message("Export Selected!!");
+        exportSBOL((QSemaphore*)0,tr(""));
+        /*
+        bool flag = false;
+        QList<QGraphicsItem*> sel_list = currentScene()->selected();
+        if(sel_list.size() == 0)
+            {
+                currentScene()->selectAll();
+            }
+        for(int i=0; i<sel_list.size(); i++)
+            {
+                ItemHandle *handle = getHandle(sel_list[i]);
+                if(!handle|| !handle->isA("Part"))
+                    {
+                        flag = true;
+                        break;
+                    }
+            }
+        if(flag)
+            {
+                QMessageBox::information(mainWindow,tr("SBOL export"), tr("some of selected item(s) is/are not compatible for SBOL export"));
+                return;
+            }
+
+        Document *exp_sbol_doc = createDocument();
+
+        for(int i=0; i<sel_list.size(); i++)
+            {
+                ItemHandle *handle = getHandle(sel_list[i]);
+                if(!handle->isA("SBOL"))
+                    {
+                        DNAComponent *cur_dc;
+                        DNASequence *cur_ds;
+                        std::string cur_type = "";
+                        std::string cur_desc = "";
+                        if(handle->isA("coding"))
+                            {
+                                cur_type = "cds";
+                            }
+                        else if(handle->isA("rbs"))
+                            {
+                                cur_type = "ribosome entry site";
+                            }
+                        else if(handle->isA("terminator"))
+                            {
+                                cur_type = "terminator";
+                            }
+                        else if(handle->isA("promoter"))
+                            {
+                                cur_type = "promoter";
+                            }
+                        else if(handle->isA("operator"))
+                            {
+                                cur_type = "operator";
+                                if(handle->isA("repressor binding site"))
+                                    {
+                                        cur_desc = "repressor binding site";
+                                    }
+                                else if(handle->isA("activator binding site"))
+                                    {
+                                        cur_desc = "activator binding site";
+
+                                    }
+                            }
+                        NodeHandle *cur_node = NodeHandle::cast(handle);
+                        std::string cur_uri = authority+"/"+cur_node->name.toStdString();
+                        cur_dc = createDNAComponent(exp_sbol_doc,(char*)cur_uri.c_str());
+                        setDNAComponentDisplayID(cur_dc, (char*)cur_node->name.toStdString().c_str());
+                        if(cur_type != "")
+                            {
+                                setDNAComponentType(cur_dc, (char*)r_glymps_map[cur_type].c_str());
+                            }
+                        if(cur_desc != "")
+                            {
+                                setDNAComponentDescription(cur_dc,cur_desc.c_str());
+                            }
+                        if (handle->hasTextData(tr("Text Attributes")))
+                        {
+                            DataTable<QString> data(handle->textDataTable(tr("Text Attributes")));
+                            std::string tempp = cur_uri+"_ds";
+                            if(data.hasRow(tr("sequence")))
+                                {
+                                    cur_ds = createDNASequence(exp_sbol_doc,(char*)tempp.c_str());
+                                    setDNASequenceNucleotides(cur_ds, (char*)data.value(tr("sequence"),0).toStdString().c_str());
+                                    setDNAComponentSequence(cur_dc,cur_ds);
+                                }
+                        }
+                    }
+            }
+
+        QString file = QFileDialog::getSaveFileName (this, tr("Save SBOL file"), homeDir());
+        if (file.isNull() || file.isEmpty()) return;
+        writeDocumentToFile(exp_sbol_doc,file.toAscii());
+        deleteDocument(exp_sbol_doc);*/
+
     }
 
 	bool SBOLTool::setMainWindow(MainWindow * main)
@@ -596,14 +710,8 @@ namespace Tinkercell
             connect(mainWindow,SIGNAL(itemsInserted(NetworkHandle*,const QList<ItemHandle*>&)),
 						  this, SLOT(itemsInserted(NetworkHandle*,const QList<ItemHandle*>&)));
 
-
-            sbol_doc = createDocument();
-
-            std::string temp = authority+SSTR(cur_cnt);
-            head_dc = createDNAComponent(sbol_doc, temp.c_str());
-            head_dc = getDNAComponent(sbol_doc, temp.c_str());
-            temp = type_temp+"SBOL:0000021";
-            setDNAComponentType(head_dc,temp.c_str());
+            sbol_doc = 0;
+            head_dc = 0;
 
 //Connecting Collision Detection
 		static bool ac1 = false;
@@ -706,18 +814,159 @@ void SBOLTool::importSBOLDocument()
 
     console()->message("File Read");
     console()->message(QString::fromAscii(writeDocumentToString(sbol_doc)));
+    console()->message(QString::fromStdString(SSTR(getNumDNAComponents(sbol_doc))));
+    int numDNAComponent = getNumDNAComponents(sbol_doc);
+    for(int i=0; i<numDNAComponent; i++)
+        {
+            DNAComponent *cur_dc = getNthDNAComponent(sbol_doc,i);
+            renderSBOLDocument((SBOLObject*)cur_dc);
+        }
 
-    head_dc = getNthDNAComponent(sbol_doc,0);
-    renderSBOLDocument((SBOLObject*)head_dc);
+    currentScene()->fitAll();
 
 }
 void SBOLTool::renderSBOLDocument(SBOLObject* target)
 {
+    GraphicsScene * scene = currentScene();
+    if(!scene || !mainWindow) return;
+    if(!mainWindow->tool(tr("Nodes Tree"))) return;
+
+    QWidget* treeWidget = mainWindow->tool(tr("Nodes Tree"));
+    NodesTree * nodesTree = static_cast<NodesTree*>(treeWidget);
+
+
+
     //Start to Render the target
     if(isDNAComponent(sbol_doc,target))
         {
+
+
+            QStringList usedNames;
+
+         //Define node
             DNAComponent *dc_target = (DNAComponent*) target;
-            int n_sa = getNumSequenceAnnotationsFor(dc_target);
+            std::string cur_type = getDNAComponentType(dc_target);
+            cur_type = "sbol_"+glymps_map[cur_type];
+            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return;
+            NodeFamily * nodeFamily = nodesTree->getFamily(QString::fromStdString(cur_type));
+
+            //setup handles
+
+
+            NodeHandle * hnode = new NodeHandle(nodeFamily);
+            hnode->name = QString::fromAscii(getDNAComponentDisplayID(dc_target));
+            hnode->type = NodeHandle::TYPE;
+
+
+
+
+
+            //setup graphicsItem
+
+            NodeGraphicsItem * node = 0, *image = 0;
+
+            for(int i=0; i<nodeFamily->graphicsItems.size(); ++i)
+                {
+                    image = (NodeGraphicsItem::topLevelNodeItem(nodeFamily->graphicsItems[i]));
+                    if (image)
+                        {
+                            node = image->clone();
+                        }
+                }
+
+            node->className = tr("NodeGraphicsItem");
+
+            setHandle(node,hnode);
+
+            QString s;
+            QTransform t;
+            QPointF p(0,0);
+            qreal z;
+            //NodeGraphicsItem * node = readNode(nodeReader,s,t,p,z,sn);
+
+            int sceneNumber= 0;
+            z = 0.0;
+//work on
+
+            if (node)
+            {
+                //t.setMatrix(2.0, 0.0, 0.0, 0.0 ,2.0, 0.0, 0.0, 0.0, 1.0);
+                t.scale(10.0, 10.0);
+                node->refresh();
+                //node->setPos(p);
+            }
+
+            //node->setTransform(t);
+            //node->boundingRect().
+            node->setPos(p);
+            node->scale(300.0, 300.0);
+            node->setZValue(z);
+
+            QList<QGraphicsItem*> items;
+
+            items << node;
+
+            TextGraphicsItem *text = new TextGraphicsItem;
+            setHandle(text, hnode);
+
+            t.setMatrix(1.0, 0.0, 0.0, 0.0 ,1.0, 0.0, 0.0, 0.0, 1.0);
+
+            QFont cur_font;
+            cur_font.setFamily(tr("MS Shell Dlg 2"));
+            cur_font.setPointSize(22);
+
+            text->setPlainText(QString::fromAscii(getDNAComponentDisplayID(dc_target)));
+            text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom()+text->boundingRect().height());
+            text->setZValue(z+1);
+            text->setFont(cur_font);
+
+            items << text;
+
+
+//add nodes. see the command works or not
+
+            //Do it later. Might find ways to use undos
+            QList<QUndoCommand*> commands;
+
+
+			commands << new InsertGraphicsCommand(tr("insert"),scene,items);
+
+			//scene->insert(tr("import SBOL"),items);
+
+			QUndoCommand * command = new CompositeCommand(tr("load"), commands);
+			command->redo();
+			//scene->network->updateSymbolsTable();
+
+			/*loadCommands << command;
+*/
+			//savedNetworks[scene->network] = true;
+			//From loadSaveTool
+			/*
+
+
+            for(int i=0; i<nodeFamily->graphicsItems.size(); ++i)
+                {
+                    image = (NodeGraphicsItem::topLevelNodeItem(nodeFamily->graphicsItems[i]));
+                    if (image)
+                        {
+                            image = image->clone();
+                            image->scale(image->defaultSize.width()/image->sceneBoundingRect().width(),
+                                         image->defaultSize.height()/image->sceneBoundingRect().height());
+                            qreal w = image->sceneBoundingRect().width();
+                            image->setPos(x,y);
+                            image->setBoundingBoxVisible(false);
+                            if(image->isValid())
+                                {
+                                    x+= w;
+                                    setHandle(image,node);
+                                }
+                        }
+                }
+                */
+
+
+
+            /*int n_sa = getNumSequenceAnnotationsFor(dc_target);
             if(n_sa != 0)
                 {
                     int gap = 120;
@@ -733,19 +982,14 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
                             cur_dc = getSequenceAnnotationSubComponent(cur_sa);
                             if(!cur_dc) break;
                             console()->message(QString::fromAscii(getDNAComponentURI(cur_dc)));
-                            /*
 
-                            DRAW the cur_dc's
-                            for 1 DC ->
-
-                            */
                             QString cur_type = QString::fromAscii(getDNAComponentType(cur_dc));
 
                             console()->message(cur_type);
 
                             QPointF *temp = new QPointF;
                             temp->setX(x);
-                            temp->setY(y);
+                            temp->setY(y);*/
 
                             /*if(it_s == std::string::npos)
                                 {
@@ -758,7 +1002,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
                                     s_cur_type.replace(it_s, it_s+type_temp.size(), "");
                                     console()->message(QString::fromStdString(s_cur_type));
                                 }
-*/                          std::map<std::string,std::string>::iterator it;
+                          std::map<std::string,std::string>::iterator it;
                             it = glymps_map.find(cur_type.toStdString());
                             if (it == glymps_map.end())
                             {
@@ -776,35 +1020,118 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
             else
                 {
                     console()->message("No SA!");
-                }
+                }*/
         }
+        /*
     if(isCollection(sbol_doc,target))
         {
             console()->message("Collection!!");
 
-        }
+        }*/
 }
 
 
 void SBOLTool::saveSBOLFile()
 {
-    QString file = QFileDialog::getSaveFileName (this, tr("Save SBOL file"), homeDir());
-    if (file.isNull() || file.isEmpty()) return;
-
-    exportSBOL(0, file);
-    QDesktopServices::openUrl(QUrl(file));
+    exportSBOL((QSemaphore*)0, tr(""));
+//    QDesktopServices::openUrl(QUrl(file));
     return;
 }
 
-void SBOLTool::exportSBOL(QSemaphore* sem, const QString &file)
+void SBOLTool::exportSBOL(QSemaphore* sem, QString file)
 {
-    console()->message(writeDocumentToString(sbol_doc));
-    NetworkHandle * network = currentNetwork();
-    if (network)
+    bool flag = false;
+    QList<QGraphicsItem*> sel_list = currentScene()->selected();
+    if(sel_list.size() == 0)
         {
-            network->globalHandle()->textData("sbol") = QString::fromAscii(writeDocumentToString(sbol_doc));
+            currentScene()->selectAll();
+            sel_list = currentScene()->selected();
         }
-    writeDocumentToFile(sbol_doc,file.toAscii());
+    for(int i=0; i<sel_list.size(); i++)
+        {
+            ItemHandle *handle = getHandle(sel_list[i]);
+            if(!handle|| (!handle->isA("Part") && !handle->isA("SBOL")))
+                {
+                    flag = true;
+                    break;
+                }
+        }
+    if(flag)
+        {
+            QMessageBox::information(mainWindow,tr("SBOL export"), tr("some of selected item(s) is/are not compatible for SBOL export"));
+            return;
+        }
+
+    Document *exp_sbol_doc = createDocument();
+
+    for(int i=0; i<sel_list.size(); i++)
+        {
+            ItemHandle *handle = getHandle(sel_list[i]);
+            if(!handle->isA("SBOL"))
+                {
+                    DNAComponent *cur_dc;
+                    DNASequence *cur_ds;
+                    std::string cur_type = "";
+                    std::string cur_desc = "";
+                    if(handle->isA("coding"))
+                        {
+                            cur_type = "cds";
+                        }
+                    else if(handle->isA("rbs"))
+                        {
+                            cur_type = "ribosome entry site";
+                        }
+                    else if(handle->isA("terminator"))
+                        {
+                            cur_type = "terminator";
+                        }
+                    else if(handle->isA("promoter"))
+                        {
+                            cur_type = "promoter";
+                        }
+                    else if(handle->isA("operator"))
+                        {
+                            cur_type = "operator";
+                            if(handle->isA("repressor binding site"))
+                                {
+                                    cur_desc = "repressor binding site";
+                                }
+                            else if(handle->isA("activator binding site"))
+                                {
+                                    cur_desc = "activator binding site";
+
+                                }
+                        }
+                    NodeHandle *cur_node = NodeHandle::cast(handle);
+                    std::string cur_uri = authority+"/"+cur_node->name.toStdString();
+                    cur_dc = createDNAComponent(exp_sbol_doc,(char*)cur_uri.c_str());
+                    setDNAComponentDisplayID(cur_dc, (char*)cur_node->name.toStdString().c_str());
+                    if(cur_type != "")
+                        {
+                            setDNAComponentType(cur_dc, (char*)r_glymps_map[cur_type].c_str());
+                        }
+                    if(cur_desc != "")
+                        {
+                            setDNAComponentDescription(cur_dc,cur_desc.c_str());
+                        }
+                    if (handle->hasTextData(tr("Text Attributes")))
+                    {
+                        DataTable<QString> data(handle->textDataTable(tr("Text Attributes")));
+                        std::string tempp = cur_uri+"_ds";
+                        if(data.hasRow(tr("sequence")))
+                            {
+                                cur_ds = createDNASequence(exp_sbol_doc,(char*)tempp.c_str());
+                                setDNASequenceNucleotides(cur_ds, (char*)data.value(tr("sequence"),0).toStdString().c_str());
+                                setDNAComponentSequence(cur_dc,cur_ds);
+                            }
+                    }
+                }
+        }
+
+    QString ffile = QFileDialog::getSaveFileName (this, tr("Save SBOL file"), homeDir());
+    if (ffile.isNull() || ffile.isEmpty()) return;
+    writeDocumentToFile(exp_sbol_doc,ffile.toAscii());
+    deleteDocument(exp_sbol_doc);
     return;
 }
 
@@ -1016,6 +1343,7 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
 
 	void SBOLTool::saveNetwork(const QString& filename)
 	{
+	    if(!sbol_doc) return;
 	    console()->message("save started");
 	    NetworkHandle * network = currentNetwork();
 		if (!network || filename.isEmpty()) return;
@@ -1039,7 +1367,6 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 */
 	if (!scene) return;
 
-	console()->message("Current Point");
 	ItemHandle *handle = 0;
 	for(int i=0; i<items.size(); i++)
         {
@@ -1058,7 +1385,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                     return;
                 }
         }
-    show();
+    if(items.size() ==0) return;
 
     hideDS();
     hideSA();
@@ -1093,27 +1420,34 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                             showDS();
                         }
 
-                    SequenceAnnotation * cur_sa = 0;
-
-                    for(int i=0; i<getNumSequenceAnnotationsFor(head_dc); i++)
+                    if(head_dc)
                         {
-                            SequenceAnnotation * temp_sa;
-                            temp_sa = getNthSequenceAnnotationFor(head_dc,i);
-                            if(getSequenceAnnotationSubComponent(temp_sa) == cur_dc)
+                            SequenceAnnotation * cur_sa = 0;
+
+                            for(int i=0; i<getNumSequenceAnnotationsFor(head_dc); i++)
                                 {
-                                    cur_sa = temp_sa;
-                                    break;
+                                    SequenceAnnotation * temp_sa;
+                                    temp_sa = getNthSequenceAnnotationFor(head_dc,i);
+                                    if(getSequenceAnnotationSubComponent(temp_sa) == cur_dc)
+                                        {
+                                            cur_sa = temp_sa;
+                                            break;
+                                        }
+                                }
+
+                            if(!cur_sa)
+                                {
+                                    hideSA();
+                                }
+                            else
+                                {
+                                    showSA();
                                 }
                         }
-
-                    if(!cur_sa)
-                        {
-                            hideSA();
-                        }
-                    else
-                        {
-                            showSA();
-                        }
+                        else
+                            {
+                                hideSA();
+                            }
                     /*console()->message(QString::fromAscii(getDNAComponentURI(cur_dc)));
                     console()->message(QString::fromAscii(getDNAComponentDisplayID(cur_dc)));*/
                 }
@@ -1197,12 +1531,11 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)
 	{
-	    std::string cur_type = "";
+	/*    std::string cur_type = "";
 	    console()->message(name);
 
 
 		scene->useDefaultBehavior(false);
-		show();
 		mode = 0;
 		cur_cnt++;
 		std::string temp;
@@ -1324,14 +1657,14 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 //setDNAComponentDisplayID(cur_dc, current_type.c_str());
                 sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
                 scene->useDefaultBehavior(true);
-            }
+            }*/
 		//smode = none;
 		//setDNAComponentType(cur_dc, )
 	}
 //GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
     void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
 	{
-        show();
+	    hide();
 	    /*QList<QGraphicsItem*> items;
         items = scene->items();
         NodeGraphicsItem * image = 0;
@@ -1447,11 +1780,11 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
             }
         else
             {*/
-                hideSA();
+                /*hideSA();
                 hideDS();
-                //DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
-                //DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
                 DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
+                DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));*/
+                /*DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
                 DC_type->setText(QString::fromAscii(getDNAComponentType(head_dc)));
                 DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
                 DC_name->setText(QString::fromAscii(getDNAComponentName(head_dc)));
@@ -1461,7 +1794,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 console()->message(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
 
                 addSA->hide();
-                addDS->hide();
+                addDS->hide();*/
             //}
         //show();
         return;

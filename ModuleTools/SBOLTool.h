@@ -116,7 +116,7 @@ namespace Tinkercell
 		void itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles);
 
 		void saveSBOLFile();
-		void exportSBOL(QSemaphore*, const QString&);
+		void exportSBOL(QSemaphore*, QString);
         void loadNetwork(const QString& filename, bool * b);
         void saveNetwork(const QString& filename);
         void saveItems(NetworkHandle*, const QString& filename);
