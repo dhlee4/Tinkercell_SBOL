@@ -27,9 +27,11 @@
 #include "TreeButton.h"
 #include "SBOLTool.h"
 #include "GlobalSettings.h"
+#include "BasicGraphicsToolbar.h"
 #include <sstream>
 #include <functional>
 #include <fstream>
+#include <map>
 
 #define SBOL_PROMOTER 101
 #define SBOL_ASSEMBLY_SCAR 102
@@ -139,10 +141,14 @@ namespace Tinkercell
         layout4->addWidget(delDS = new QPushButton("Delete DNASequence", this));
         layout4->addWidget(addSA = new QPushButton("Add SequenceAnnotation", this));
         layout4->addWidget(delSA = new QPushButton("Delete SequenceAnnotation", this));
+        layout4->addWidget(levelup = new QPushButton("Level above", this));
+        layout4->addWidget(leveldown = new QPushButton("Level below", this));
         connect(addSA, SIGNAL(pressed()), this, SLOT(showSA()));
         connect(addDS, SIGNAL(pressed()), this, SLOT(showDS()));
         connect(delSA, SIGNAL(pressed()), this, SLOT(hideSA()));
         connect(delDS, SIGNAL(pressed()), this, SLOT(hideDS()));
+        connect(levelup, SIGNAL(pressed()), this, SLOT(level_up()));
+        connect(leveldown, SIGNAL(pressed()), this, SLOT(level_down()));
 
         //for DNAComponent
 
@@ -158,6 +164,11 @@ namespace Tinkercell
         connect(SA_bioStart,SIGNAL(editingFinished()),this,SLOT(sa_bioStartChanged()));
         connect(SA_bioEnd,SIGNAL(editingFinished()),this,SLOT(sa_bioEndChanged()));
         connect(SA_strand,SIGNAL(editingFinished()),this,SLOT(sa_strandChanged()));
+
+        //connect(CO_uri,SIGNAL(editingFinished()), this, SLOT(co_uriChanged()));
+        connect(CO_displayId,SIGNAL(editingFinished()), this, SLOT(co_displayidChanged()));
+        connect(CO_name,SIGNAL(editingFinished()), this, SLOT(co_nameChanged()));
+        connect(CO_description,SIGNAL(editingFinished()), this, SLOT(co_descriptionChanged()));
 
         /*
         void sa_uriChanged();
@@ -188,6 +199,84 @@ namespace Tinkercell
 		gitem->addToGroup(&item);
 
 		addAction(QIcon(), tr("SBOL Export"), tr("View the DNA sequence of selected items"));
+    }
+
+    void SBOLTool::level_down()
+    {
+        GraphicsScene * scene = currentScene();
+        QList<ItemHandle*> handles = getHandle(scene->selected());
+        if(handles.size() != 1)
+            {
+                QMessageBox::information(mainWindow,tr("error"), tr("only one item"));
+                return;
+            }
+        ItemHandle* cur_handle = handles[0];
+        std::string cur_uri = authority+"/"+ cur_handle->name.toStdString();
+        DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
+        DNASequence *cur_ds = getDNASequence(sbol_doc,(char*)cur_handle->name.toStdString().c_str());
+        if(!cur_ds)
+            {
+                std::string temp_uri;
+                temp_uri = cur_uri+"_ds";
+                cur_ds = getDNASequence(sbol_doc,(char*)temp_uri.c_str());
+            }
+        Collection *cur_co = getCollection(sbol_doc, cur_uri.c_str());
+        if(!cur_co)
+            {
+                std::string temp_uri;
+                temp_uri = cur_uri+"_co";
+                cur_co = getCollection(sbol_doc, (char*)temp_uri.c_str());
+            }
+
+        scene->selectAll();
+        QList<QGraphicsItem*> sel_list = scene->selected();
+        QList<QGraphicsItem*> sbol_list;
+
+        for(int i=0; i<sel_list.size(); i++)
+            {
+                ItemHandle *handle = getHandle(sel_list[i]);
+                if(handle->isA(tr("sbol")))
+                    {
+                        sbol_list.append(sel_list[i]);
+                    }
+            }
+
+        if(cur_dc)
+            {
+                for(int i=0; i<sbol_list.size(); i++)
+                    {
+                        sbol_list[i]->hide();
+                    }
+                int cnt = getNumSequenceAnnotationsFor(cur_dc);
+                QMessageBox::information(mainWindow,tr("subcomponent number"),QString::fromStdString(SSTR(cnt)));
+                DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
+                renderSBOLDocument((SBOLObject*)cur_ds);
+                for(int i=0; i<cnt; i++)
+                    {
+                        SequenceAnnotation *cur_sa = getNthSequenceAnnotationFor(cur_dc,i);
+                        DNAComponent* comp_dc = getSequenceAnnotationSubComponent(cur_sa);
+                        renderSBOLDocument((SBOLObject*) comp_dc);
+                    }
+            }
+        else if(cur_ds)
+            {
+                QMessageBox::information(mainWindow,tr("Error"),tr("DNA Sequence don't have subcomponent"));
+            }
+        else if(cur_co)
+            {
+                for(int i=0; i<sbol_list.size(); i++)
+                    {
+                        sbol_list[i]->hide();
+                    }
+                int cnt = getNumDNAComponentsIn(cur_co);
+                QMessageBox::information(mainWindow,tr("component number"),QString::fromStdString(SSTR(cnt)));
+            }
+
+    }
+    void SBOLTool::level_up()
+    {
+        QMessageBox::information(mainWindow,tr("up"), tr("up"));
+
     }
 
     void SBOLTool::itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles)
@@ -406,6 +495,62 @@ namespace Tinkercell
                 glymps_map[type_temp+it->first] = it->second;
             }
     }
+/*
+        std::string cur_uri = authority+"/"+ cur_handle->name.toStdString();
+        DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
+        DNASequence *cur_ds = getDNASequence(sbol_doc,(char*)cur_handle->name.toStdString().c_str());
+        if(!cur_ds)
+            {
+                std::string temp_uri;
+                temp_uri = cur_uri+"_ds";
+                cur_ds = getDNASequence(sbol_doc,(char*)temp_uri.c_str());
+            }
+        Collection *cur_co = getCollection(sbol_doc, cur_uri.c_str());
+        if(!cur_co)
+            {
+                std::string temp_uri;
+                temp_uri = cur_uri+"_co";
+                cur_co = getCollection(sbol_doc, (char*)temp_uri.c_str());
+            }
+*/
+    template<typename T>
+    void SBOLTool::co_str_item_changed(T call_function, QLineEdit* cur_item)
+    {
+        Collection *cur_co;
+
+        GraphicsScene * scene = currentScene();
+        if (!scene || scene->selected().size() != 1)
+            {
+
+                if (cur_co = getCollection(sbol_doc, CO_uri->text().toAscii()))
+                    {
+                        (call_function)(cur_co, cur_item->text().toAscii());
+                    }
+                return;
+            }
+
+        QGraphicsItem * selectedItem = scene->selected()[0];
+
+        if(!selectedItem) return;
+
+
+        NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+        ItemHandle* hcur_node = getHandle(cur_node);
+
+        std::string cur_uri = authority+"/"+ hcur_node->name.toStdString();
+
+        cur_co = getCollection(sbol_doc, cur_uri.c_str());
+        if(!cur_co)
+            {
+                std::string temp_uri;
+                temp_uri = cur_uri+"_co";
+                cur_co = getCollection(sbol_doc, (char*)temp_uri.c_str());
+            }
+        if(cur_co)
+            {
+                (call_function)(cur_co, cur_item->text().toAscii());
+            }
+    }
 
     template<typename T>
     void SBOLTool::dc_str_item_changed(T call_function, QLineEdit* cur_item)
@@ -426,17 +571,22 @@ namespace Tinkercell
 
         if(!selectedItem) return;
 
-
         NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+        ItemHandle* hcur_node = getHandle(cur_node);
 
-        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        std::string cur_uri = authority+"/"+ hcur_node->name.toStdString();
+        cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
 
-        (call_function)(cur_dc, cur_item->text().toAscii());
-        if(call_function == &setDNAComponentURI)
+
+        if(cur_dc)
             {
-                cur_node->name = DC_uri->text();
+                (call_function)(cur_dc, cur_item->text().toAscii());
             }
+
+
     }
+
+
 
     template<typename T>
     void SBOLTool::ds_str_item_changed(T call_function, QLineEdit* cur_item)
@@ -450,13 +600,28 @@ namespace Tinkercell
         if(!selectedItem) return;
 
         NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+        ItemHandle* hcur_node = getHandle(cur_node);
 
-        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        cur_dc= getDNAComponent(sbol_doc, hcur_node->name.toAscii());
         DNASequence *cur_ds;
 
         if(cur_ds = getDNAComponentSequence(cur_dc))
         {
             (call_function)(cur_ds, cur_item->text().toAscii());
+        }
+        else if(cur_ds = getDNASequence(sbol_doc,(char*)hcur_node->name.toStdString().c_str()))
+        {
+            (call_function)(cur_ds, cur_item->text().toAscii());
+        }
+        else
+        {
+            std::string temp_uri;
+            temp_uri = authority+"/"+ hcur_node->name.toStdString()+"_ds";
+            cur_ds = getDNASequence(sbol_doc,(char*)temp_uri.c_str());
+            if(cur_ds)
+                {
+                    (call_function)(cur_ds, cur_item->text().toAscii());
+                }
         }
     }
 
@@ -472,8 +637,11 @@ namespace Tinkercell
         if(!selectedItem) return;
 
         NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+        ItemHandle* hcur_node = getHandle(cur_node);
 
-        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        std::string cur_uri = authority+"/"+ hcur_node->name.toStdString();
+        cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
+
         SequenceAnnotation *cur_sa;
 
         if(cur_sa = getSequenceAnnotation(sbol_doc,SA_uri->text().toAscii()))
@@ -494,8 +662,12 @@ namespace Tinkercell
         if(!selectedItem) return;
 
         NodeGraphicsItem *cur_node = NodeGraphicsItem::cast(selectedItem);
+        ItemHandle* hcur_node = getHandle(cur_node);
 
-        cur_dc= getDNAComponent(sbol_doc, cur_node->name.toAscii());
+        std::string cur_uri = authority+"/"+ hcur_node->name.toStdString();
+        cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
+
+        cur_dc= getDNAComponent(sbol_doc, hcur_node->name.toAscii());
         SequenceAnnotation *cur_sa;
 
         if(cur_sa = getSequenceAnnotation(sbol_doc,SA_uri->text().toAscii()))
@@ -503,6 +675,12 @@ namespace Tinkercell
             (call_function)(cur_sa, cur_item->text().toInt());
         }
     }
+
+    //void SBOLTool::co_uriChanged(){co_str_item_changed(&setCollectionURI, CO_uri);}
+    void SBOLTool::co_displayidChanged(){co_str_item_changed(&setCollectionDisplayID, CO_displayId);}
+    void SBOLTool::co_nameChanged(){
+        co_str_item_changed(&setCollectionName, CO_name);}
+    void SBOLTool::co_descriptionChanged(){co_str_item_changed(&setCollectionDescription,CO_description);}
 
     void SBOLTool::dc_uriChanged(){dc_str_item_changed(&setDNAComponentURI, DC_uri);}
     void SBOLTool::dc_displayidChanged(){dc_str_item_changed(&setDNAComponentDisplayID, DC_displayId);}
@@ -743,10 +921,10 @@ namespace Tinkercell
 						 this, SLOT(itemsAboutToBeInserted(GraphicsScene* , QList<QGraphicsItem *>&, QList<ItemHandle*>&, QList<QUndoCommand*>&)));
 			connect(mainWindow,SIGNAL(mouseDoubleClicked(GraphicsScene*, QPointF, QGraphicsItem*, Qt::MouseButton, Qt::KeyboardModifiers)),
                     this,SLOT(mouseDoubleClicked(GraphicsScene*, QPointF, QGraphicsItem*, Qt::MouseButton, Qt::KeyboardModifiers)));
-
-            connect(mainWindow,SIGNAL(keyPressed(GraphicsScene*,QKeyEvent *)),
-				this ,SLOT(keyPressed(GraphicsScene*,QKeyEvent *)));
 */
+            //connect(mainWindow,SIGNAL(keyPressed(GraphicsScene*,QKeyEvent *)),
+				//this ,SLOT(keyPressed(GraphicsScene*,QKeyEvent *)));
+
             /*connect(this, SIGNAL(itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)),
 					mainWindow,SIGNAL(3(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)));
 			connect(mainWindow,SIGNAL(itemsDropped(GraphicsScene *, const QString&, QPointF)),
@@ -774,18 +952,24 @@ namespace Tinkercell
             importing = false;
 
 //Connecting Collision Detection
-		static bool ac1 = false;
-		if (!ac1 && mainWindow->tool(tr("Collision Detection")))
+
+		if (mainWindow->tool(tr("Collision Detection")))
 		{
 			QWidget * widget = mainWindow->tool(tr("Collision Detection"));
 			CollisionDetection * collisionDetection = static_cast<CollisionDetection*>(widget);
 			if (collisionDetection)
 			{
-				ac1 = true;
 				connect(collisionDetection,SIGNAL(nodeCollided(const QList<QGraphicsItem*>& , NodeGraphicsItem * , const QList<QPointF>&)),
 						this, SLOT( nodeCollided(const QList<QGraphicsItem*>& , NodeGraphicsItem * , const QList<QPointF>& )));
 			}
 		}
+
+        QWidget * widget = mainWindow->tool(tr("Basic Graphics Toolbox"));
+        BasicGraphicsToolbar * basicToolBox = static_cast<BasicGraphicsToolbar*>(widget);
+        if (basicToolBox)
+        {
+            connect(this,SIGNAL(alignCompactHorizontal()),basicToolBox, SLOT(alignCompactHorizontal()));
+        }
 
 
 
@@ -862,6 +1046,78 @@ namespace Tinkercell
     }
 
 
+	void SBOLTool::nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& )
+	{
+//		if (!autoAlignEnabled) return;
+
+		GraphicsScene * scene = currentScene();
+		if (!scene || !item || items.isEmpty()) return;
+
+		ItemHandle * handle = item->handle();
+
+		QList<QGraphicsItem*> select;
+
+		QGraphicsItem * SBOLItem = 0;
+
+		if ((handle = getHandle(item)) && handle->isA("SBOL"))
+		{
+			SBOLItem = item;
+			select << SBOLItem;
+		}
+		else
+			for (int i=0; i < items.size(); ++i)
+				if (NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("SBOL"))
+				{
+					SBOLItem = items[i];
+					select << SBOLItem;
+					break;
+				}
+
+		if (SBOLItem)
+		{
+			QGraphicsItem * itemLeft = SBOLItem, * itemRight = SBOLItem;
+			ItemHandle * h = getHandle(SBOLItem);
+			while (itemLeft)
+			{
+				QRectF p1(itemLeft->sceneBoundingRect());
+				p1.adjust(-10.0,0,-10.0,0.0);
+				QList<QGraphicsItem*> items = scene->items(p1);
+				itemLeft = 0;
+				for (int i=0; i < items.size(); ++i)
+					if (!select.contains(items[i]) && NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("SBOL"))
+					{
+						itemLeft = items[i];
+						select << itemLeft;
+						break;
+					}
+			}
+			while (itemRight)
+			{
+				QRectF p2(itemRight->sceneBoundingRect());
+				p2.adjust(10.0,0,10.0,0.0);
+				QList<QGraphicsItem*> items = scene->items(p2);
+				itemRight = 0;
+				for (int i=0; i < items.size(); ++i)
+					if (!select.contains(items[i]) && NodeGraphicsItem::cast(items[i]) && (handle = getHandle(items[i])) && handle->isA("SBOL"))
+					{
+						itemRight = items[i];
+						select << itemRight;
+						break;
+					}
+			}
+
+			if (select.isEmpty()) return;
+
+			scene->selected() = select;
+			scene->select(0);
+
+//	    	autoAlignEnabled = false;
+			emit alignCompactHorizontal();
+//			autoAlignEnabled = true;
+		}
+	}
+
+
 void SBOLTool::importSBOLDocument()
 {
     QString file = QFileDialog::getOpenFileName(this, tr("import SBOL Document"), homeDir());
@@ -881,20 +1137,68 @@ void SBOLTool::importSBOLDocument()
     int numCollection = getNumCollections(sbol_doc);
     importing = true;
 
+    bool import_all = false;
+    std::map<SBOLObject*, bool> obj_map;
+
+    obj_map.clear();
+
     currentScene()->setSceneRect(0.0,0.0,10000.0,10000.0);
+    for(int i=0; i<numCollection; i++)
+        {
+            Collection* cur_co = getNthCollection(sbol_doc,i);
+            renderSBOLDocument((SBOLObject*)cur_co);
+            if(!import_all)
+                {
+                    for(int j=0; j<getNumDNAComponentsIn(cur_co); j++)
+                        {
+                            obj_map[(SBOLObject*)getNthDNAComponentIn(cur_co,j)] = true;
+                        }
+                }
+        }
+    if(!import_all)
+        {
+            for(int i=0; i<numDNAComponent; i++)
+            {
+                DNAComponent *cur_dc = getNthDNAComponent(sbol_doc,i);
+                if(cur_dc)
+                    {
+                        int numsa = getNumSequenceAnnotationsFor(cur_dc);
+                        for(int j=0; j<numsa; j++)
+                            {
+                                SequenceAnnotation *cur_sa = getNthSequenceAnnotationFor(cur_dc,j);
+                                if(cur_sa)
+                                    {
+                                        obj_map[(SBOLObject*)getSequenceAnnotationSubComponent(cur_sa)] = true;
+                                    }
+                            }
+                    }
+            }
+        }
     for(int i=0; i<numDNAComponent; i++)
         {
             DNAComponent *cur_dc = getNthDNAComponent(sbol_doc,i);
-            renderSBOLDocument((SBOLObject*)cur_dc);
+            if(obj_map.find((SBOLObject*)cur_dc) == obj_map.end())
+                {
+                    renderSBOLDocument((SBOLObject*)cur_dc);
+                    if(!import_all)
+                        {
+                            DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
+                            if(cur_ds)
+                                {
+                                    obj_map[(SBOLObject*)cur_ds] = true;
+                                }
+                        }
+                }
         }
     for(int i=0; i<numDNASequence; i++)
         {
-            renderSBOLDocument((SBOLObject*)getNthDNASequence(sbol_doc,i));
+            DNASequence *cur_ds = getNthDNASequence(sbol_doc,i);
+            if(obj_map.find((SBOLObject*) cur_ds) == obj_map.end())
+                {
+                    renderSBOLDocument((SBOLObject*)getNthDNASequence(sbol_doc,i));
+                }
         }
-    for(int i=0; i<numCollection; i++)
-        {
-            renderSBOLDocument((SBOLObject*)getNthCollection(sbol_doc,i));
-        }
+
     currentScene()->update(0.0,0.0,10000.0,10000.0);
     importing = false;
     //currentScene()->fitAll();
@@ -1019,13 +1323,13 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
     node->setZValue(z);
     node->scale(node->defaultSize.width()/node->sceneBoundingRect().width(),
                                  node->defaultSize.height()/node->sceneBoundingRect().height());
-
+/*
     while(scene->collidingItems(node).size() != 0)
         {
             p.rx() = p.x()+(node->defaultSize.width()/node->sceneBoundingRect().width())+2;
-            node->moveBy(p.x(), p.y());
+            node->setPos(p);
         }
-    node->refresh();
+    node->refresh();*/
     float a,b,c,d;
     a = (node->pos().rx());
     b = (node->pos().ry());
@@ -1058,7 +1362,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
 
     QFont cur_font;
     cur_font.setFamily(tr("MS Shell Dlg 2"));
-    cur_font.setPointSize(10);
+    cur_font.setPointSize(8);
 
     text->setPlainText(QString::fromStdString(display_name));
     //text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom()+text->boundingRect().height());
@@ -1278,6 +1582,7 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
 
 
 }
+
 
 	void SBOLTool::saveItems(NetworkHandle * network, const QString& filename)
 	{
@@ -1568,7 +1873,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
         show();
 
 }
-
+/*
 	void SBOLTool::nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& )
 	{
 		GraphicsScene * scene = currentScene();
@@ -1642,7 +1947,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
                 }
             }
 	}
-
+*/
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)
 	{
 	/*    std::string cur_type = "";

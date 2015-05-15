@@ -96,26 +96,26 @@ namespace Tinkercell
 		template<typename T> void ds_str_item_changed(T call_function, QLineEdit*);
 		template<typename T> void sa_str_item_changed(T call_function, QLineEdit*);
 		template<typename T> void sa_int_item_changed(T call_function, QLineEdit*);
-
+		template<typename T> void co_str_item_changed(T call_function, QLineEdit*);
     signals:
 		void dataChanged(const QList<ItemHandle*>&);
 		void itemsAboutToBeInserted(GraphicsScene * scene, QList<QGraphicsItem*>& , QList<ItemHandle*>&, QList<QUndoCommand*>&,GraphicsScene::InsertType);
 		void itemsInserted(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles,GraphicsScene::InsertType);
         void networkLoaded(NetworkHandle*);
+        void alignCompactHorizontal();
 
 
 	private slots:
 	    void select(int);
 	    void toolLoaded (Tool * tool);
 //		void mouseDoubleClicked (GraphicsScene * scene, QPointF point, QGraphicsItem *, Qt::MouseButton, Qt::KeyboardModifiers modifiers);
-//		void keyPressed(GraphicsScene*,QKeyEvent *);
 //		void itemsAboutToBeInserted(GraphicsScene* scene, QList<QGraphicsItem *>& items, QList<ItemHandle*>& handles, QList<QUndoCommand*>& commands);
 		void itemsDropped(GraphicsScene *, const QString&, QPointF);
 		void sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
 		void itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers);
-		void nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& );
 		void itemsInserted(NetworkHandle* , const QList<ItemHandle*>& handles);
         //void itemsInserted(GraphicsScene * scene, const QList<QGraphicsItem*>& item, const QList<ItemHandle*>& handles,GraphicsScene::InsertType);
+        void nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& );
 
 		void saveSBOLFile();
 		void exportSBOL(QSemaphore*, QString);
@@ -127,6 +127,11 @@ namespace Tinkercell
 		void dc_displayidChanged();
         void dc_nameChanged();
         void dc_descriptionChanged();
+
+        //void co_uriChanged();
+		void co_displayidChanged();
+        void co_nameChanged();
+        void co_descriptionChanged();
 
         void ds_uriChanged();
         void ds_nucleotidesChanged();
@@ -141,6 +146,8 @@ namespace Tinkercell
         void showDS(DNASequence *);
         void hideSA();
         void hideDS();
+        void level_up();
+        void level_down();
 
         void importSBOLDocument();
         void renderSBOLDocument(SBOLObject *target);
@@ -184,6 +191,8 @@ namespace Tinkercell
         QPushButton * addDS;
         QPushButton * delSA;
         QPushButton * delDS;
+        QPushButton * leveldown;
+        QPushButton * levelup;
         NodeGraphicsItem item;
 
         std::string current_type;
