@@ -301,7 +301,7 @@ namespace Tinkercell
 	{
 		for (int i=0; i < handles.size(); ++i)
 		{
-			if (handles[i] && handles[i]->isA(tr("Part")) && !handles[i]->isA(tr("Empty")) && !handles[i]->tools.contains(this))
+			if (handles[i] && (handles[i]->isA(tr("SBOL")) || handles[i]->isA(tr("Part"))) && !handles[i]->isA(tr("Empty")) && !handles[i]->tools.contains(this))
 					handles[i]->tools += this;
 		}
 	}
@@ -345,6 +345,14 @@ namespace Tinkercell
 		ItemHandle* h = 0;
 		QList<ItemHandle*> handlesUp, handlesDown;
 		NodeGraphicsItem * node = 0;
+
+        if(getHandle(selected[0])->isA("SBOL"))
+            {
+                QList<ItemHandle*> items;
+                items << getHandle(selected[0]);
+                textEdit->updateText(items);
+                return true;
+            }
 
 		//find the downstream-most
 		for (int i=0; i < selected.size(); ++i)

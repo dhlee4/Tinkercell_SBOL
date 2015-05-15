@@ -138,7 +138,6 @@ namespace Tinkercell
 
 		void showSA();
         void showDS();
-        void showDS(DNASequence *);
         void hideSA();
         void hideDS();
 
@@ -150,7 +149,6 @@ namespace Tinkercell
 		NodesTree * nodesTree;
 		CatalogWidget * catalogWidget;
 		int mode;
-		QGroupBox * groupBox0;//for collection
         QGroupBox * groupBox1;
         QGroupBox * groupBox2;
         QGroupBox * groupBox3;
@@ -165,12 +163,6 @@ namespace Tinkercell
         QLineEdit *DC_name;
         QLineEdit *DC_description;
         QLineEdit *DC_type;
-
-        QLineEdit *CO_uri;
-        QLineEdit *CO_displayId;
-        QLineEdit *CO_name;
-        QLineEdit *CO_description;
-
         std::string authority = "http://example.com/dc";
         std::string authority_ds = "http://example.com/ds";
         std::string authority_sa = "http://example.com/sa";
