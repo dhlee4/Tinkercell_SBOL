@@ -47,6 +47,7 @@
 #include "ConsoleWindow.h"
 #include "ContainerTool.h"
 #include "SBOLTool.h"
+#include "SBOLConverterTool.h"
 #include <QColor>
 #include <QBrush>
 
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
 	mainWindow.addTool(new ViewTablesTool);
 	mainWindow.addTool(new LPSolveInputWindow);
 	mainWindow.addTool(new CellPositionUpdateTool);
+	mainWindow.addTool(new SBOLConverterTool);
 //	mainWindow.addTool(new LoadSaveTool);
 
 	/********* load python, octave, ruby plugins ***********/
