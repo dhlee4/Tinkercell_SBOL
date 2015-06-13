@@ -32,6 +32,7 @@
 #include <functional>
 #include <fstream>
 #include <map>
+#include <qglobal.h>
 
 #define SBOL_PROMOTER 101
 #define SBOL_ASSEMBLY_SCAR 102
@@ -204,6 +205,9 @@ namespace Tinkercell
     void SBOLTool::level_down()
     {
         GraphicsScene * scene = currentScene();
+
+
+
         QList<ItemHandle*> handles = getHandle(scene->selected());
         if(handles.size() != 1)
             {
@@ -212,6 +216,8 @@ namespace Tinkercell
             }
         ItemHandle* cur_handle = handles[0];
         std::string cur_uri = authority+"/"+ cur_handle->name.toStdString();
+
+
         DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
         DNASequence *cur_ds = getDNASequence(sbol_doc,(char*)cur_handle->name.toStdString().c_str());
         if(!cur_ds)
@@ -231,6 +237,8 @@ namespace Tinkercell
         scene->selectAll();
         QList<QGraphicsItem*> sel_list = scene->selected();
         QList<QGraphicsItem*> sbol_list;
+
+        ItemHandle *cur_gl = scene->globalHandle();
 
         for(int i=0; i<sel_list.size(); i++)
             {
@@ -257,6 +265,8 @@ namespace Tinkercell
                         DNAComponent* comp_dc = getSequenceAnnotationSubComponent(cur_sa);
                         renderSBOLDocument((SBOLObject*) comp_dc);
                     }
+                cur_gl->textData(tr("call_stack")) = cur_gl->textData(tr("call_stack"))+tr("|")
+                                        + QString::fromAscii(getDNAComponentURI(cur_dc));
             }
         else if(cur_ds)
             {
@@ -270,12 +280,99 @@ namespace Tinkercell
                     }
                 int cnt = getNumDNAComponentsIn(cur_co);
                 QMessageBox::information(mainWindow,tr("component number"),QString::fromStdString(SSTR(cnt)));
+                cur_gl->textData(tr("call_stack")) = cur_gl->textData(tr("call_stack"))+tr("|")
+                                        + QString::fromAscii(getCollectionURI(cur_co));
             }
 
     }
     void SBOLTool::level_up()
     {
-        QMessageBox::information(mainWindow,tr("up"), tr("up"));
+        GraphicsScene *scene = currentScene();
+        QStringList hier = currentScene()->globalHandle()->textData(tr("call_stack")).split("|");
+
+        if(hier.size() < 2)
+            {
+                QMessageBox::information(mainWindow,tr("rw"),tr("This is top-level"));
+                return;
+            }
+        hier.pop_back();
+        QString level_above = hier[hier.size()-1];
+        currentScene()->globalHandle()->textData(tr("call_stack")) = hier.join(tr("|"));
+
+        console()->message(currentScene()->globalHandle()->textData(tr("call_stack")));
+
+        QMessageBox::information(mainWindow,tr("rw"),level_above);
+
+        DNAComponent* cur_dc = getDNAComponent(sbol_doc,level_above.toAscii());
+        Collection* cur_co = getCollection(sbol_doc,level_above.toAscii());
+
+        scene->selectAll();
+        QList<QGraphicsItem*> sel_list = scene->selected();
+        QList<QGraphicsItem*> sbol_list;
+
+        ItemHandle *cur_gl = scene->globalHandle();
+
+        for(int i=0; i<sel_list.size(); i++)
+            {
+                ItemHandle *handle = getHandle(sel_list[i]);
+                if(handle->isA(tr("sbol")))
+                    {
+                        sbol_list.append(sel_list[i]);
+                    }
+            }
+        if(level_above == tr(""))
+            {
+                for(int i=0; i<sbol_list.size(); i++)
+                    {
+                        sbol_list[i]->hide();
+                    }
+                for(int i=0; i<top_level_uri.size(); i++)
+                    {
+                        Collection* cur_co = getCollection(sbol_doc, top_level_uri[i].c_str());
+                        DNAComponent* cur_dc = getDNAComponent(sbol_doc, top_level_uri[i].c_str());
+                        ItemHandle* cur_handle;
+                        if(cur_dc)
+                            cur_handle = node_map[(SBOLObject*)cur_dc];
+                        else if(cur_co)
+                            cur_handle = node_map[(SBOLObject*)cur_co];
+
+                        QList<QGraphicsItem*> cur_items = cur_handle->graphicsItems;
+                        for(int j=0; j<cur_items.size(); j++)
+                            {
+                                cur_items[j]->show();
+                            }
+                    }
+                cur_gl->textData(tr("call_stack")) = cur_gl->textData(tr("call_stack"))+tr("|")
+                                        + QString::fromAscii(getCollectionURI(cur_co));
+            }
+        else if(cur_dc)
+            {
+                for(int i=0; i<sbol_list.size(); i++)
+                    {
+                        sbol_list[i]->hide();
+                    }
+                int cnt = getNumSequenceAnnotationsFor(cur_dc);
+                QMessageBox::information(mainWindow,tr("subcomponent number"),QString::fromStdString(SSTR(cnt)));
+                DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
+                //renderSBOLDocument((SBOLObject*)cur_ds);
+                for(int i=0; i<cnt; i++)
+                    {
+                        SequenceAnnotation *cur_sa = getNthSequenceAnnotationFor(cur_dc,i);
+                        DNAComponent* comp_dc = getSequenceAnnotationSubComponent(cur_sa);
+                        //renderSBOLDocument((SBOLObject*) comp_dc);
+                    }
+            }
+        else if(cur_co)
+            {
+                for(int i=0; i<sbol_list.size(); i++)
+                    {
+                        sbol_list[i]->hide();
+                    }
+                int cnt = getNumDNAComponentsIn(cur_co);
+                QMessageBox::information(mainWindow,tr("component number"),QString::fromStdString(SSTR(cnt)));
+                cur_gl->textData(tr("call_stack")) = cur_gl->textData(tr("call_stack"))+tr("|")
+                                        + QString::fromAscii(getCollectionURI(cur_co));
+            }
 
     }
 
@@ -1123,6 +1220,11 @@ void SBOLTool::importSBOLDocument()
     QString file = QFileDialog::getOpenFileName(this, tr("import SBOL Document"), homeDir());
     if (file.isNull() || file.isEmpty()) return;
     GraphicsScene * scene = mainWindow->newScene();
+    top_level_uri.clear();
+
+    ItemHandle* cur_gl = scene->globalHandle();
+
+    cur_gl->textData(tr("call_stack")) = tr("");
 
     console()->message(file);
     deleteDocument(sbol_doc);
@@ -1137,25 +1239,26 @@ void SBOLTool::importSBOLDocument()
     int numCollection = getNumCollections(sbol_doc);
     importing = true;
 
-    bool import_all = false;
+    bool import_all = true;
     std::map<SBOLObject*, bool> obj_map;
 
     obj_map.clear();
 
-    currentScene()->setSceneRect(0.0,0.0,10000.0,10000.0);
+
     for(int i=0; i<numCollection; i++)
         {
             Collection* cur_co = getNthCollection(sbol_doc,i);
-            renderSBOLDocument((SBOLObject*)cur_co);
-            if(!import_all)
+            node_map[(SBOLObject*)cur_co] = renderSBOLDocument((SBOLObject*)cur_co);
+//            if(!import_all)
                 {
                     for(int j=0; j<getNumDNAComponentsIn(cur_co); j++)
                         {
                             obj_map[(SBOLObject*)getNthDNAComponentIn(cur_co,j)] = true;
                         }
                 }
+            top_level_uri.push_back(getCollectionURI(cur_co));
         }
-    if(!import_all)
+//    if(!import_all)
         {
             for(int i=0; i<numDNAComponent; i++)
             {
@@ -1177,39 +1280,71 @@ void SBOLTool::importSBOLDocument()
     for(int i=0; i<numDNAComponent; i++)
         {
             DNAComponent *cur_dc = getNthDNAComponent(sbol_doc,i);
-            if(obj_map.find((SBOLObject*)cur_dc) == obj_map.end())
+//            if(obj_map.find((SBOLObject*)cur_dc) == obj_map.end())
                 {
-                    renderSBOLDocument((SBOLObject*)cur_dc);
-                    if(!import_all)
+                    NodeHandle* cur_node = renderSBOLDocument((SBOLObject*)cur_dc);
+                    node_map[(SBOLObject*)cur_dc] = cur_node;
+                    QList<QGraphicsItem*> cur_graphics = cur_node->graphicsItems;
+                    if(obj_map.find((SBOLObject*)cur_dc) != obj_map.end())
                         {
-                            DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
-                            if(cur_ds)
+                            for(int j=0; j<cur_graphics.size(); j++)
                                 {
-                                    obj_map[(SBOLObject*)cur_ds] = true;
+                                    cur_graphics[j]->hide();
                                 }
+      //                  if(!import_all)
                         }
+                    else
+                        {
+                            top_level_uri.push_back(getDNAComponentURI(cur_dc));
+                        }
+                    {
+                        DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
+                        if(cur_ds)
+                            {
+                                obj_map[(SBOLObject*)cur_ds] = true;
+                            }
+                    }
+
                 }
         }
     for(int i=0; i<numDNASequence; i++)
         {
             DNASequence *cur_ds = getNthDNASequence(sbol_doc,i);
-            if(obj_map.find((SBOLObject*) cur_ds) == obj_map.end())
+//            if(obj_map.find((SBOLObject*) cur_ds) == obj_map.end())
                 {
-                    renderSBOLDocument((SBOLObject*)getNthDNASequence(sbol_doc,i));
+                    NodeHandle* cur_node = renderSBOLDocument((SBOLObject*)getNthDNASequence(sbol_doc,i));
+                    node_map[(SBOLObject*)cur_ds] = cur_node;
+                    if(obj_map.find((SBOLObject*) cur_ds) != obj_map.end())
+                        {
+                            QList<QGraphicsItem*> cur_graphics = cur_node->graphicsItems;
+                            for(int j=0; j<cur_graphics.size(); j++)
+                                {
+                                    cur_graphics[j]->hide();
+                                }
+                        }
+                    else
+                        {
+                            top_level_uri.push_back(getDNASequenceURI(cur_ds));
+                        }
                 }
         }
 
-    currentScene()->update(0.0,0.0,10000.0,10000.0);
+
+
     importing = false;
     //currentScene()->fitAll();
+    scene->setSceneRect(0.0,0.0,10000.0,10000.0);
+    scene->update();
 
 }
-void SBOLTool::renderSBOLDocument(SBOLObject* target)
+NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
 {
     //screw that. positioning problem will be solved later.
     GraphicsScene * scene = currentScene();
-    if(!scene || !mainWindow) return;
-    if(!mainWindow->tool(tr("Nodes Tree"))) return;
+    if(!scene || !mainWindow) return 0;
+    if(!mainWindow->tool(tr("Nodes Tree"))) return 0;
+
+
 
     QWidget* treeWidget = mainWindow->tool(tr("Nodes Tree"));
     NodesTree * nodesTree = static_cast<NodesTree*>(treeWidget);
@@ -1232,7 +1367,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
             display_name = getDNAComponentDisplayID(dc_target);
             cur_type = getDNAComponentType(dc_target);
             cur_type = "sbol_"+glymps_map[cur_type];
-            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return;
+            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return 0;
             nodeFamily = nodesTree->getFamily(QString::fromStdString(cur_type));
 
             if(getDNAComponentSequence(dc_target))
@@ -1246,7 +1381,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
             ds_target = (DNASequence*) target;
             display_name = getDNASequenceURI(ds_target);
             cur_type = "sbol_dna";
-            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return;
+            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return 0;
             nodeFamily = nodesTree->getFamily(QString::fromStdString(cur_type));
             cur_seq = getDNASequenceNucleotides(ds_target);
         }
@@ -1255,7 +1390,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
             co_target = (Collection*) target;
             display_name = getCollectionDisplayID(co_target);
             cur_type = "sbol_collection";
-            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return;
+            if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return 0;
             nodeFamily = nodesTree->getFamily(QString::fromStdString(cur_type));
         }
         /*
@@ -1278,6 +1413,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
 
     NodeGraphicsItem * node = 0, *image = 0;
 
+
     for(int i=0; i<nodeFamily->graphicsItems.size(); ++i)
         {
             image = (NodeGraphicsItem::topLevelNodeItem(nodeFamily->graphicsItems[i]));
@@ -1299,7 +1435,8 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
 
     QString s;
     QTransform t;
-    QPointF p(100,100);
+    console()->message(QString::number(qrand()));
+    QPoint p(qrand()%1000,qrand()%1000);
     qreal z;
 
     //NodeGraphicsItem * node = readNode(nodeReader,s,t,p,z,sn);
@@ -1308,21 +1445,28 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
     z = 2.0;
 //work on
 
-    if (node)
-    {
-        t.setMatrix(1.0, 0.0, 0.0, 0.0 ,1.0, 0.0, 0.0, 0.0, 1.0);
-        //t.scale(10.0, 10.0);
-        node->refresh();
-        //node->setPos(p);
-    }
+    t.setMatrix(1.0, 0.0, 0.0, 0.0 ,1.0, 0.0, 0.0, 0.0, 1.0);
 
+    //will it move funky behavior?
 
+    node->setParentItem(0);
+    node->setBoundingBoxVisible(false);
+    node->setPos(QPointF());
+    node->resetTransform();
+    node->normalize();
     node->setTransform(t);
-    //node->boundingRect().
-    node->setPos(p);
+    node->setPos(mapToParent(p).rx(),mapToParent(p).ry());
+    node->setZValue(z);
+    /*
     node->setZValue(z);
     node->scale(node->defaultSize.width()/node->sceneBoundingRect().width(),
                                  node->defaultSize.height()/node->sceneBoundingRect().height());
+    float a,b,c,d;
+
+    node->moveBy(mapToParent(p).rx(),mapToParent(p).ry());
+
+    node->refresh();*/
+
 /*
     while(scene->collidingItems(node).size() != 0)
         {
@@ -1330,11 +1474,7 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
             node->setPos(p);
         }
     node->refresh();*/
-    float a,b,c,d;
-    a = (node->pos().rx());
-    b = (node->pos().ry());
-    c = (p.rx());
-    d = (p.ry());
+
     //node->setPos()
     //
     /*if (handles->isA(tr("SBOL")) && handles[i]->hasTextData(tr("Text Attributes")))
@@ -1362,11 +1502,11 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
 
     QFont cur_font;
     cur_font.setFamily(tr("MS Shell Dlg 2"));
-    cur_font.setPointSize(8);
+    cur_font.setPointSize(22);
 
     text->setPlainText(QString::fromStdString(display_name));
     //text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom()+text->boundingRect().height());
-    text->moveBy(node->boundingRect().center().x(),node->boundingRect().bottom());
+    text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
 
     text->setZValue(z+1);
     text->setFont(cur_font);
@@ -1383,17 +1523,26 @@ void SBOLTool::renderSBOLDocument(SBOLObject* target)
     //Do it later. Might find ways to use undos
 
 
-    commands << new InsertGraphicsCommand(tr("insert"),scene,items);
+    /*commands << new InsertGraphicsCommand(tr("insert"),scene,items);
 
     //scene->insert(tr("import SBOL"),items);
 
     QUndoCommand * command = new CompositeCommand(tr("load"), commands);
     command->redo();
+    node->setPos(p.rx(),p.ry());
+    text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
+    node->update();
+    text->update();
+    scene->update();
     scene->network->updateSymbolsTable();
 
     emit itemsInserted((NetworkHandle*) 0 , handles);
     emit itemsInserted(scene, items, handles, GraphicsScene::LOADED);
-    emit networkLoaded(scene->network);
+    emit networkLoaded(scene->network);*/
+    scene->insert("items inserted", items);
+
+    return hnode;
+
 }
 
 

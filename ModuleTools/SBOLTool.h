@@ -150,7 +150,7 @@ namespace Tinkercell
         void level_down();
 
         void importSBOLDocument();
-        void renderSBOLDocument(SBOLObject *target);
+        NodeHandle* renderSBOLDocument(SBOLObject *target);
 
 	private:
 		ConnectionsTree * connectionsTree;
@@ -202,6 +202,8 @@ namespace Tinkercell
         std::map<std::string, std::string> glymps_map, r_glymps_map;
         std::string type_temp;
         bool importing;
+        std::map<SBOLObject*, NodeHandle*> node_map;
+        std::vector<std::string> top_level_uri;
 
 	};
 
