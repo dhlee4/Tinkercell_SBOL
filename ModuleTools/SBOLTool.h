@@ -203,6 +203,7 @@ namespace Tinkercell
         std::string type_temp;
         bool importing;
         std::map<SBOLObject*, NodeHandle*> node_map;
+        std::map<GraphicsScene*, Document*> doc_map;
         std::vector<std::string> top_level_uri;
 
 	};

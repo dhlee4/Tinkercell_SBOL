@@ -392,6 +392,7 @@ namespace Tinkercell
                     if(sbol_doc == 0)
                         {
                             sbol_doc = createDocument();
+                            doc_map[currentScene()] = sbol_doc;
 
                             /*std::string temp = authority+SSTR(cur_cnt);
                             head_dc = createDNAComponent(sbol_doc, temp.c_str());
@@ -1229,6 +1230,7 @@ void SBOLTool::importSBOLDocument()
     console()->message(file);
     deleteDocument(sbol_doc);
     sbol_doc = createDocument();
+    doc_map[scene] = sbol_doc;
     readDocument(sbol_doc, (char*)file.toStdString().c_str());
 
     console()->message("File Read");
@@ -1284,12 +1286,11 @@ void SBOLTool::importSBOLDocument()
                 {
                     NodeHandle* cur_node = renderSBOLDocument((SBOLObject*)cur_dc);
                     node_map[(SBOLObject*)cur_dc] = cur_node;
-                    QList<QGraphicsItem*> cur_graphics = cur_node->graphicsItems;
                     if(obj_map.find((SBOLObject*)cur_dc) != obj_map.end())
                         {
-                            for(int j=0; j<cur_graphics.size(); j++)
+                            for(int j=0; j<cur_node->graphicsItems.size(); j++)
                                 {
-                                    cur_graphics[j]->hide();
+                                    cur_node->graphicsItems[j]->hide();
                                 }
       //                  if(!import_all)
                         }
@@ -1317,9 +1318,9 @@ void SBOLTool::importSBOLDocument()
                     if(obj_map.find((SBOLObject*) cur_ds) != obj_map.end())
                         {
                             QList<QGraphicsItem*> cur_graphics = cur_node->graphicsItems;
-                            for(int j=0; j<cur_graphics.size(); j++)
+                            for(int j=0; j<cur_node->graphicsItems.size(); j++)
                                 {
-                                    cur_graphics[j]->hide();
+                                    cur_node->graphicsItems[j]->hide();
                                 }
                         }
                     else
@@ -1448,8 +1449,6 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
     t.setMatrix(1.0, 0.0, 0.0, 0.0 ,1.0, 0.0, 0.0, 0.0, 1.0);
 
     //will it move funky behavior?
-
-    node->setParentItem(0);
     node->setBoundingBoxVisible(false);
     node->setPos(QPointF());
     node->resetTransform();
@@ -1503,11 +1502,11 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
     QFont cur_font;
     cur_font.setFamily(tr("MS Shell Dlg 2"));
     cur_font.setPointSize(22);
-
+    text->setParent((QObject*)node);
     text->setPlainText(QString::fromStdString(display_name));
-    //text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom()+text->boundingRect().height());
-    text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
-
+    //text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
+    text->setPos(node->boundingRect().width()/2, node->boundingRect().height());
+    text->setTransform(t);
     text->setZValue(z+1);
     text->setFont(cur_font);
 
@@ -1523,12 +1522,13 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
     //Do it later. Might find ways to use undos
 
 
-    /*commands << new InsertGraphicsCommand(tr("insert"),scene,items);
+    commands << new InsertGraphicsCommand(tr("insert"),scene,items);
 
     //scene->insert(tr("import SBOL"),items);
 
     QUndoCommand * command = new CompositeCommand(tr("load"), commands);
-    command->redo();
+    //command->redo();
+    scene->network->push(command);
     node->setPos(p.rx(),p.ry());
     text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
     node->update();
@@ -1538,8 +1538,8 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
 
     emit itemsInserted((NetworkHandle*) 0 , handles);
     emit itemsInserted(scene, items, handles, GraphicsScene::LOADED);
-    emit networkLoaded(scene->network);*/
-    scene->insert("items inserted", items);
+    emit networkLoaded(scene->network);
+    //scene->insert("items inserted", items);
 
     return hnode;
 
@@ -1555,6 +1555,7 @@ void SBOLTool::saveSBOLFile()
 
 void SBOLTool::exportSBOL(QSemaphore* sem, QString file)
 {
+    sbol_doc = doc_map[currentScene()];
     bool flag = false;
     QList<QGraphicsItem*> sel_list = currentScene()->selected();
     if(sel_list.size() == 0)
@@ -1663,16 +1664,6 @@ void SBOLTool::exportSBOL(QSemaphore* sem, QString file)
     return;
 }
 
-/*void SBOLTool::getItemsFromFile(QList<ItemHandle*>& handles, QList<QGraphicsItem*>&, const QString& filename,ItemHandle * root)
-	{
-		if (!handles.isEmpty()) return;
-
-		if (!root && currentWindow())
-			root = currentWindow()->handle;
-
-		//handles = importSBML(filename, root);
-        console()->message("file loaded! SBOL");
-	}*/
 void SBOLTool::loadNetwork(const QString& filename, bool * b)
 {
 
@@ -1692,6 +1683,7 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
             deleteDocument(sbol_doc);
         }
         sbol_doc = createDocument();
+        doc_map[currentScene()] = sbol_doc;
         console()->message(network->globalHandle()->textData("sbol"));
         int *ret_val = new int;
         readSBOLString(sbol_doc,network->globalHandle()->textData("sbol").toStdString().c_str(),ret_val);
@@ -1895,6 +1887,7 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
         QLineEdit *DC_type;
 */
 	if (!scene) return;
+	sbol_doc = doc_map[scene];
 
 	ItemHandle *handle = 0;
 	for(int i=0; i<items.size(); i++)
