@@ -87,4 +87,53 @@
 <Cell>									<species>							"unspecified"@en .
 <Spacer DNA>                     <a>                                   <Part>.
 <Spacer DNA>                     <description>                  "A piece of DNA that is used to provide spacing between two other functional parts."@en .
-
+<SBOL>									<a>							<Biological entity> .
+<SBOL>									<sequence>					"NNNNNNNNNN"@en.
+<SBOL>									<synonyms>				"DNA Part"@en .
+<SBOL>									<units>						"activity,PoPS"@en.
+<SBOL>									<sequence>				"NNNNNNNNNN"@en.
+<SBOL>									<description>			"DNA nodes represent components that belong on a DNA strand, such as promoter, genes, etc"@en .
+<sbol_assembly-scar>        <a>       <SBOL>. 
+<sbol_blunt-restriction-site>        <a>       <SBOL>.
+<sbol_cds>        <a>       <SBOL>.
+<sbol_dna>	<a> <SBOL>.
+<sbol_five-prime-overhang>        <a>       <SBOL>.
+<sbol_five-prime-sticky-restriction-site> <a> <SBOL>.
+<sbol_insulator>        <a>       <SBOL>.
+<sbol_operator>        <a>       <SBOL>.
+<sbol_origin-of-replication>        <a>       <SBOL>.
+<sbol_primer-binding-site>        <a>       <SBOL>.
+<sbol_promoter>        <a>       <SBOL>.
+<sbol_protease-site>        <a>       <SBOL>.
+<sbol_protein-stability-element>        <a>       <SBOL>.
+<sbol_restriction-enzyme-recognition-site>        <a>       <SBOL>.
+<sbol_ribonuclease-site>        <a>       <SBOL>.
+<sbol_ribosome-entry-site>        <a>       <SBOL>.
+<sbol_rna-stability-element>        <a>       <SBOL>.
+<sbol_signature>        <a>       <SBOL>.
+<sbol_terminator>        <a>       <SBOL>.
+<sbol_three-prime-overhang>        <a>       <SBOL>.
+<sbol_three-prime-sticky-restriction-site>        <a>       <SBOL>.
+<sbol_user-defined>        <a>       <SBOL>.
+<sbol_collection> <a> <SBOL>.
+<sbol_assembly-scar>        <a>       <sbol_dnacomponent>. 
+<sbol_blunt-restriction-site>        <a>       <sbol_dnacomponent>.
+<sbol_cds>        <a>       <sbol_dnacomponent>.
+<sbol_five-prime-overhang>        <a>       <sbol_dnacomponent>.
+<sbol_five-prime-sticky-restriction-site> <a> <sbol_dnacomponent>.
+<sbol_insulator>        <a>       <sbol_dnacomponent>.
+<sbol_operator>        <a>       <sbol_dnacomponent>.
+<sbol_origin-of-replication>        <a>       <sbol_dnacomponent>.
+<sbol_primer-binding-site>        <a>       <sbol_dnacomponent>.
+<sbol_promoter>        <a>       <sbol_dnacomponent>.
+<sbol_protease-site>        <a>       <sbol_dnacomponent>.
+<sbol_protein-stability-element>        <a>       <sbol_dnacomponent>.
+<sbol_restriction-enzyme-recognition-site>        <a>       <sbol_dnacomponent>.
+<sbol_ribonuclease-site>        <a>       <sbol_dnacomponent>.
+<sbol_ribosome-entry-site>        <a>       <sbol_dnacomponent>.
+<sbol_rna-stability-element>        <a>       <sbol_dnacomponent>.
+<sbol_signature>        <a>       <sbol_dnacomponent>.
+<sbol_terminator>        <a>       <sbol_dnacomponent>.
+<sbol_three-prime-overhang>        <a>       <sbol_dnacomponent>.
+<sbol_three-prime-sticky-restriction-site>        <a>       <sbol_dnacomponent>.
+<sbol_user-defined>        <a>       <sbol_dnacomponent>.
