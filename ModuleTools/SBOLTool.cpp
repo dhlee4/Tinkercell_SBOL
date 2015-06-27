@@ -58,15 +58,7 @@
 #define SSTR( x ) dynamic_cast < std::ostringstream & > (( std::ostringstream() << std::dec << x ) ).str()
 
 
-//need to do something about it from here
-
-/*extern "C"{
-#include "sbol.h"
-}*/
-
 static Document * sbol_doc;
-//static DNAComponent * head_dc;
-//to here
 
 namespace Tinkercell
 {
@@ -171,12 +163,6 @@ namespace Tinkercell
         connect(CO_name,SIGNAL(editingFinished()), this, SLOT(co_nameChanged()));
         connect(CO_description,SIGNAL(editingFinished()), this, SLOT(co_descriptionChanged()));
 
-        /*
-        void sa_uriChanged();
-        void sa_bioStartChanged();
-        void sa_bioEndChanged();
-        void sa_strandChanged();
-*/
         groupBox0->hide();
         groupBox1->show();
         groupBox2->hide();
@@ -354,12 +340,10 @@ namespace Tinkercell
                 int cnt = getNumSequenceAnnotationsFor(cur_dc);
                 QMessageBox::information(mainWindow,tr("subcomponent number"),QString::fromStdString(SSTR(cnt)));
                 DNASequence *cur_ds = getDNAComponentSequence(cur_dc);
-                //renderSBOLDocument((SBOLObject*)cur_ds);
                 for(int i=0; i<cnt; i++)
                     {
                         SequenceAnnotation *cur_sa = getNthSequenceAnnotationFor(cur_dc,i);
                         DNAComponent* comp_dc = getSequenceAnnotationSubComponent(cur_sa);
-                        //renderSBOLDocument((SBOLObject*) comp_dc);
                     }
             }
         else if(cur_co)
@@ -393,12 +377,6 @@ namespace Tinkercell
                         {
                             sbol_doc = createDocument();
                             doc_map[currentScene()] = sbol_doc;
-
-                            /*std::string temp = authority+SSTR(cur_cnt);
-                            head_dc = createDNAComponent(sbol_doc, temp.c_str());
-                            head_dc = getDNAComponent(sbol_doc, temp.c_str());
-                            temp = type_temp+"SBOL:0000021";
-                            setDNAComponentType(head_dc,temp.c_str());*/
                         }
                     if (handles[i]->isA(tr("sbol_dnacomponent")))
                         {
@@ -593,24 +571,7 @@ namespace Tinkercell
                 glymps_map[type_temp+it->first] = it->second;
             }
     }
-/*
-        std::string cur_uri = authority+"/"+ cur_handle->name.toStdString();
-        DNAComponent *cur_dc = getDNAComponent(sbol_doc, cur_uri.c_str());
-        DNASequence *cur_ds = getDNASequence(sbol_doc,(char*)cur_handle->name.toStdString().c_str());
-        if(!cur_ds)
-            {
-                std::string temp_uri;
-                temp_uri = cur_uri+"_ds";
-                cur_ds = getDNASequence(sbol_doc,(char*)temp_uri.c_str());
-            }
-        Collection *cur_co = getCollection(sbol_doc, cur_uri.c_str());
-        if(!cur_co)
-            {
-                std::string temp_uri;
-                temp_uri = cur_uri+"_co";
-                cur_co = getCollection(sbol_doc, (char*)temp_uri.c_str());
-            }
-*/
+
     template<typename T>
     void SBOLTool::co_str_item_changed(T call_function, QLineEdit* cur_item)
     {
@@ -776,8 +737,7 @@ namespace Tinkercell
 
     //void SBOLTool::co_uriChanged(){co_str_item_changed(&setCollectionURI, CO_uri);}
     void SBOLTool::co_displayidChanged(){co_str_item_changed(&setCollectionDisplayID, CO_displayId);}
-    void SBOLTool::co_nameChanged(){
-        co_str_item_changed(&setCollectionName, CO_name);}
+    void SBOLTool::co_nameChanged(){co_str_item_changed(&setCollectionName, CO_name);}
     void SBOLTool::co_descriptionChanged(){co_str_item_changed(&setCollectionDescription,CO_description);}
 
     void SBOLTool::dc_uriChanged(){dc_str_item_changed(&setDNAComponentURI, DC_uri);}
@@ -888,7 +848,6 @@ namespace Tinkercell
         DNASequence * cur_ds = getDNAComponentSequence(cur_dc);
         if(!cur_ds)
             {
-                //NotExist
                 cur_ds_cnt++;
                 std::string temp_name = authority_ds+SSTR(cur_ds_cnt);
                 cur_ds = createDNASequence(sbol_doc, temp_name.c_str());
@@ -902,99 +861,6 @@ namespace Tinkercell
     void SBOLTool::select(int)
     {
         exportSBOL((QSemaphore*)0,tr(""));
-        /*
-        bool flag = false;
-        QList<QGraphicsItem*> sel_list = currentScene()->selected();
-        if(sel_list.size() == 0)
-            {
-                currentScene()->selectAll();
-            }
-        for(int i=0; i<sel_list.size(); i++)
-            {
-                ItemHandle *handle = getHandle(sel_list[i]);
-                if(!handle|| !handle->isA("Part"))
-                    {
-                        flag = true;
-                        break;
-                    }
-            }
-        if(flag)
-            {
-                QMessageBox::information(mainWindow,tr("SBOL export"), tr("some of selected item(s) is/are not compatible for SBOL export"));
-                return;
-            }
-
-        Document *exp_sbol_doc = createDocument();
-
-        for(int i=0; i<sel_list.size(); i++)
-            {
-                ItemHandle *handle = getHandle(sel_list[i]);
-                if(!handle->isA("SBOL"))
-                    {
-                        DNAComponent *cur_dc;
-                        DNASequence *cur_ds;
-                        std::string cur_type = "";
-                        std::string cur_desc = "";
-                        if(handle->isA("coding"))
-                            {
-                                cur_type = "cds";
-                            }
-                        else if(handle->isA("rbs"))
-                            {
-                                cur_type = "ribosome entry site";
-                            }
-                        else if(handle->isA("terminator"))
-                            {
-                                cur_type = "terminator";
-                            }
-                        else if(handle->isA("promoter"))
-                            {
-                                cur_type = "promoter";
-                            }
-                        else if(handle->isA("operator"))
-                            {
-                                cur_type = "operator";
-                                if(handle->isA("repressor binding site"))
-                                    {
-                                        cur_desc = "repressor binding site";
-                                    }
-                                else if(handle->isA("activator binding site"))
-                                    {
-                                        cur_desc = "activator binding site";
-
-                                    }
-                            }
-                        NodeHandle *cur_node = NodeHandle::cast(handle);
-                        std::string cur_uri = authority+"/"+cur_node->name.toStdString();
-                        cur_dc = createDNAComponent(exp_sbol_doc,(char*)cur_uri.c_str());
-                        setDNAComponentDisplayID(cur_dc, (char*)cur_node->name.toStdString().c_str());
-                        if(cur_type != "")
-                            {
-                                setDNAComponentType(cur_dc, (char*)r_glymps_map[cur_type].c_str());
-                            }
-                        if(cur_desc != "")
-                            {
-                                setDNAComponentDescription(cur_dc,cur_desc.c_str());
-                            }
-                        if (handle->hasTextData(tr("Text Attributes")))
-                        {
-                            DataTable<QString> data(handle->textDataTable(tr("Text Attributes")));
-                            std::string tempp = cur_uri+"_ds";
-                            if(data.hasRow(tr("sequence")))
-                                {
-                                    cur_ds = createDNASequence(exp_sbol_doc,(char*)tempp.c_str());
-                                    setDNASequenceNucleotides(cur_ds, (char*)data.value(tr("sequence"),0).toStdString().c_str());
-                                    setDNAComponentSequence(cur_dc,cur_ds);
-                                }
-                        }
-                    }
-            }
-
-        QString file = QFileDialog::getSaveFileName (this, tr("Save SBOL file"), homeDir());
-        if (file.isNull() || file.isEmpty()) return;
-        writeDocumentToFile(exp_sbol_doc,file.toAscii());
-        deleteDocument(exp_sbol_doc);*/
-
     }
 
 	bool SBOLTool::setMainWindow(MainWindow * main)
@@ -1009,24 +875,8 @@ namespace Tinkercell
             setWindowTitle(tr("Information Box"));
             setWindowIcon(QIcon(tr(":/images/about.png")));
             setWindowFlags(Qt::Dialog);
-            //QDockWidget * dockWidget = mainWindow->addToViewMenu(this);
             mainWindow->addToViewMenu(this);
 
-            //QDockWidget * dockWidget = new QDockWidget(mainWindow);
-            //if (dockWidget)
-            //    dockWidget->setFloating(true);
-/*			connect(mainWindow, SsIGNAL(itemsAboutToBeInserted(GraphicsScene*, QList<QGraphicsItem *>& , QList<ItemHandle*>& , QList<QUndoCommand*>& )),
-						 this, SLOT(itemsAboutToBeInserted(GraphicsScene* , QList<QGraphicsItem *>&, QList<ItemHandle*>&, QList<QUndoCommand*>&)));
-			connect(mainWindow,SIGNAL(mouseDoubleClicked(GraphicsScene*, QPointF, QGraphicsItem*, Qt::MouseButton, Qt::KeyboardModifiers)),
-                    this,SLOT(mouseDoubleClicked(GraphicsScene*, QPointF, QGraphicsItem*, Qt::MouseButton, Qt::KeyboardModifiers)));
-*/
-            //connect(mainWindow,SIGNAL(keyPressed(GraphicsScene*,QKeyEvent *)),
-				//this ,SLOT(keyPressed(GraphicsScene*,QKeyEvent *)));
-
-            /*connect(this, SIGNAL(itemsInserted(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)),
-					mainWindow,SIGNAL(3(GraphicsScene *, const QList<QGraphicsItem*>&, const QList<ItemHandle*>&)));
-			connect(mainWindow,SIGNAL(itemsDropped(GraphicsScene *, const QString&, QPointF)),
-				this,SLOT(itemsDropped(GraphicsScene *, const QString&, QPointF)));*/
             connect(mainWindow,SIGNAL(mousePressed(GraphicsScene *, QPointF, Qt::MouseButton, Qt::KeyboardModifiers)),
 				this,SLOT(sceneClicked(GraphicsScene *, QPointF, Qt::MouseButton, Qt::KeyboardModifiers)));
             connect(mainWindow,
@@ -1049,8 +899,6 @@ namespace Tinkercell
             head_dc = 0;
             importing = false;
 
-//Connecting Collision Detection
-
 		if (mainWindow->tool(tr("Collision Detection")))
 		{
 			QWidget * widget = mainWindow->tool(tr("Collision Detection"));
@@ -1069,9 +917,6 @@ namespace Tinkercell
             connect(this,SIGNAL(alignCompactHorizontal()),basicToolBox, SLOT(alignCompactHorizontal()));
         }
 
-
-
-// Export Menu
             GlobalSettings::OPEN_FILE_EXTENSIONS << "SBOL" << "sbol";
 
             if (mainWindow->fileMenu)
@@ -1117,7 +962,6 @@ namespace Tinkercell
 
                 if (exportmenu)
                 {
-                    //importmenu->addAction(tr("load SBML file"),this,SLOT(loadSBMLFile()));
                     exportmenu->addAction(tr("SBOL"),this,SLOT(saveSBOLFile()));
                 }
 
@@ -1131,13 +975,6 @@ namespace Tinkercell
                         importmenu->addAction(tr("SBOL"),this,SLOT(importSBOLDocument()));
                     }
             }
-
-
-            //setLayout(layout4);
-//            dockWidget->setLayout(layout4);
-
-
-			//toolLoaded(0);
         }
 
         return true;
@@ -1146,7 +983,6 @@ namespace Tinkercell
 
 	void SBOLTool::nodeCollided(const QList<QGraphicsItem*>& items, NodeGraphicsItem * item, const QList<QPointF>& )
 	{
-//		if (!autoAlignEnabled) return;
 
 		GraphicsScene * scene = currentScene();
 		if (!scene || !item || items.isEmpty()) return;
@@ -1209,9 +1045,7 @@ namespace Tinkercell
 			scene->selected() = select;
 			scene->select(0);
 
-//	    	autoAlignEnabled = false;
 			emit alignCompactHorizontal();
-//			autoAlignEnabled = true;
 		}
 	}
 
@@ -1333,7 +1167,7 @@ void SBOLTool::importSBOLDocument()
 
 
     importing = false;
-    //currentScene()->fitAll();
+    currentScene()->fitAll();
     scene->setSceneRect(0.0,0.0,10000.0,10000.0);
     scene->update();
 
@@ -1394,12 +1228,6 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
             if (!nodesTree->getFamily(QString::fromStdString(cur_type))) return 0;
             nodeFamily = nodesTree->getFamily(QString::fromStdString(cur_type));
         }
-        /*
-    if(isCollection(sbol_doc,target))
-        {
-            console()->message("Collection!!");
-
-        }*/
 
     NodeHandle * hnode = new NodeHandle(nodeFamily);
     //hnode->name = QString::fromAscii(getDNAComponentDisplayID(dc_target));
@@ -1456,40 +1284,6 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
     node->setTransform(t);
     node->setPos(mapToParent(p).rx(),mapToParent(p).ry());
     node->setZValue(z);
-    /*
-    node->setZValue(z);
-    node->scale(node->defaultSize.width()/node->sceneBoundingRect().width(),
-                                 node->defaultSize.height()/node->sceneBoundingRect().height());
-    float a,b,c,d;
-
-    node->moveBy(mapToParent(p).rx(),mapToParent(p).ry());
-
-    node->refresh();*/
-
-/*
-    while(scene->collidingItems(node).size() != 0)
-        {
-            p.rx() = p.x()+(node->defaultSize.width()/node->sceneBoundingRect().width())+2;
-            node->setPos(p);
-        }
-    node->refresh();*/
-
-    //node->setPos()
-    //
-    /*if (handles->isA(tr("SBOL")) && handles[i]->hasTextData(tr("Text Attributes")))
-            {
-                DataTable<QString> data(handles[i]->textDataTable(tr("Text Attributes")));
-                std::string tempp = cur_uri+"_ds";
-                if(data.hasRow(tr("sequence")))
-                    {
-                        DNASequence *cur_ds = createDNASequence(sbol_doc,(char*)tempp.c_str());
-                        setDNASequenceNucleotides(cur_ds, (char*)data.value(tr("sequence"),0).toLower().toStdString().c_str());
-                        setDNAComponentSequence(cur_dc,cur_ds);
-                    }
-            }*/
-
-
-
     QList<QGraphicsItem*> items;
 
     items << node;
@@ -1504,7 +1298,6 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
     cur_font.setPointSize(22);
     text->setParent((QObject*)node);
     text->setPlainText(QString::fromStdString(display_name));
-    //text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
     text->setPos(node->boundingRect().width()/2, node->boundingRect().height());
     text->setTransform(t);
     text->setZValue(z+1);
@@ -1516,18 +1309,9 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
 
     emit itemsAboutToBeInserted(scene, items , handles, commands, GraphicsScene::LOADED);
 
-
-//add nodes. see the command works or not
-
-    //Do it later. Might find ways to use undos
-
-
     commands << new InsertGraphicsCommand(tr("insert"),scene,items);
 
-    //scene->insert(tr("import SBOL"),items);
-
     QUndoCommand * command = new CompositeCommand(tr("load"), commands);
-    //command->redo();
     scene->network->push(command);
     node->setPos(p.rx(),p.ry());
     text->setPos(node->boundingRect().center().x(),node->boundingRect().bottom());
@@ -1539,7 +1323,6 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
     emit itemsInserted((NetworkHandle*) 0 , handles);
     emit itemsInserted(scene, items, handles, GraphicsScene::LOADED);
     emit networkLoaded(scene->network);
-    //scene->insert("items inserted", items);
 
     return hnode;
 
@@ -1549,7 +1332,7 @@ NodeHandle* SBOLTool::renderSBOLDocument(SBOLObject* target)
 void SBOLTool::saveSBOLFile()
 {
     exportSBOL((QSemaphore*)0, tr(""));
-//    QDesktopServices::openUrl(QUrl(file));
+
     return;
 }
 
@@ -1705,161 +1488,11 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
             }
         delete ret_val;
     }
-/*    std::ofstream oup;
-    oup.open("temp.sbol");
-        oup << network->globalHandle()->textData("sbol").toStdString();
-    oup.close();
-
-    if(sbol_doc)
-        {
-            deleteDocument(sbol_doc);
-        }
-    sbol_doc = createDocument();
-    readDocument(sbol_doc,"D:\Tinkercell\BUILD\bin\temp.sbol");
-    console()->message(QString::fromAscii(writeDocumentToString(sbol_doc)));
-    //console()->message(isValidSBOL(sbol_doc));*/
-
-
-
-
 }
 
 
 	void SBOLTool::saveItems(NetworkHandle * network, const QString& filename)
 	{
-/*		if (!network || filename.isEmpty()) return;
-
-		QList<GraphicsScene*> scenes = network->scenes();
-		QList<QGraphicsItem*> allitems, handleitems;
-
-		for (int i=0; i < scenes.size(); ++i)
-			if (scenes[i])
-				allitems << scenes[i]->items();
-
-		QList<ItemHandle*> allhandles = network->handles();
-
-		if (network->globalHandle())
-			saveUnitsToTable(network->globalHandle()->textDataTable("Units"));
-
-		for (int i=0; i < allhandles.size(); ++i)
-			if (allhandles[i])
-			{
-				handleitems = allhandles[i]->allGraphicsItems();
-				for (int j=0; j < handleitems.size(); ++j)
-					if (!allitems.contains(handleitems[j]))
-						allitems += handleitems[j];
-			}
-
-		NodeGraphicsItem * node = 0;
-		ConnectionGraphicsItem * connection = 0;
-		TextGraphicsItem * text = 0;
-
-		QFile file (filename);
-
-		if (!file.open(QFile::WriteOnly | QFile::Text))
-		{
-			mainWindow->statusBar()->showMessage(tr("file cannot be opened : ") + filename);
-			if (console())
-                console()->error(tr("file cannot be opened : ") + filename);
-			//qDebug() << "file cannot be opened : " << filename;
-			return;
-		}
-
-		ModelWriter modelWriter;
-		modelWriter.setDevice(&file);
-		modelWriter.setAutoFormatting(true);
-
-		modelWriter.writeStartDocument();
-		modelWriter.writeDTD("<!DOCTYPE TinkerCell>");
-
-		modelWriter.writeStartElement("Model");
-
-		modelWriter.writeStartElement("Handles");
-		modelWriter.writeModel(network,&file);
-		modelWriter.writeEndElement();
-
-		QList<NodeGraphicsItem*> nodeItems;
-		QList<TextGraphicsItem*> textItems;
-		QList<ConnectionGraphicsItem*> connectionItems;
-
-		for (int i=0; i < allitems.size(); ++i)
-		{
-			node = NodeGraphicsItem::topLevelNodeItem(allitems[i]);
-			if (node && !nodeItems.contains(node))
-			{
-				nodeItems << node;
-			}
-			else
-			{
-				connection = ConnectionGraphicsItem::topLevelConnectionItem(allitems[i]);
-				if (connection && !connectionItems.contains(connection))
-				{
-					connectionItems << connection;
-				}
-				else
-				{
-					text = TextGraphicsItem::cast(allitems[i]);
-					if (text && !textItems.contains(text))
-					{
-						textItems << text;
-					}
-				}
-			}
-		}
-
-		modelWriter.writeStartElement(tr("Nodes"));
-		for (int i=0; i < nodeItems.size(); ++i)
-		{
-			node = nodeItems[i];
-			writeNode(node,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(node->scene())));
-		}
-		modelWriter.writeEndElement();
-
-		modelWriter.writeStartElement(tr("Connections"));
-		QList<ConnectionGraphicsItem*> firstSetofConnections;
-		for (int i=0; i < connectionItems.size(); ++i)
-		{
-			if (connectionItems[i] && connectionItems[i]->centerRegionItem &&
-				connectionItems[i]->centerRegionItem->scene() &&
-				!connectionItems[i]->centerRegionItem->connections().isEmpty())
-			{
-				firstSetofConnections += connectionItems[i];
-				connectionItems.removeAt(i);
-				--i;
-			}
-		}
-		for (int i=0; i < firstSetofConnections.size(); ++i)
-		{
-			connection = firstSetofConnections[i];
-			writeConnection(connection,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(connection->scene())));
-		}
-
-		for (int i=0; i < connectionItems.size(); ++i)
-		{
-			connection = connectionItems[i];
-			writeConnection(connection,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(connection->scene())));
-		}
-
-		modelWriter.writeEndElement();
-
-		modelWriter.writeStartElement(tr("Texts"));
-
-		for (int i=0; i < textItems.size(); ++i)
-		{
-			text = textItems[i];
-			writeText(text,modelWriter,scenes.indexOf(static_cast<GraphicsScene*>(text->scene())));
-		}
-
-		modelWriter.writeEndElement();
-
-		modelWriter.writeEndElement();
-		modelWriter.writeEndDocument();
-
-		savedNetworks[network] = true;
-
-		emit networkSaved(network);
-
-		mainWindow->statusBar()->showMessage(tr("model saved in ") + filename);*/
 	}
 
 	void SBOLTool::saveNetwork(const QString& filename)
@@ -1871,21 +1504,10 @@ void SBOLTool::loadNetwork(const QString& filename, bool * b)
         console()->message("save passed!");
 		QList<GraphicsScene*> scenes = network->scenes();
 		network->globalHandle()->textData("sbol") = QString::fromAscii(writeDocumentToString(sbol_doc));
-		//NetworkHandle * network = currentNetwork();
-		//if (network)
-		//	saveItems(network,filename);
-
 	}
 
 void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>& items, QPointF point, Qt::KeyboardModifiers modifiers)
 {
-    /*
-        QLineEdit *DC_uri;
-        QLineEdit *DC_displayId;
-        QLineEdit *DC_name;
-        QLineEdit *DC_description;
-        QLineEdit *DC_type;
-*/
 	if (!scene) return;
 	sbol_doc = doc_map[scene];
 
@@ -2017,354 +1639,17 @@ void SBOLTool::itemsSelected(GraphicsScene * scene, const QList<QGraphicsItem*>&
 
     void SBOLTool::itemsDropped(GraphicsScene * scene, const QString& name, QPointF point)
 	{
-	/*    std::string cur_type = "";
-	    console()->message(name);
-
-
-		scene->useDefaultBehavior(false);
-		mode = 0;
-		cur_cnt++;
-		std::string temp;
-		temp = authority+SSTR(cur_cnt);
-		DNAComponent *cur_dc = createDNAComponent(sbol_doc, temp.c_str());
-		setDNAComponentURI(cur_dc, temp.c_str());
-
-
-
-
-		if (name.toLower() == tr("sbol_promoter"))
-            {
-                cur_type = "promoter";
-                mode = SBOL_PROMOTER;
-            }
-        if (name.toLower() == tr("sbol_assembly-scar"))
-            {
-                cur_type = "assembly scar";
-                mode = SBOL_ASSEMBLY_SCAR;
-            }
-        if (name.toLower() == tr("sbol_blunt-restriction-site"))
-            {
-                cur_type = "blunt restriction site";
-                mode = SBOL_BLUNT_RESTRICTION_SITE;
-            }
-        if (name.toLower() == tr("sbol_cds"))
-            {
-                cur_type = "cds";
-                mode = SBOL_CDS;
-            }
-        if (name.toLower() == tr("sbol_five-prime-overhang"))
-            {
-                cur_type = "five prime overhang";
-                mode = SBOL_FIVE_PRIME_OVERHANG;
-            }
-        if (name.toLower() == tr("sbol_five-prime-sticky-restriction-site"))
-            {
-                cur_type = "five prime sticky restriction site";
-                mode = SBOL_FIVE_PRIME_STICKY_RESTRICTION_SITE;
-            }
-        if (name.toLower() == tr("sbol_insulator"))
-            {
-                cur_type = "insulator";
-                mode = SBOL_INSULATOR;
-            }
-        if (name.toLower() == tr("sbol_operator"))
-            {
-                cur_type = "operator";
-                mode = SBOL_OPERATOR;
-            }
-        if (name.toLower() == tr("sbol_primer-binding-site"))
-            {
-                cur_type = "primer binding site";
-                mode = SBOL_PRIMER_BINDING_SITE;
-            }
-        if (name.toLower() == tr("sbol_origin-of-replication"))
-            {
-                cur_type = "origin of replication";
-                mode = SBOL_ORIGIN_OF_REPLICATION;
-            }
-        if (name.toLower() == tr("sbol_protease-site"))
-            {
-                cur_type = "protease site";
-                mode = SBOL_PROTEASE_SITE;
-            }
-        if (name.toLower() == tr("sbol_protein-stability-element"))
-            {
-                cur_type = "protein stability element";
-                mode = SBOL_PROTEIN_STABILITY_ELEMENT;
-            }
-        if (name.toLower() == tr("sbol_restriction-enzyme-recognition-site"))
-            {
-                cur_type = "restriction enzyme recognition site";
-                mode = SBOL_RESTRICTION_ENZYME_RECOGNITION_SITE;
-            }
-        if (name.toLower() == tr("sbol_ribonuclease-site"))
-            {
-                cur_type = "ribonuclease site";
-                mode = SBOL_RIBONUCLEASE_SITE;
-            }
-        if (name.toLower() == tr("sbol_ribosome-entry-site"))
-            {
-                cur_type = "ribosome entry site";
-                mode = SBOL_RIBOSOME_ENTRY_SITE;
-            }
-        if (name.toLower() == tr("sbol_rna-stability-element"))
-            {
-                cur_type = "rna stability element";
-                mode = SBOL_RNA_STABILITY_ELEMENT;
-            }
-        if (name.toLower() == tr("sbol_signature"))
-            {
-                cur_type = "signature";
-                mode = SBOL_SIGNATURE;
-            }
-        if (name.toLower() == tr("sbol_terminator"))
-            {
-                cur_type = "terminator";
-                mode = SBOL_TERMINATOR;
-            }
-        if (name.toLower() == tr("sbol_three-prime-overhang"))
-            {
-                cur_type = "three prime overhang";
-                mode = SBOL_THREE_PRIME_OVERHANG;
-            }
-        if (name.toLower() == tr("sbol_three-prime-sticky-restriction-site"))
-            {
-                cur_type = "three prime sticky restriction site";
-                mode = SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE;
-            }
-        if (name.toLower() == tr("sbol_user-defined"))
-            {
-                cur_type = "user defined";
-                mode = SBOL_USER_DEFINED;
-            }
-        if(mode != 0)
-            {
-                setDNAComponentType(cur_dc, r_glymps_map[cur_type].c_str());
-                //setDNAComponentDisplayID(cur_dc, current_type.c_str());
-                sceneClicked(scene,point,Qt::LeftButton,Qt::NoModifier);
-                scene->useDefaultBehavior(true);
-            }*/
-		//smode = none;
-		//setDNAComponentType(cur_dc, )
 	}
-//GraphicsScene * scene, QPointF point, QGraphicsItem * item, Qt::MouseButton button, Qt::KeyboardModifiers modifiers
+
     void SBOLTool::sceneClicked(GraphicsScene * scene, QPointF point, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
 	{
 	    hide();
-	    /*QList<QGraphicsItem*> items;
-        items = scene->items();
-        NodeGraphicsItem * image = 0;
-        ItemHandle * globalHandle = 0;
-        globalHandle = scene->localHandle();
-        if (!globalHandle)
-            globalHandle = scene->globalHandle();
-
-        QString appDir = QApplication::applicationDirPath();
-        image = new NodeGraphicsItem;
-
-        NodeGraphicsReader reader;
-
-		if (mode == SBOL_PROMOTER)
-		{
-			reader.readXml(image, tr(":/images/sbol_promoter.xml"));
-		}
-		if (mode == SBOL_ORIGIN_OF_REPLICATION)
-        {
-            reader.readXml(image, tr(":/images/sbol_origin-of-replication.xml"));
-        }
-        if (mode == SBOL_CDS)
-		{
-			reader.readXml(image, tr(":/images/sbol_cds.xml"));
-		}
-		if (mode == SBOL_RIBOSOME_ENTRY_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_ribosome-entry-site.xml"));
-		}
-		if (mode == SBOL_TERMINATOR)
-		{
-			reader.readXml(image, tr(":/images/sbol_terminator.xml"));
-		}
-		if (mode == SBOL_OPERATOR)
-		{
-			reader.readXml(image, tr(":/images/sbol_operator.xml"));
-		}
-		if (mode == SBOL_INSULATOR)
-		{
-			reader.readXml(image, tr(":/images/sbol_insulator.xml"));
-		}
-		if (mode == SBOL_RIBONUCLEASE_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_ribonuclease-site.xml"));
-		}
-		if (mode == SBOL_RNA_STABILITY_ELEMENT)
-		{
-			reader.readXml(image, tr(":/images/sbol_rna-stability-element.xml"));
-		}
-		if (mode == SBOL_PROTEASE_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_protease-site.xml"));
-		}
-		if (mode == SBOL_PROTEIN_STABILITY_ELEMENT)
-		{
-			reader.readXml(image, tr(":/images/sbol_protein-stability-element.xml"));
-		}
-		if (mode == SBOL_PRIMER_BINDING_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_primer-binding-site.xml"));
-		}
-		if (mode == SBOL_RESTRICTION_ENZYME_RECOGNITION_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_restriction-enzyme-recognition-site.xml"));
-		}
-		if (mode == SBOL_BLUNT_RESTRICTION_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_blunt-restriction-site.xml"));
-		}
-		if (mode == SBOL_FIVE_PRIME_STICKY_RESTRICTION_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_five-prime-sticky-restriction-site.xml"));
-		}
-		if (mode == SBOL_THREE_PRIME_STICKY_RESTRICTION_SITE)
-		{
-			reader.readXml(image, tr(":/images/sbol_three-prime-sticky-restriction-site.xml"));
-		}
-		if (mode == SBOL_FIVE_PRIME_OVERHANG)
-		{
-			reader.readXml(image, tr(":/images/sbol_five-prime-overhang.xml"));
-		}
-		if (mode == SBOL_THREE_PRIME_OVERHANG)
-		{
-			reader.readXml(image, tr(":/images/sbol_three-prime-overhang.xml"));
-		}
-		if (mode == SBOL_ASSEMBLY_SCAR)
-		{
-			reader.readXml(image, tr(":/images/sbol_assembly-scar.xml"));
-		}
-		if (mode == SBOL_SIGNATURE)
-		{
-			reader.readXml(image, tr(":/images/sbol_signature.xml"));
-
-		}
-		if (mode == SBOL_USER_DEFINED)
-		{
-			reader.readXml(image, tr(":/images/sbol_user-defined.xml"));
-		}
-		if (mode != 0)
-            {
-                std::string temp;
-                temp = authority+SSTR(cur_cnt);
-                image->name = QString::fromStdString(temp);
-                image->normalize();
-                image->className = tr("SBOL Object");
-                image->scale((image->defaultSize.width()*2)/image->sceneBoundingRect().width(),
-                (image->defaultSize.height()*2)/image->sceneBoundingRect().height());
-                image->setPos(point);
-                image->setToolTip(tr("List of events in this model"));
-                scene->insert(tr("SBOL Objects"),image);
-                mode = 0;
-                select(0);
-            }
-        else
-            {*/
-                /*hideSA();
-                hideDS();
-                DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
-                DC_type->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));*/
-                /*DC_uri->setText(QString::fromAscii(getDNAComponentURI(head_dc)));
-                DC_type->setText(QString::fromAscii(getDNAComponentType(head_dc)));
-                DC_displayId->setText(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
-                DC_name->setText(QString::fromAscii(getDNAComponentName(head_dc)));
-                DC_description->setText(QString::fromAscii(getDNAComponentDescription(head_dc)));
-                console()->message("scene clicked");
-                console()->message(QString::fromAscii(getDNAComponentURI(head_dc)));
-                console()->message(QString::fromAscii(getDNAComponentDisplayID(head_dc)));
-
-                addSA->hide();
-                addDS->hide();*/
-            //}
-        //show();
         return;
     }
 
 	void SBOLTool::toolLoaded(Tool* tool)
 	{
 		static bool connected1 = false;
-
-/*		if (mainWindow->tool(tr("Parts and Connections Catalog")) && !connected1)
-		{
-			Tool * tool = static_cast<Tool*>(mainWindow->tool(tr("Parts and Connections Catalog")));
-			catalogWidget = static_cast<CatalogWidget*>(tool);
-
-            //parse Module Tools/sbol-visual.xml and use that.
-
-            QList<QToolButton*> newButtons = catalogWidget->addNewButtons(tr("SBOL"),
-                                                                    QStringList() << tr("Promoter")
-   			connected1 = true;
-		}*/
 	}
-/*
-	void WetLabTool::keyPressed(GraphicsScene* scene,QKeyEvent * keyEvent)
-	{
-		if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Space)
-		{
-			QList<ItemHandle*> handles = getHandle(scene->selected());
-			bool containsExp = false;
-			for (int i=0; i < handles.size(); ++i)
-				if (handles[i] && handles[i]->isA("Experiment"))
-				{
-					containsExp = true;
-					break;
-				}
-			if (mainWindow && containsExp)
-			{
-				Tool * tool = mainWindow->tool("Text Attributes");
-				if (tool)
-				{
-					tool->select();
-				}
-			}
-		}
-	}
-
-	void WetLabTool::mouseDoubleClicked (GraphicsScene * scene, QPointF , QGraphicsItem * item, Qt::MouseButton, Qt::KeyboardModifiers modifiers)
-    {
-		QList<ItemHandle*> handles = getHandle(scene->selected());
-		bool containsExp = false;
-		for (int i=0; i < handles.size(); ++i)
-			if (handles[i] && handles[i]->isA("Experiment"))
-			{
-				containsExp = true;
-				break;
-			}
-		if (mainWindow && containsExp)
-		{
-			Tool * tool = mainWindow->tool("Text Attributes");
-			if (tool)
-			{
-				tool->select();
-			}
-		}
-    }
-
-		void WetLabTool::itemsAboutToBeInserted(GraphicsScene* scene, QList<QGraphicsItem *>& items, QList<ItemHandle*>& handles, QList<QUndoCommand*>& commands)
-	{
-		if (!scene || !scene->network) return;
-
-		QString home = homeDir();
-		ConnectionGraphicsItem * connection = 0;
-		ItemHandle * handle = 0;
-		for (int i=0; i < items.size(); ++i)
-			if ((connection = ConnectionGraphicsItem::cast(items[i])) &&
-				(handle = connection->handle()) &&
-				handle->isA("Experiment") &&
-				!connection->centerRegionItem)
-		{
-			ArrowHeadItem * newDecorator = new ArrowHeadItem(home + tr("/Lab/microscope.xml"),connection);
-			connection->centerRegionItem = newDecorator;
-			items += newDecorator;
-		}
-	}
-*/
-
 }
 
