@@ -64,6 +64,9 @@ namespace Tinkercell
 		}
 
 		QStringList keys;
+		QString temp = appDir +tr("NodesTree.nt");
+		std::string ttemp = temp.toStdString();
+
 		if (filename.isEmpty())
 			keys = Ontology::readNodes(appDir + tr("/NodesTree.nt"),"ntriples");
 		else
@@ -372,6 +375,11 @@ namespace Tinkercell
 				QString tempp = fileInfo.baseName()+tr(".xml");
 				oup << tempp.toStdString() << std::endl;
 				oup << QFile::exists(QCoreApplication::applicationDirPath()+ fileInfo.baseName() + tr(".xml")) << std::endl;
+				if(!QFile::exists(QCoreApplication::applicationDirPath()+ fileInfo.baseName() + tr(".xml")))
+                    {
+                        QString temp_str = QCoreApplication::applicationDirPath()+ fileInfo.baseName() + tr(".xml");
+                        oup << temp_str.toStdString() << std::endl;
+                    }
 				oup<< "=====" << std::endl;
 				if ((fileInfo.completeSuffix().toLower() == tr("png")) &&
 					(QFile::exists(QCoreApplication::applicationDirPath()+ fileInfo.baseName() + tr(".xml"))))
