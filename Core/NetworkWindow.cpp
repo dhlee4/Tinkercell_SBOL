@@ -7,6 +7,7 @@
 #include "GraphicsView.h"
 #include "ConsoleWindow.h"
 #include "NetworkWindow.h"
+#include <fstream>
 
 namespace Tinkercell
 {
@@ -14,15 +15,15 @@ namespace Tinkercell
 	{
 		if (!network) return;
 		MainWindow * main = network->mainWindow;
-		
+
 		if (!main) return;
-		
+
 		if (scene)
 		{
 			scene->contextItemsMenu = &(main->contextItemsMenu);
-			
+
 			scene->contextScreenMenu = &(main->contextScreenMenu);
-		
+
 			connect(scene,SIGNAL(itemsSelected(GraphicsScene*,const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers)),
 				main, SIGNAL(itemsSelected(GraphicsScene*,const QList<QGraphicsItem*>&, QPointF, Qt::KeyboardModifiers)));
 
@@ -61,7 +62,7 @@ namespace Tinkercell
 
 			connect(scene,SIGNAL(itemsAboutToBeRemoved(GraphicsScene *, QList<QGraphicsItem*>&, QList<ItemHandle*>&,QList<QUndoCommand*>&)),
 				main ,SIGNAL(itemsAboutToBeRemoved(GraphicsScene *, QList<QGraphicsItem*>&, QList<ItemHandle*>&,QList<QUndoCommand*>&)));
-				
+
 			connect(scene,SIGNAL(itemsAboutToBeMoved(GraphicsScene * , QList<QGraphicsItem*>& , QList<QPointF>& , QList<QUndoCommand*>&)),
 				main ,SIGNAL(itemsAboutToBeMoved(GraphicsScene * , QList<QGraphicsItem*>& , QList<QPointF>& , QList<QUndoCommand*>&)));
 
@@ -89,7 +90,7 @@ namespace Tinkercell
 			editor->contextEditorMenu = &(main->contextEditorMenu);
 
 			editor->contextSelectionMenu = &(main->contextSelectionMenu);
-		
+
 			connect(editor,SIGNAL(itemsInserted(NetworkHandle *, const QList<ItemHandle*>&)),
 				main,SIGNAL(itemsInserted(NetworkHandle *, const QList<ItemHandle*>&)));
 
@@ -103,17 +104,17 @@ namespace Tinkercell
 				main,SIGNAL(lineChanged(TextEditor *, int, const QString&)));
 		}
 	}
-	
+
 	NetworkWindow::NetworkWindow(NetworkHandle * network, GraphicsScene * scene)
 		: QMainWindow(network->mainWindow), network(network), scene(scene), editor(0), handle(0)
 	{
 		if (!network) return;
-		
+
 		if (scene)
 		{
 			scene->networkWindow = this;
 			scene->network = network;
-			
+
 			GraphicsView * view = new GraphicsView(this);
 			connect(view,SIGNAL(itemsDropped(GraphicsScene*, const QString&, QPointF)),network->mainWindow,SIGNAL(itemsDropped(GraphicsScene*, const QString&, QPointF)));
 			setCentralWidget(view);
@@ -126,7 +127,7 @@ namespace Tinkercell
 		MainWindow * main = network->mainWindow;
 		setVisible(false);
 		setWindowFlags(Qt::Dialog);
-		
+
 		if (main)
 		{
 			int w = main->width(), h = main->height();
@@ -144,12 +145,12 @@ namespace Tinkercell
 		setFocusPolicy(Qt::StrongFocus);
 		setWindowIcon(QIcon(tr(":/images/newscene.png")));
 	}
-	
+
 	NetworkWindow::NetworkWindow(NetworkHandle * network, TextEditor * editor)
 		: QMainWindow(network->mainWindow), network(network), scene(0), editor(editor), handle(0)
 	{
 		if (!network) return;
-		
+
 		if (editor)
 		{
 			editor->networkWindow = this;
@@ -159,10 +160,10 @@ namespace Tinkercell
 		}
 
 		MainWindow * main = network->mainWindow;
-		
+
 		setVisible(false);
 		setWindowFlags(Qt::Dialog);
-		
+
 		if (main)
 		{
 			int w = main->width(), h = main->height();
@@ -189,14 +190,24 @@ namespace Tinkercell
 			if (network->networkWindows.size() > 0 && network->networkWindows[0] == this)
 			{
 				bool b = true;
-		
+
 				if (network)
 					emit networkClosing(network,&b);
-		
+
 				if (b)
 				{
-					if (network->mainWindow && network->mainWindow->currentNetworkWindow == this)
-						network->mainWindow->currentNetworkWindow = 0;
+					if (network->mainWindow && network->mainWindow->currentNetworkWindow == this){
+                        network->mainWindow->currentNetworkWindow = 0;
+                        if (network->networkWindows.contains(this))
+                            {
+                                network->networkWindows.removeAll(this);
+                            }
+                        if (network->networkWindows.size() == 0)
+                            {
+                                network->networkWindows.clear();
+                            }
+					}
+
 					emit networkClosed(network);
 					event->accept();
 					network->close();
@@ -208,7 +219,7 @@ namespace Tinkercell
 			}
 		}
 	}
-	
+
 	NetworkWindow::~NetworkWindow()
 	{
 		if (scene)
@@ -218,15 +229,20 @@ namespace Tinkercell
 			//MainWindow::invalidPointers[ (void*)scene ] = true;
 			scene = 0;
 		}
-		
-		if (network && network->networkWindows.contains(this))
+
+/*
+		if (network && this)
+                if(network->networkWindows.contains(this))
 		{
-			network->networkWindows.removeAll(this);
+
 			if (network->mainWindow && network->mainWindow->currentNetworkWindow == this)
 				network->mainWindow->currentNetworkWindow = 0;
+
 		}
+		If I did garbage cleaning up in closeEvent, I think I don't need to do this again. and the caused segfault might due to accessing qlist that is already cleared out.
+*/
 	}
-	
+
 	void NetworkWindow::focusInEvent ( QFocusEvent * )
 	{
 		if (network && network->mainWindow && network->mainWindow->currentNetworkWindow != this)
@@ -274,18 +290,18 @@ namespace Tinkercell
 		else
 			QWidget::changeEvent(event);
 	}
-	
+
 	GraphicsScene * NetworkWindow::newScene()
 	{
 		if (!network) return 0;
 		QList<QGraphicsView*> views;
-		
+
 		if (editor)
 		{
 			editor->remove(editor->items());
 			editor = 0;
 		}
-		
+
 		if (scene)
 		{
 			scene->remove(tr("Remove old network"),scene->items());
@@ -294,26 +310,26 @@ namespace Tinkercell
 		{
 			scene = new GraphicsScene(network);
 			scene->networkWindow = this;
-			scene->network = network;		
+			scene->network = network;
 			GraphicsView * view = new GraphicsView(this);
 			connect(view,SIGNAL(itemsDropped(GraphicsScene*, const QString&, QPointF)),network->mainWindow,SIGNAL(itemsDropped(GraphicsScene*, const QString&, QPointF)));
 			setCentralWidget(view);
 			connectToMainWindow();
 		}
-		
+
 		return scene;
 	}
 
 	TextEditor * NetworkWindow::newTextEditor()
 	{
 		if (!network) return 0;
-		
+
 		if (scene)
 		{
 			scene->remove(tr("Remove old network"),scene->items());
 			scene = 0;
 		}
-		
+
 		if (editor)
 		{
 			editor->remove(editor->items());
@@ -323,14 +339,14 @@ namespace Tinkercell
 			editor = new TextEditor(network);
 			editor->networkWindow = this;
 			editor->network = network;
-			
-			setCentralWidget(editor);		
+
+			setCentralWidget(editor);
 			connectToMainWindow();
 		}
-		
+
 		return editor;
 	}
-	
+
 	void NetworkWindow::setWindowTitle(const QString& text)
 	{
 		QMainWindow::setWindowTitle(text);
@@ -341,7 +357,7 @@ namespace Tinkercell
 				network->mainWindow->tabWidget->setTabText(k, text);
 		}
 	}
-	
+
 	void NetworkWindow::setFileName(const QString& text)
 	{
 		filename = text;
@@ -363,6 +379,6 @@ namespace Tinkercell
 		}
 		return QWidget::winEvent(m,result);
 	}*/
-	
+
 }
 
