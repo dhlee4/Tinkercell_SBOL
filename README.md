@@ -65,7 +65,7 @@
 <div>Major Todos</div>
 <ul>
 <li>Make binary release from the current source version</li>
-<li>Current build is able to make the install file by following original Tinkercell build manual(<a href="https://docs.google.com/document/pub?id=1THLfivuMpA7W3PKtlHgiO_laJ8XS9XLnhV03U6wgm-A">https://docs.google.com/document/pub?id=1THLfivuMpA7W3PKtlHgiO_laJ8XS9XLnhV03U6wgm-A</a>, with following step 12(a) for windows) but the following error popped up. I think this caused by introducing libSBOLc into the previous Tinkercell. Some of the reference documents suggested that it happens when the linking library is formed without valid signal.</li>
+<li>Current build is able to make the install file by following original Tinkercell build manual(<a href="https://docs.google.com/document/pub?id=1THLfivuMpA7W3PKtlHgiO_laJ8XS9XLnhV03U6wgm-A">https://docs.google.com/document/pub?id=1THLfivuMpA7W3PKtlHgiO_laJ8XS9XLnhV03U6wgm-A</a>, with following step 12(a) for windows) but the following error popped up:"The application was unable to start correctly (0xc00000142). Click OK to close the application." I think this caused by introducing libSBOLc into the previous Tinkercell. Some of the reference documents suggested that it happens when the linking library is formed without valid signal.</li>
 </ul>
 <div><br/></div>
 <div>Other suggestion</div>
