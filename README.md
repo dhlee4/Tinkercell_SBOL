@@ -6,6 +6,7 @@
 <li>libSBOLc integration issues
 <ul>
 <li>undefined function error solved when declare #LIBXML_STATIC in ModuleTools/sbolTools.h</li>
+<li>If there are some errors in regards with libsbol.dll and libxml2.dll, please copy those under ./libSBOLc/release/library and paste to ./BUILD/bin</li>
 </ul>
 </li>
 <li>Mostly the project was built by setting debug mode by put “DEBUG” for BUILD_TYPE during CMake Build.</li>
